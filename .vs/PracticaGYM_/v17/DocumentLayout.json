@@ -1,0 +1,113 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\ainxr\\OneDrive\\Desktop\\SolucionGYM_\\GRUPO-N-5-SISTEMAGIMNASIO\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{459BB80B-67D6-47E7-BE58-63B86C357B34}|PracticaGYM_.csproj|c:\\users\\ainxr\\onedrive\\desktop\\soluciongym_\\grupo-n-5-sistemagimnasio\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{459BB80B-67D6-47E7-BE58-63B86C357B34}|PracticaGYM_.csproj|solutionrelative:usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{459BB80B-67D6-47E7-BE58-63B86C357B34}|PracticaGYM_.csproj|c:\\users\\ainxr\\onedrive\\desktop\\soluciongym_\\grupo-n-5-sistemagimnasio\\rutina.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{459BB80B-67D6-47E7-BE58-63B86C357B34}|PracticaGYM_.csproj|solutionrelative:rutina.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{459BB80B-67D6-47E7-BE58-63B86C357B34}|PracticaGYM_.csproj|c:\\users\\ainxr\\onedrive\\desktop\\soluciongym_\\grupo-n-5-sistemagimnasio\\profesor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{459BB80B-67D6-47E7-BE58-63B86C357B34}|PracticaGYM_.csproj|solutionrelative:profesor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{459BB80B-67D6-47E7-BE58-63B86C357B34}|PracticaGYM_.csproj|c:\\users\\ainxr\\onedrive\\desktop\\soluciongym_\\grupo-n-5-sistemagimnasio\\pagos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{459BB80B-67D6-47E7-BE58-63B86C357B34}|PracticaGYM_.csproj|solutionrelative:pagos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{459BB80B-67D6-47E7-BE58-63B86C357B34}|PracticaGYM_.csproj|c:\\users\\ainxr\\onedrive\\desktop\\soluciongym_\\grupo-n-5-sistemagimnasio\\alimentacion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{459BB80B-67D6-47E7-BE58-63B86C357B34}|PracticaGYM_.csproj|solutionrelative:alimentacion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Usuario.cs",
+              "DocumentMoniker": "C:\\Users\\ainxr\\OneDrive\\Desktop\\SolucionGYM_\\GRUPO-N-5-SISTEMAGIMNASIO\\Usuario.cs",
+              "RelativeDocumentMoniker": "Usuario.cs",
+              "ToolTip": "C:\\Users\\ainxr\\OneDrive\\Desktop\\SolucionGYM_\\GRUPO-N-5-SISTEMAGIMNASIO\\Usuario.cs",
+              "RelativeToolTip": "Usuario.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-30T21:27:30.589Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Rutina.cs",
+              "DocumentMoniker": "C:\\Users\\ainxr\\OneDrive\\Desktop\\SolucionGYM_\\GRUPO-N-5-SISTEMAGIMNASIO\\Rutina.cs",
+              "RelativeDocumentMoniker": "Rutina.cs",
+              "ToolTip": "C:\\Users\\ainxr\\OneDrive\\Desktop\\SolucionGYM_\\GRUPO-N-5-SISTEMAGIMNASIO\\Rutina.cs",
+              "RelativeToolTip": "Rutina.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-30T21:26:16.904Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Pagos.cs",
+              "DocumentMoniker": "C:\\Users\\ainxr\\OneDrive\\Desktop\\SolucionGYM_\\GRUPO-N-5-SISTEMAGIMNASIO\\Pagos.cs",
+              "RelativeDocumentMoniker": "Pagos.cs",
+              "ToolTip": "C:\\Users\\ainxr\\OneDrive\\Desktop\\SolucionGYM_\\GRUPO-N-5-SISTEMAGIMNASIO\\Pagos.cs",
+              "RelativeToolTip": "Pagos.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAgwBgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-30T21:24:27.117Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Profesor.cs",
+              "DocumentMoniker": "C:\\Users\\ainxr\\OneDrive\\Desktop\\SolucionGYM_\\GRUPO-N-5-SISTEMAGIMNASIO\\Profesor.cs",
+              "RelativeDocumentMoniker": "Profesor.cs",
+              "ToolTip": "C:\\Users\\ainxr\\OneDrive\\Desktop\\SolucionGYM_\\GRUPO-N-5-SISTEMAGIMNASIO\\Profesor.cs",
+              "RelativeToolTip": "Profesor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-30T21:24:15.114Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Alimentacion.cs",
+              "DocumentMoniker": "C:\\Users\\ainxr\\OneDrive\\Desktop\\SolucionGYM_\\GRUPO-N-5-SISTEMAGIMNASIO\\Alimentacion.cs",
+              "RelativeDocumentMoniker": "Alimentacion.cs",
+              "ToolTip": "C:\\Users\\ainxr\\OneDrive\\Desktop\\SolucionGYM_\\GRUPO-N-5-SISTEMAGIMNASIO\\Alimentacion.cs",
+              "RelativeToolTip": "Alimentacion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-30T21:23:06.442Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
