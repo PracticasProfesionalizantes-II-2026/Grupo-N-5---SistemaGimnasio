@@ -7,11 +7,16 @@ public class Usuario
         [Required]
         [MaxLength(8)]
         public int Dni { get; private set; }
-        public string ? Direccion { get; private set; }   
+        public string ? Direccion { get; private set; }  
+        /* 
         [Required]
         public byte[] PasswordHash { get; set; } = [];
          [Required]
         public byte[] PasswordSalt { get; set; } = [];
+        */
+        [Required]
+        [MaxLength(50)]
+        public string Contraseña {get; private set;} = string.Empty;
         [Required]
         [MaxLength(100)]
         public string Nombre { get; set; } = string.Empty;

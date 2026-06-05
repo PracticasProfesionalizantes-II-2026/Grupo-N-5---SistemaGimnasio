@@ -20,4 +20,5 @@ using System.ComponentModel.DataAnnotations.Schema;
         public Profesor Profesor { get; set; } = null!;
         [Required]
         public DiasSemana Dias { get; set; }
+        public ICollection<ActividadAlumno> ActividadesAlumno { get; set; } = new List<ActividadAlumno>();
     }
