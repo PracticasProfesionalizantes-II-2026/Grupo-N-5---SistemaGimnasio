@@ -157,3 +157,15 @@ C:\Users\ainxr\SistemaGYM_\obj\Debug\net10.0\refint\SistemaGYM_.dll
 C:\Users\ainxr\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.pdb
 C:\Users\ainxr\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.genruntimeconfig.cache
 C:\Users\ainxr\SistemaGYM_\obj\Debug\net10.0\ref\SistemaGYM_.dll
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.csproj.AssemblyReference.cache
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.AssemblyInfoInputs.cache
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.AssemblyInfo.cs
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.csproj.CoreCompileInputs.cache
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.sourcelink.json
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.dll
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\refint\SistemaGYM_.dll
+C:\Users\Usuario\Documents\FACULTAD\Trabajo 2\gymGrupo4-main-main\Grupo-N-5---SistemaGimnasio\SistemaGYM_\obj\Debug\net10.0\SistemaGYM_.pdb

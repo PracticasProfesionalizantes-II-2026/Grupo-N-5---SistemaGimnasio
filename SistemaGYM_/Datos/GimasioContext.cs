@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using SistemaGYM.Entidades;
 using System.Security.Cryptography;
 
+namespace SistemaGYM.Datos;
 
 public class GimnasioContext(DbContextOptions<GimnasioContext> options) : DbContext(options)
 {
