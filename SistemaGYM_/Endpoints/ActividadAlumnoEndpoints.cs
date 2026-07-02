@@ -13,7 +13,7 @@ public static class ActividadAlumnoEndpoints
         var actividadesGroup = app.MapGroup("/api/actividades").WithTags("ActividadAlumno");
 
         alumnosGroup.MapPost("/{id:int}/actividades/{actividadId:int}",
-            async ( int id, int actividadId, InscripcionDto dto, IActividadAlumnoLogica logica) =>
+            async ( int id, int actividadId, IActividadAlumnoLogica logica) =>
         {
             var (resultado, data) = await logica.InscribirAsync(id, actividadId);
 
