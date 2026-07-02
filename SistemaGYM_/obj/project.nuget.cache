@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "oOR4hj2haYY=",
+  "dgSpecHash": "/0GmV9Ka/TE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PruebaApis\\RepoPrueba\\SistemaGYM_\\SistemaGYM_.csproj",
+  "projectFilePath": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PracticaProfecionalizanteII\\Grupo-N-5---SistemaGimnasio\\SistemaGYM_\\SistemaGYM_.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ainxr\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\ainxr\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
@@ -59,9 +59,9 @@
       "code": "NU1903",
       "level": "Warning",
       "message": "Package 'Microsoft.OpenApi' 2.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-v5pm-xwqc-g5wc",
-      "projectPath": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PruebaApis\\RepoPrueba\\SistemaGYM_\\SistemaGYM_.csproj",
+      "projectPath": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PracticaProfecionalizanteII\\Grupo-N-5---SistemaGimnasio\\SistemaGYM_\\SistemaGYM_.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PruebaApis\\RepoPrueba\\SistemaGYM_\\SistemaGYM_.csproj",
+      "filePath": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PracticaProfecionalizanteII\\Grupo-N-5---SistemaGimnasio\\SistemaGYM_\\SistemaGYM_.csproj",
       "libraryId": "Microsoft.OpenApi",
       "targetGraphs": [
         "net10.0"

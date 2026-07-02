@@ -3163,11 +3163,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PruebaApis\\RepoPrueba\\SistemaGYM_\\SistemaGYM_.csproj",
+      "projectUniqueName": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PracticaProfecionalizanteII\\Grupo-N-5---SistemaGimnasio\\SistemaGYM_\\SistemaGYM_.csproj",
       "projectName": "SistemaGYM_",
-      "projectPath": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PruebaApis\\RepoPrueba\\SistemaGYM_\\SistemaGYM_.csproj",
+      "projectPath": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PracticaProfecionalizanteII\\Grupo-N-5---SistemaGimnasio\\SistemaGYM_\\SistemaGYM_.csproj",
       "packagesPath": "C:\\Users\\ainxr\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PruebaApis\\RepoPrueba\\SistemaGYM_\\obj\\",
+      "outputPath": "C:\\Users\\ainxr\\OneDrive\\Desktop\\PracticaProfecionalizanteII\\Grupo-N-5---SistemaGimnasio\\SistemaGYM_\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
