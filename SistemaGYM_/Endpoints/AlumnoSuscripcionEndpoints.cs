@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using SistemaGYM.Logica;
 using SistemaGYM.Logica.DTOs;
 
@@ -29,7 +30,7 @@ public static class AlumnoSuscripcionEndpoints
         .Produces(500);
 
         // POST /api/alumnos/{id}/suscripciones
-        group.MapPost("/", async (int id, AsignarSuscripcionDto dto, IAlumnoSuscripcionLogica logica) =>
+        group.MapPost("/", async ([FromRoute] int id, [FromBody] AsignarSuscripcionDto dto, IAlumnoSuscripcionLogica logica) =>
         {
             var (resultado, data) = await logica.AsignarAsync(id, dto);
 

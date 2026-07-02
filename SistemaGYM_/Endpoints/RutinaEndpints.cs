@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using SistemaGYM.Logica;
 using SistemaGYM.Logica.DTOs;
 
@@ -38,7 +39,7 @@ public static class RutinaEndpoints
         .Produces(404)
         .Produces(500);
 
-        group.MapPost("/", async (RutinaCreateDto dto, IRutinaLogica logica) =>
+        group.MapPost("/", async ([FromBody] RutinaCreateDto dto, IRutinaLogica logica) =>
         {
             var creado = await logica.CrearAsync(dto);
             return Results.Json(new { status = 201, message = "Rutina creada correctamente", data = creado }, statusCode: 201);
@@ -51,7 +52,7 @@ public static class RutinaEndpoints
         .Produces(400)
         .Produces(500);
 
-        group.MapPut("/{id:int}", async (int id, RutinaCreateDto dto, IRutinaLogica logica) =>
+        group.MapPut("/{id:int}", async (int id, [FromBody] RutinaCreateDto dto, IRutinaLogica logica) =>
         {
             var modificado = await logica.ActualizarAsync(id, dto);
             if (!modificado)

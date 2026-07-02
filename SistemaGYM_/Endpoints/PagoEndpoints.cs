@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using SistemaGYM.Logica;
 using SistemaGYM.Logica.DTOs;
 
@@ -38,7 +39,7 @@ public static class PagoEndpoints
         .Produces(404)
         .Produces(500);
 
-        group.MapPost("/", async (PagoCreateDto dto, IPagoLogica logica) =>
+        group.MapPost("/", async ([FromBody] PagoCreateDto dto, IPagoLogica logica) =>
         {
             var creado = await logica.CrearAsync(dto);
             return Results.Json(new { status = 201, message = "Pago registrado correctamente", data = creado }, statusCode: 201);
@@ -51,7 +52,7 @@ public static class PagoEndpoints
         .Produces(400)
         .Produces(500);
 
-        group.MapPut("/{id:int}", async (int id, PagoCreateDto dto, IPagoLogica logica) =>
+        group.MapPut("/{id:int}", async (int id, [FromBody] PagoCreateDto dto, IPagoLogica logica) =>
         {
             var modificado = await logica.ActualizarAsync(id, dto);
             if (!modificado)

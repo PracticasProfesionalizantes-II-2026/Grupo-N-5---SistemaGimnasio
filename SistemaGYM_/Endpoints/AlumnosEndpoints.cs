@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using SistemaGYM.Logica;
 using SistemaGYM.Logica.DTOs;
 
@@ -57,7 +58,7 @@ public static class AlumnoEndpoints
         .Produces(500);
 
         // POST /api/alumnos
-        group.MapPost("/", async (AlumnoCreateDto dto, IAlumnoLogica logica) =>
+        group.MapPost("/", async ([FromBody] AlumnoCreateDto dto, IAlumnoLogica logica) =>
         {
             var creado = await logica.CrearAsync(dto);
             return Results.Json(new { status = 201, message = "Alumno creado correctamente", data = creado }, statusCode: 201);
@@ -71,7 +72,7 @@ public static class AlumnoEndpoints
         .Produces(500);
 
         // PUT /api/alumnos/{id}
-        group.MapPut("/{id:int}", async (int id, AlumnoCreateDto dto, IAlumnoLogica logica) =>
+        group.MapPut("/{id:int}", async (int id, [FromBody] AlumnoCreateDto dto, IAlumnoLogica logica) =>
         {
             var actualizado = await logica.ActualizarAsync(id, dto);
             if (!actualizado)

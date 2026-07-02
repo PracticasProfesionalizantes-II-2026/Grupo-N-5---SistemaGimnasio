@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using SistemaGYM.Logica;
 using SistemaGYM.Logica.DTOs;
 
@@ -38,7 +39,7 @@ public static class AlimentacionEndpoints
         .Produces(404)
         .Produces(500);
 
-        group.MapPost("/", async (AlimentacionCreateDto dto, IAlimentacionLogica logica) =>
+        group.MapPost("/", async ([FromBody] AlimentacionCreateDto dto, IAlimentacionLogica logica) =>
         {
             var creado = await logica.CrearAsync(dto);
             return Results.Json(new { status = 201, message = "Plan de alimentación creado correctamente", data = creado }, statusCode: 201);
@@ -51,7 +52,7 @@ public static class AlimentacionEndpoints
         .Produces(400)
         .Produces(500);
 
-        group.MapPut("/{id:int}", async (int id, AlimentacionCreateDto dto, IAlimentacionLogica logica) =>
+        group.MapPut("/{id:int}", async (int id, [FromBody] AlimentacionCreateDto dto, IAlimentacionLogica logica) =>
         {
             var modificado = await logica.ActualizarAsync(id, dto);
             if (!modificado)

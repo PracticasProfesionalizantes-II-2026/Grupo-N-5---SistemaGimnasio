@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using SistemaGYM.Logica;
 using SistemaGYM.Logica.DTOs;
 
@@ -54,7 +55,7 @@ public static class ProfesorEndpoints
         .Produces(404)
         .Produces(500);
 
-        group.MapPost("/", async (ProfesorCreateDto dto, IProfesorLogica logica) =>
+        group.MapPost("/", async ([FromBody] ProfesorCreateDto dto, IProfesorLogica logica) =>
         {
             var creado = await logica.CrearAsync(dto);
             return Results.Json(new { status = 201, message = "Profesor creado correctamente", data = creado }, statusCode: 201);
@@ -68,7 +69,7 @@ public static class ProfesorEndpoints
         .Produces(403)
         .Produces(500);
 
-        group.MapPut("/{id:int}", async (int id, ProfesorCreateDto dto, IProfesorLogica logica) =>
+        group.MapPut("/{id:int}", async (int id, [FromBody] ProfesorCreateDto dto, IProfesorLogica logica) =>
         {
             var actualizado = await logica.ActualizarAsync(id, dto);
             if (!actualizado)

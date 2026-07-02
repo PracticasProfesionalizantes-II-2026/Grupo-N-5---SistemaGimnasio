@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using SistemaGYM.Logica;
 using SistemaGYM.Logica.DTOs;
 
@@ -38,7 +39,7 @@ public static class AnuncioEndpoints
         .Produces(404)
         .Produces(500);
 
-        group.MapPost("/", async (AnuncioCreateDto dto, IAnuncioLogica logica) =>
+        group.MapPost("/", async ([FromBody] AnuncioCreateDto dto, IAnuncioLogica logica) =>
         {
             var creado = await logica.CrearAsync(dto);
             return Results.Json(new { status = 201, message = "Anuncio creado correctamente", data = creado }, statusCode: 201);
@@ -51,7 +52,7 @@ public static class AnuncioEndpoints
         .Produces(400)
         .Produces(500);
 
-        group.MapPut("/{id:int}", async (int id, AnuncioCreateDto dto, IAnuncioLogica logica) =>
+        group.MapPut("/{id:int}", async (int id, [FromBody] AnuncioCreateDto dto, IAnuncioLogica logica) =>
         {
             var modificado = await logica.ActualizarAsync(id, dto);
             if (!modificado)

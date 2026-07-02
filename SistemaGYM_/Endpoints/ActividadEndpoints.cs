@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using SistemaGYM.Logica;
 using SistemaGYM.Logica.DTOs;
 
@@ -50,7 +51,7 @@ public static class ActividadEndpoints
         .Produces<ActividadDto>(201)
         .Produces(500);
 
-        group.MapPut("/{id:int}", async (int id, ActividadCreateDto dto, IActividadLogica logica) =>
+        group.MapPut("/{id:int}", async (int id, [FromBody] ActividadCreateDto dto, IActividadLogica logica) =>
         {
             var actualizado = await logica.ActualizarAsync(id, dto);
             if (!actualizado)

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using SistemaGYM.Logica;
 using SistemaGYM.Logica.DTOs;
 
@@ -51,7 +52,7 @@ public static class SuscripcionEndpoints
         .Produces(400)
         .Produces(500);
 
-        group.MapPut("/{id:int}", async (int id, SuscripcionCreateDto dto, ISuscripcionLogica logica) =>
+        group.MapPut("/{id:int}", async (int id, [FromBody] SuscripcionCreateDto dto, ISuscripcionLogica logica) =>
         {
             var modificado = await logica.ActualizarAsync(id, dto);
             if (!modificado)
