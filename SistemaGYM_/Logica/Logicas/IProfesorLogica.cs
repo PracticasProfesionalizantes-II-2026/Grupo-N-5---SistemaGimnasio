@@ -60,6 +60,7 @@ public class ProfesorLogica : IProfesorLogica
             Direccion   = dto.Direccion,
             Email       = dto.Email,
             Telefono    = dto.Telefono,
+            Titulo      = dto.Titulo,
             Descripcion = dto.Descripcion
         };
 
@@ -80,6 +81,7 @@ public class ProfesorLogica : IProfesorLogica
         p.Direccion   = dto.Direccion;
         p.Email       = dto.Email;
         p.Telefono    = dto.Telefono;
+        p.Titulo      = dto.Titulo;
         p.Descripcion = dto.Descripcion;
 
         if (!string.IsNullOrWhiteSpace(dto.Contrasenia))

@@ -24,6 +24,7 @@ public record ProfesorCreateDto(
     string Direccion, 
     string Email, 
     string Telefono, 
+    string Titulo,
     string Descripcion,
 
     [property: Required(ErrorMessage = "La contraseña es obligatoria")]
