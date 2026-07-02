@@ -13,4 +13,5 @@ public record AlumnoSuscripcionDto(
 // Body del POST: solo se necesita indicar que plan se esta asignando
 public record AsignarSuscripcionDto(
     int SuscripcionId
+    
 );
