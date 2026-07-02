@@ -1,4 +1,5 @@
 using SistemaGYM.Logica.DTOs;
+using SistemaGYM.Entidades;
 using SistemaGYM.Repositorios;
 
 namespace SistemaGYM.Logica;
@@ -26,13 +27,7 @@ public class ProfesorLogica : IProfesorLogica
     {
         var profesores = await _repository.ObtenerTodosAsync();
         return profesores.Select(p => new ProfesorDto(
-            p.Id,
-            p.Dni,
-            p.Nombre,
-            p.Apellido,
-            p.Email,
-            p.Descripcion ?? string.Empty
-        ));
+            p.Id, p.Dni, p.Nombre, p.Apellido, p.Email, p.Descripcion ?? string.Empty));
     }
 
     public async Task<ProfesorDto?> ObtenerPorIdAsync(int id)
@@ -40,14 +35,7 @@ public class ProfesorLogica : IProfesorLogica
         var p = await _repository.ObtenerPorIdAsync(id);
         if (p == null) return null;
 
-        return new ProfesorDto(
-            p.Id,
-            p.Dni,
-            p.Nombre,
-            p.Apellido,
-            p.Email,
-            p.Descripcion ?? string.Empty
-        );
+        return new ProfesorDto(p.Id, p.Dni, p.Nombre, p.Apellido, p.Email, p.Descripcion ?? string.Empty);
     }
 
     public async Task<ProfesorDetalleDto?> ObtenerDetallePorIdAsync(int id)
@@ -56,13 +44,8 @@ public class ProfesorLogica : IProfesorLogica
         if (p == null) return null;
 
         return new ProfesorDetalleDto(
-            p.Id,
-            p.Dni,
-            p.Nombre,
-            p.Apellido,
-            p.Direccion ?? string.Empty,
-            p.Email,
-            long.Parse(p.Telefono),
+            p.Id, p.Dni, p.Nombre, p.Apellido,
+            p.Direccion ?? string.Empty, p.Email, p.Telefono,
             p.Descripcion ?? string.Empty
         );
     }
@@ -71,25 +54,19 @@ public class ProfesorLogica : IProfesorLogica
     {
         var nuevo = new Profesor
         {
-            Dni      = dto.Dni,
-            Nombre   = dto.Nombre,
-            Apellido = dto.Apellido,
-            Direccion = dto.Direccion,
-            Email    = dto.Email,
-            Telefono = dto.Telefono.ToString(),
+            Dni         = dto.Dni,
+            Nombre      = dto.Nombre,
+            Apellido    = dto.Apellido,
+            Direccion   = dto.Direccion,
+            Email       = dto.Email,
+            Telefono    = dto.Telefono,
             Descripcion = dto.Descripcion
         };
 
-        await _repository.AgregarAsync(nuevo);
+        nuevo.SetContrasenia(dto.Contrasenia); 
 
-        return new ProfesorDto(
-            nuevo.Id,
-            nuevo.Dni,
-            nuevo.Nombre,
-            nuevo.Apellido,
-            nuevo.Email,
-            nuevo.Descripcion ?? string.Empty
-        );
+        await _repository.AgregarAsync(nuevo);
+        return new ProfesorDto(nuevo.Id, nuevo.Dni, nuevo.Nombre, nuevo.Apellido, nuevo.Email, nuevo.Descripcion ?? string.Empty);
     }
 
     public async Task<bool> ActualizarAsync(int id, ProfesorCreateDto dto)
@@ -97,13 +74,16 @@ public class ProfesorLogica : IProfesorLogica
         var p = await _repository.ObtenerPorIdAsync(id);
         if (p == null) return false;
 
-        p.Dni       = dto.Dni;
-        p.Nombre    = dto.Nombre;
-        p.Apellido  = dto.Apellido;
-        p.Direccion = dto.Direccion;
-        p.Email     = dto.Email;
-        p.Telefono  = dto.Telefono.ToString();
+        p.Dni         = dto.Dni;
+        p.Nombre      = dto.Nombre;
+        p.Apellido    = dto.Apellido;
+        p.Direccion   = dto.Direccion;
+        p.Email       = dto.Email;
+        p.Telefono    = dto.Telefono;
         p.Descripcion = dto.Descripcion;
+
+        if (!string.IsNullOrWhiteSpace(dto.Contrasenia))
+            p.SetContrasenia(dto.Contrasenia);
 
         await _repository.ActualizarAsync(p);
         return true;

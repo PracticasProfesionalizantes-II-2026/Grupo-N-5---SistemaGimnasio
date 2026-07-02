@@ -6,6 +6,7 @@ namespace SistemaGYM.Repositorios;
 
 public interface IProfesorRepository
 {
+    Task<Profesor?> ObtenerPorEmailAsync(string email);
     Task<IEnumerable<Profesor>> ObtenerTodosAsync();
     Task<Profesor?> ObtenerPorIdAsync(int id);
     Task<Profesor?> ObtenerDetallePorIdAsync(int id);
@@ -22,6 +23,9 @@ public class ProfesorRepository : IProfesorRepository
     {
         _db = db;
     }
+
+    public async Task<Profesor?> ObtenerPorEmailAsync(string email) =>
+    await _db.Profesores.FirstOrDefaultAsync(p => p.Email == email);
 
     public async Task<IEnumerable<Profesor>> ObtenerTodosAsync() =>
         await _db.Profesores.ToListAsync();

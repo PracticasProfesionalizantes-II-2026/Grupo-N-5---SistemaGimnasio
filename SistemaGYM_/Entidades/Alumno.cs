@@ -1,4 +1,4 @@
-
+namespace SistemaGYM.Entidades;
     public class Alumno: Usuario
     {
         public bool EstaActivo { get; set; }    

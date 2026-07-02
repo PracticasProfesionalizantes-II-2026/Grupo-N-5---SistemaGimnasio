@@ -37,25 +37,17 @@ public class AlumnoLogica : IAlumnoLogica
 
     public async Task<AlumnoDetalleDto?> ObtenerDetallePorIdAsync(int id)
     {
-        // Usa el método con Include para traer la suscripción activa
         var a = await _repository.ObtenerDetallePorIdAsync(id);
         if (a == null) return null;
 
-        // Nombre de la suscripción activa, o "Sin suscripción" si no tiene
         var suscripcionActiva = a.AlumnoSuscripciones
             .FirstOrDefault(s => s.Activa)
             ?.Suscripcion.Nombre ?? "Sin suscripción";
 
         return new AlumnoDetalleDto(
-            a.Id,
-            a.Dni,
-            a.Nombre,
-            a.Apellido,
-            a.Direccion ?? string.Empty,
-            a.Email,
-            a.Telefono,             // ya es string, sin conversión
-            suscripcionActiva,
-            a.EstaActivo.ToString()
+            a.Id, a.Dni, a.Nombre, a.Apellido,
+            a.Direccion ?? string.Empty, a.Email, a.Telefono,
+            suscripcionActiva, a.EstaActivo
         );
     }
 
@@ -63,17 +55,16 @@ public class AlumnoLogica : IAlumnoLogica
     {
         var nuevo = new Alumno
         {
+            Dni        = dto.Dni,
             Nombre     = dto.Nombre,
             Apellido   = dto.Apellido,
+            Direccion  = dto.Direccion,
             Email      = dto.Email,
-            Telefono   = dto.Telefono,      // ya es string, sin .ToString()
-            EstaActivo = dto.EstaActivo     // ya es bool, sin bool.Parse()
+            Telefono   = dto.Telefono,
+            EstaActivo = dto.EstaActivo
         };
 
-        // Dni y Direccion tienen private set en Usuario.
-        // Solución temporal hasta cambiar private set → set en Usuario.cs
-        nuevo.GetType().GetProperty("Dni")!.SetValue(nuevo, dto.Dni);
-        nuevo.GetType().GetProperty("Direccion")!.SetValue(nuevo, dto.Direccion);
+        nuevo.SetContrasenia(dto.Contrasenia); // ya no mas texto plano!! ahora hasheadaaa
 
         await _repository.AgregarAsync(nuevo);
         return new AlumnoDto(nuevo.Id, nuevo.Dni, nuevo.Nombre, nuevo.Apellido);
@@ -84,15 +75,16 @@ public class AlumnoLogica : IAlumnoLogica
         var a = await _repository.ObtenerPorIdAsync(id);
         if (a == null) return false;
 
+        a.Dni        = dto.Dni;
         a.Nombre     = dto.Nombre;
         a.Apellido   = dto.Apellido;
+        a.Direccion  = dto.Direccion;
         a.Email      = dto.Email;
-        a.Telefono   = dto.Telefono;        // ya es string
-        a.EstaActivo = dto.EstaActivo;      // ya es bool
+        a.Telefono   = dto.Telefono;
+        a.EstaActivo = dto.EstaActivo;
 
-        // Igual que CrearAsync: Dni y Direccion tienen private set
-        a.GetType().GetProperty("Dni")!.SetValue(a, dto.Dni);
-        a.GetType().GetProperty("Direccion")!.SetValue(a, dto.Direccion);
+        if (!string.IsNullOrWhiteSpace(dto.Contrasenia))
+            a.SetContrasenia(dto.Contrasenia); // solo re-hashea si mandaron una nueva
 
         await _repository.ActualizarAsync(a);
         return true;

@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SistemaGYM;
 
+namespace SistemaGYM.Entidades;
     public class Actividad
     {
         [Key]
@@ -12,9 +14,9 @@ using System.ComponentModel.DataAnnotations.Schema;
         [MaxLength(500)]
         public string Descripcion { get; set; } = string.Empty;
         [Required]
-        public DateTime Horainicio { get; set; }
+        public TimeOnly HoraInicio { get; set; }
         [Required]
-        public DateTime Horafin { get; set; }
+        public TimeOnly HoraFin { get; set; }
         public int ProfesorId {get; set;}
         [ForeignKey("ProfesorId")]
         public Profesor Profesor { get; set; } = null!;

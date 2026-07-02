@@ -1,5 +1,7 @@
-    using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SistemaGYM.Entidades;
     public class Rutina
     {
         [Key]
@@ -13,4 +15,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         public int ProfesorId {get; set;}
         [ForeignKey("ProfesorId")]
         public Profesor Profesor { get; set; } = null!;
+        public int AlumnoId { get; set; }          
+        [ForeignKey("AlumnoId")]
+        public Alumno Alumno { get; set; } = null!; 
     }

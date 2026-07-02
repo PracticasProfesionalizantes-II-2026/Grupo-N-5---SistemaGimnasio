@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-
+namespace SistemaGYM.Entidades;
 public class Profesor : Usuario
 {
     [MaxLength(100)]

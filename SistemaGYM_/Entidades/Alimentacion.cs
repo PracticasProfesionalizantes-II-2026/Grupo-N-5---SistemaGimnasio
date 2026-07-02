@@ -1,5 +1,8 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using SistemaGYM;
+
+    namespace SistemaGYM.Entidades;
     public class Alimentacion
     {
         [Key]
