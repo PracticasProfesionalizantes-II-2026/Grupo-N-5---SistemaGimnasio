@@ -46,7 +46,7 @@ public class ProfesorLogica : IProfesorLogica
         return new ProfesorDetalleDto(
             p.Id, p.Dni, p.Nombre, p.Apellido,
             p.Direccion ?? string.Empty, p.Email, p.Telefono,
-            p.Descripcion ?? string.Empty
+            p.Descripcion ?? string.Empty, p.Titulo ?? string.Empty, p.EstaActivo 
         );
     }
 

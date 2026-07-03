@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace SistemaGYM.Entidades;
 public class Profesor : Usuario
 {
+    public bool EstaActivo { get; set; } 
     [MaxLength(100)]
     public string? Titulo {get; set;}
     [MaxLength(500)]

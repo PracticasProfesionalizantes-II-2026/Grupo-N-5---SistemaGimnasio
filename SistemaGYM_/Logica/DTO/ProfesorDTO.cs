@@ -12,7 +12,9 @@ public record ProfesorDetalleDto(
     string Direccion, 
     string Email, 
     string Telefono, 
-    string Descripcion
+    string Titulo,
+    string Descripcion,
+    bool   EstaActivo
     
 );
 
@@ -26,6 +28,7 @@ public record ProfesorCreateDto(
     string Telefono, 
     string Titulo,
     string Descripcion,
+    bool EstaActivo,
 
     [property: Required(ErrorMessage = "La contraseña es obligatoria")]
     [property: MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
