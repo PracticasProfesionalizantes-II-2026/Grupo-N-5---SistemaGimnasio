@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace SistemaGYM.Middleware;
 
@@ -22,13 +23,16 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
         var (statusCode, mensaje) = exception switch
         {
-            // Violación de FK, índice único, etc. (ej: crear un Pago con AlumnoId inexistente)
+           
             DbUpdateException => (
                 StatusCodes.Status409Conflict,
                 "No se pudo completar la operación: los datos entran en conflicto con información existente o con una referencia inválida (por ejemplo, un ID que no existe)."
             ),
+            JsonException or BadHttpRequestException => (
+            StatusCodes.Status400BadRequest,
+                "El formato de los datos enviados no es válido. Verificá los tipos y valores de cada campo."
+            ),  
 
-            // Cualquier otra cosa no prevista
             _ => (
                 StatusCodes.Status500InternalServerError,
                 "Ocurrió un error inesperado en el servidor. Ya quedó registrado en los logs."
@@ -42,6 +46,6 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             message = mensaje
         }, cancellationToken);
 
-        return true;  // 👈 le dice al middleware "ya lo resolví, no sigas buscando otro handler"
+        return true;  
     }
 }

@@ -15,6 +15,10 @@ builder.Services.AddOpenApi();
 builder.Services.AddValidation();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
 
 // DbContext cadena de conexion!!
 builder.Services.AddDbContext<GimnasioContext>(options =>
