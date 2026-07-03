@@ -12,8 +12,8 @@ using SistemaGYM.Datos;
 namespace SistemaGYM_.Migrations
 {
     [DbContext(typeof(GimnasioContext))]
-    [Migration("20260702174837_InicialGYM")]
-    partial class InicialGYM
+    [Migration("20260703003940_InicialCompleta")]
+    partial class InicialCompleta
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -367,6 +367,12 @@ namespace SistemaGYM_.Migrations
                     b.Property<bool>("EstaActivo")
                         .HasColumnType("bit");
 
+                    b.ToTable("Usuario", t =>
+                        {
+                            t.Property("EstaActivo")
+                                .HasColumnName("Alumno_EstaActivo");
+                        });
+
                     b.HasDiscriminator().HasValue("Alumno");
                 });
 
@@ -377,6 +383,9 @@ namespace SistemaGYM_.Migrations
                     b.Property<string>("Descripcion")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("EstaActivo")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Titulo")
                         .HasMaxLength(100)

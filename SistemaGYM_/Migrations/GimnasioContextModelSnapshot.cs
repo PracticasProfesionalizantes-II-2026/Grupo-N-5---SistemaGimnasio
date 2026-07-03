@@ -364,6 +364,12 @@ namespace SistemaGYM_.Migrations
                     b.Property<bool>("EstaActivo")
                         .HasColumnType("bit");
 
+                    b.ToTable("Usuario", t =>
+                        {
+                            t.Property("EstaActivo")
+                                .HasColumnName("Alumno_EstaActivo");
+                        });
+
                     b.HasDiscriminator().HasValue("Alumno");
                 });
 
@@ -374,6 +380,9 @@ namespace SistemaGYM_.Migrations
                     b.Property<string>("Descripcion")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("EstaActivo")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Titulo")
                         .HasMaxLength(100)

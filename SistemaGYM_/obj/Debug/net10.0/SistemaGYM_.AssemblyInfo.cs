@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SistemaGYM_")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+89ef73fb7e16decd5e2dc46b707a5545d427b439")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f090184ee7545630838455104f19e4c933facc17")]
 [assembly: System.Reflection.AssemblyProductAttribute("SistemaGYM_")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SistemaGYM_")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

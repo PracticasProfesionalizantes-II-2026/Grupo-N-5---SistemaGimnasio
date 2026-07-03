@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SistemaGYM_.Migrations
 {
     /// <inheritdoc />
-    public partial class InicialGYM : Migration
+    public partial class InicialCompleta : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -55,6 +55,7 @@ namespace SistemaGYM_.Migrations
                     Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     FechaAlta = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TipoUsuario = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    Alumno_EstaActivo = table.Column<bool>(type: "bit", nullable: true),
                     EstaActivo = table.Column<bool>(type: "bit", nullable: true),
                     Titulo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
