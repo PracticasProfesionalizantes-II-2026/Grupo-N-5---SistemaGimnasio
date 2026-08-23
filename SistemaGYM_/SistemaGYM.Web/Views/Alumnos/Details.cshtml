@@ -1,0 +1,34 @@
+@using SistemaGYM.Logica.DTOs
+@model AlumnoDetalleDto
+
+@{
+    ViewData["Title"] = "Detalle del alumno";
+}
+
+<h1 class="mb-4">@Model.Nombre @Model.Apellido</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">DNI</dt>
+    <dd class="col-sm-9">@Model.Dni</dd>
+
+    <dt class="col-sm-3">Dirección</dt>
+    <dd class="col-sm-9">@Model.Direccion</dd>
+
+    <dt class="col-sm-3">Email</dt>
+    <dd class="col-sm-9">@Model.Email</dd>
+
+    <dt class="col-sm-3">Teléfono</dt>
+    <dd class="col-sm-9">@Model.Telefono</dd>
+
+    <dt class="col-sm-3">Suscripción</dt>
+    <dd class="col-sm-9">@Model.Suscripcion</dd>
+
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">
+        <span class="badge @(Model.EstaActivo ? "bg-success" : "bg-secondary")">
+            @(Model.EstaActivo ? "Activo" : "Inactivo")
+        </span>
+    </dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
