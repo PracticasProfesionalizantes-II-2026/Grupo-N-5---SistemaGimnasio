@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc;
 using SistemaGYM.Logica.DTOs;
 using SistemaGYM.Web.Models;
 
@@ -13,6 +14,7 @@ public class AlumnoApiService : IAlumnoApiService
         _http = httpClientFactory.CreateClient("GymApi");
     }
 
+    [HttpGet]
     public async Task<List<AlumnoDto>> ObtenerTodosAsync()
     {
         // GET /api/alumnos
@@ -22,7 +24,7 @@ public class AlumnoApiService : IAlumnoApiService
         var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<List<AlumnoDto>>>();
         return resultado?.Data ?? new List<AlumnoDto>();
     }
-
+    [HttpGet("{id}/detalle")]
     public async Task<AlumnoDetalleDto?> ObtenerDetalleAsync(int id)
     {
         // GET /api/alumnos/{id}/detalle
@@ -33,6 +35,7 @@ public class AlumnoApiService : IAlumnoApiService
         return resultado?.Data;
     }
 
+    [HttpPost]
     public async Task<bool> CrearAsync(AlumnoCreateDto dto)
     {
         // POST /api/alumnos

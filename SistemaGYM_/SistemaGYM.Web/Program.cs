@@ -1,3 +1,5 @@
+using SistemaGYM.Web.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,9 +7,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient("GymApi", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:5215/api/");
+    client.BaseAddress = new Uri("http://localhost:5215/api/");
 });
 
+builder.Services.AddScoped<IAlumnoApiService, AlumnoApiService>();
 
 var app = builder.Build();
 
