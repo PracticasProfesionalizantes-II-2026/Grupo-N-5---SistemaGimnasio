@@ -1,0 +1,26 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build-api",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["build", "${workspaceFolder}/API/SistemaGYM_.csproj"],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-web",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["build", "${workspaceFolder}/SistemaGYM.Web/SistemaGYM.Web.csproj"],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-all",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["build", "${workspaceFolder}/SistemaGYM.sln"],
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

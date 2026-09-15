@@ -1,0 +1,23 @@
+@model List<ActividadDto>
+@{ ViewData["Title"] = "Mis Clases"; }
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Mis Clases</h1>
+    <a asp-action="Todas" class="btn btn-dark">Ver todas las clases</a>
+</div>
+@if (TempData["Mensaje"] != null) { <div class="alert alert-success">@TempData["Mensaje"]</div> }
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Todavía no estás inscripto en ninguna clase.</div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var a in Model)
+        {
+            <a asp-action="Detalle" asp-route-id="@a.ActividadId" class="list-group-item list-group-item-action">
+                <strong>@a.Nombre</strong> — @a.Dias — @a.HoraInicio.ToString("HH:mm") a @a.HoraFin.ToString("HH:mm")
+            </a>
+        }
+    </div>
+}

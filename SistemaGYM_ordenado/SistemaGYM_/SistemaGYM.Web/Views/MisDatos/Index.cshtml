@@ -1,0 +1,15 @@
+@model AlumnoDetalleDto
+@{ ViewData["Title"] = "Mis Datos"; }
+<h1 class="mb-4">Mis Datos</h1>
+@if (TempData["Mensaje"] != null) { <div class="alert alert-success">@TempData["Mensaje"]</div> }
+
+<dl class="row">
+    <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.Nombre</dd>
+    <dt class="col-sm-3">Apellido</dt><dd class="col-sm-9">@Model.Apellido</dd>
+    <dt class="col-sm-3">DNI</dt><dd class="col-sm-9">@Model.Dni</dd>
+    <dt class="col-sm-3">Dirección</dt><dd class="col-sm-9">@Model.Direccion</dd>
+    <dt class="col-sm-3">Teléfono</dt><dd class="col-sm-9">@Model.Telefono</dd>
+    <dt class="col-sm-3">Email</dt><dd class="col-sm-9">@Model.Email</dd>
+    <dt class="col-sm-3">Suscripción</dt><dd class="col-sm-9">@Model.Suscripcion</dd>
+</dl>
+<a asp-action="Editar" class="btn btn-outline-secondary">Editar mis datos</a>

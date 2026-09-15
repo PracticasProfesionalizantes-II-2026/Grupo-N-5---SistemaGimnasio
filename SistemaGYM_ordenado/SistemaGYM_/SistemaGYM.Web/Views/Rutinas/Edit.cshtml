@@ -1,0 +1,28 @@
+@model RutinaDto
+@{
+    ViewData["Title"] = "Modificar rutina";
+    var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
+    var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
+}
+<h1 class="mb-4">Modificar rutina</h1>
+<form method="post" asp-action="Edit" asp-route-id="@Model.Id">
+    <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="Nombre" class="form-control" value="@Model.Nombre" required /></div>
+    <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <textarea name="Descripcion" class="form-control" rows="5">@Model.Descripcion</textarea>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Alumno</label>
+        <select name="AlumnoId" class="form-select" required>
+            @foreach (var a in alumnos) { <option value="@a.Id" selected="@(a.Id == Model.AlumnoId)">@a.Nombre @a.Apellido</option> }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Profesor</label>
+        <select name="ProfesorId" class="form-select" required>
+            @foreach (var p in profesores) { <option value="@p.Id" selected="@(p.Id == Model.ProfesorId)">@p.Nombre @p.Apellido</option> }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-dark">Guardar cambios</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</form>

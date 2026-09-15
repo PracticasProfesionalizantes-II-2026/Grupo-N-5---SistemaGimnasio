@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Menú administrador";
+}
+<h1 class="mb-4">Menú administrador</h1>
+<div class="row g-3">
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Alumnos" asp-action="Index">Administrar clientes</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Profesores" asp-action="Index">Administrar profesores</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Actividades" asp-action="Index">Administrar actividades</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Suscripciones" asp-action="Index">Administrar suscripciones</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Pagos" asp-action="Create">Registrar pago</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Reportes" asp-action="Index">Reportes</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Rutinas" asp-action="Index">Administrar rutinas</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Alimentacion" asp-action="Index">Administrar alimentación</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Anuncios" asp-action="Index">Administrar anuncios</a></div>
+</div>

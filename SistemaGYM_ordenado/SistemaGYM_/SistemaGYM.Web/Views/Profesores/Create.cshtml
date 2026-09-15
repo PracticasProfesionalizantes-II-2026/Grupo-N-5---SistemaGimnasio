@@ -1,0 +1,19 @@
+@{ ViewData["Title"] = "Registrar profesor"; }
+<h1 class="mb-4">Registrar profesor</h1>
+@if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
+<form method="post" asp-action="Create">
+    <div class="row">
+        <div class="col-md-6 mb-3"><label class="form-label">DNI</label><input type="number" name="Dni" class="form-control" required /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Teléfono</label><input type="text" name="Telefono" class="form-control" required /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Nombre</label><input type="text" name="Nombre" class="form-control" required /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Apellido</label><input type="text" name="Apellido" class="form-control" required /></div>
+    </div>
+    <div class="mb-3"><label class="form-label">Dirección</label><input type="text" name="Direccion" class="form-control" required /></div>
+    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="Email" class="form-control" required /></div>
+    <div class="mb-3"><label class="form-label">Título</label><input type="text" name="Titulo" class="form-control" /></div>
+    <div class="mb-3"><label class="form-label">Descripción</label><textarea name="Descripcion" class="form-control"></textarea></div>
+    <div class="mb-3"><label class="form-label">Contraseña</label><input type="password" name="Contrasenia" class="form-control" required /></div>
+    <div class="form-check mb-3"><input type="checkbox" name="EstaActivo" value="true" class="form-check-input" checked /><label class="form-check-label">Activo</label></div>
+    <button type="submit" class="btn btn-dark">Registrar profesor</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</form>

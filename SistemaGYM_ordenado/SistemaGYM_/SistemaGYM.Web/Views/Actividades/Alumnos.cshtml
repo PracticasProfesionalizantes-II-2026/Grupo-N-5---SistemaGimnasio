@@ -1,0 +1,27 @@
+@model List<AlumnoInscriptoDto>
+@{
+    ViewData["Title"] = "Alumnos inscriptos";
+    var actividad = ViewBag.Actividad as ActividadDto;
+}
+<h1 class="mb-4">Alumnos inscriptos en @actividad?.Nombre</h1>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Todavía no hay alumnos inscriptos en esta actividad.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead><tr><th>Nombre</th><th>Apellido</th><th>Fecha inscripción</th><th>Estado</th></tr></thead>
+        <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.Nombre</td><td>@a.Apellido</td><td>@a.FechaInscripcion.ToString("dd/MM/yyyy")</td>
+                <td><span class="badge @(a.Activa ? "bg-success" : "bg-secondary")">@(a.Activa ? "Activa" : "Inactiva")</span></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+<a asp-action="Index" class="btn btn-outline-dark">Volver</a>

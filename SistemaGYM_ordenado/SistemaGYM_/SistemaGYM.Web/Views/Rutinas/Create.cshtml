@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Crear rutina";
+    var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
+    var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
+}
+<h1 class="mb-4">Crear rutina</h1>
+@if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
+<form method="post" asp-action="Create">
+    <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="Nombre" class="form-control" required /></div>
+    <div class="mb-3">
+        <label class="form-label">Descripción (ejercicios, series y repeticiones)</label>
+        <textarea name="Descripcion" class="form-control" rows="5" placeholder="Ej: Press militar 4 series de 12, 10 y 8 repeticiones"></textarea>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Alumno</label>
+        <select name="AlumnoId" class="form-select" required>
+            <option value="">-- Seleccionar --</option>
+            @foreach (var a in alumnos) { <option value="@a.Id">@a.Nombre @a.Apellido</option> }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Profesor</label>
+        <select name="ProfesorId" class="form-select" required>
+            <option value="">-- Seleccionar --</option>
+            @foreach (var p in profesores) { <option value="@p.Id">@p.Nombre @p.Apellido</option> }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-dark">Registrar rutina</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</form>

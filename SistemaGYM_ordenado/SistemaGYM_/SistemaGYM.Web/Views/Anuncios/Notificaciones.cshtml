@@ -1,0 +1,22 @@
+@model List<AnuncioDto>
+@{ ViewData["Title"] = "Notificaciones"; }
+<h1 class="mb-4">Notificaciones</h1>
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay notificaciones por el momento.</div>
+}
+else
+{
+    <div class="list-group">
+    @foreach (var a in Model)
+    {
+        <div class="list-group-item">
+            <div class="d-flex justify-content-between">
+                <strong>@a.Titulo</strong>
+                <small class="text-muted">@a.FechaPublicacion.ToString("dd/MM/yyyy")</small>
+            </div>
+            <p class="mb-0">@a.Descripcion</p>
+        </div>
+    }
+    </div>
+}

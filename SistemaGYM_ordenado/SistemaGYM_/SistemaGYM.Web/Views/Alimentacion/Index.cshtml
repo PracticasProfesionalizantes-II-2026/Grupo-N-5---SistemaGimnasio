@@ -1,0 +1,20 @@
+@model List<AlimentacionDto>
+@{
+    ViewData["Title"] = "Alimentación";
+    var esAdmin = Context.Session.GetString("Rol") == "Administrador";
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Planes de alimentación</h1>
+    @if (esAdmin)
+    {
+        <a asp-action="Create" class="btn btn-dark">+ Crear plan</a>
+    }
+</div>
+@if (TempData["Mensaje"] != null) { <div class="alert alert-success">@TempData["Mensaje"]</div> }
+
+<div class="list-group">
+@foreach (var a in Model)
+{
+    <a asp-action="Details" asp-route-id="@a.Id" class="list-group-item list-group-item-action">@a.TipoAlimentacion</a>
+}
+</div>

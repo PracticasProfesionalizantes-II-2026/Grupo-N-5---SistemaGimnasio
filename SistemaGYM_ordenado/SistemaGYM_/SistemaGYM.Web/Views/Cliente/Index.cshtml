@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Menú cliente";
+}
+<h1 class="mb-4">Menú cliente</h1>
+<div class="row g-3">
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Clases" asp-action="Index">Clases</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="MiSuscripcion" asp-action="Index">Suscripción</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Rutinas" asp-action="MisRutinas">Rutinas</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Alimentacion" asp-action="Index">Alimentación</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="MisDatos" asp-action="Index">Mis Datos</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Anuncios" asp-action="Notificaciones">🔔 Notificaciones</a></div>
+</div>

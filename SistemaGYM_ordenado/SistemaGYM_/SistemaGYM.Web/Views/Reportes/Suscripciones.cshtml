@@ -1,0 +1,27 @@
+@model List<(AlumnoDto Alumno, AlumnoSuscripcionDto Suscripcion)>
+@{ ViewData["Title"] = "Reporte de suscripciones"; }
+<h1 class="mb-4">Suscripciones @(ViewBag.SoloActivas ? "activas" : "vencidas")</h1>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay suscripciones @(ViewBag.SoloActivas ? "activas" : "vencidas") por el momento.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead><tr><th>Cliente</th><th>Plan</th><th>Precio</th><th>Fecha inicio</th><th>Fecha fin</th></tr></thead>
+        <tbody>
+        @foreach (var fila in Model)
+        {
+            <tr>
+                <td>@fila.Alumno.Nombre @fila.Alumno.Apellido</td>
+                <td>@fila.Suscripcion.NombrePlan</td>
+                <td>$@fila.Suscripcion.Precio</td>
+                <td>@fila.Suscripcion.FechaInicio.ToString("dd/MM/yyyy")</td>
+                <td>@(fila.Suscripcion.FechaFin?.ToString("dd/MM/yyyy") ?? "-")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+<a asp-action="Index" class="btn btn-outline-dark">Volver</a>

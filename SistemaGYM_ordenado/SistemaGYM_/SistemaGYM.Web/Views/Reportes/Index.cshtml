@@ -1,0 +1,7 @@
+@{ ViewData["Title"] = "Reportes"; }
+<h1 class="mb-4">Reportes del sistema</h1>
+<div class="row g-3">
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Pagos" asp-action="Index">Pagos registrados</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-action="Suscripciones" asp-route-soloActivas="true">Suscripciones activas</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-action="Suscripciones" asp-route-soloActivas="false">Suscripciones vencidas</a></div>
+</div>

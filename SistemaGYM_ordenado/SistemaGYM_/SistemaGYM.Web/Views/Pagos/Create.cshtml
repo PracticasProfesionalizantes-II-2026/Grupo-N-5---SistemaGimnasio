@@ -1,0 +1,67 @@
+@{
+    ViewData["Title"] = "Registrar pago";
+    var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
+}
+<h1 class="mb-4">Registrar pago</h1>
+@if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
+<form method="post" asp-action="Create">
+    <div class="mb-3">
+        <label class="form-label">Alumno</label>
+        <select id="alumnoSelect" name="AlumnoId" class="form-select" required>
+            <option value="">-- Seleccionar --</option>
+            @foreach (var a in alumnos)
+            {
+                <option value="@a.Id">@a.Nombre @a.Apellido (DNI @a.Dni)</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Suscripción</label>
+        <select id="suscripcionSelect" name="AlumnoSuscripcionId" class="form-select" required>
+            <option value="">-- Elegí primero un alumno --</option>
+        </select>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3"><label class="form-label">Monto</label><input type="number" step="0.01" name="Monto" class="form-control" required /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Fecha de pago</label><input type="date" name="FechaPago" class="form-control" required /></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Método de pago</label>
+        <select name="MetodoPago" class="form-select" required>
+            <option value="Efectivo">Efectivo</option>
+            <option value="TransferenciaBancaria">Transferencia bancaria</option>
+            <option value="TarjetaDebito">Tarjeta de débito</option>
+            <option value="TarjetaCredito">Tarjeta de crédito</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-dark">Confirmar pago</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <script>
+        document.getElementById('alumnoSelect').addEventListener('change', function () {
+            var alumnoId = this.value;
+            var suscripcionSelect = document.getElementById('suscripcionSelect');
+            suscripcionSelect.innerHTML = '<option value="">Cargando...</option>';
+            if (!alumnoId) {
+                suscripcionSelect.innerHTML = '<option value="">-- Elegí primero un alumno --</option>';
+                return;
+            }
+            fetch('/Pagos/SuscripcionesDeAlumno/' + alumnoId)
+                .then(r => r.json())
+                .then(data => {
+                    suscripcionSelect.innerHTML = '<option value="">-- Seleccionar --</option>';
+                    data.forEach(o => {
+                        var opt = document.createElement('option');
+                        opt.value = o.id;
+                        opt.textContent = o.label;
+                        suscripcionSelect.appendChild(opt);
+                    });
+                    if (data.length === 0) {
+                        suscripcionSelect.innerHTML = '<option value="">Este alumno no tiene suscripciones</option>';
+                    }
+                });
+        });
+    </script>
+}

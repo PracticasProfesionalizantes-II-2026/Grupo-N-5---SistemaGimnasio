@@ -1,0 +1,19 @@
+@model List<RutinaDto>
+@{ ViewData["Title"] = "Mis rutinas"; }
+<h1 class="mb-4">Mis rutinas</h1>
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Todavía no tenés rutinas asignadas. Consultá con tu profesor.</div>
+}
+else
+{
+    @foreach (var r in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">@r.Nombre</h5>
+                <p class="card-text" style="white-space: pre-line;">@r.Descripcion</p>
+            </div>
+        </div>
+    }
+}

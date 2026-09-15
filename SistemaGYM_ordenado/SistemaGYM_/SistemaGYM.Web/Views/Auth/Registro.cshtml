@@ -1,0 +1,85 @@
+@{
+    ViewData["Title"] = "Registrarse";
+    Layout = null;
+    var suscripciones = ViewBag.Suscripciones as List<SuscripcionDto> ?? new();
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>GYM+ | Registrarse</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="auth-card" style="max-width:520px;">
+        <h1>GYM+<br><small class="fs-6 fw-normal text-muted">Registrar cliente</small></h1>
+
+        @if (ViewBag.Exito == true)
+        {
+            <div class="alert alert-success">Cliente registrado con éxito en el sistema.</div>
+            <a asp-action="Login" class="btn btn-dark w-100">Iniciar sesión</a>
+        }
+        else
+        {
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+            <form method="post" asp-action="Registro">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">DNI</label>
+                        <input type="number" name="Dni" class="form-control" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" name="Telefono" class="form-control" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="Nombre" class="form-control" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Apellido</label>
+                        <input type="text" name="Apellido" class="form-control" required />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Dirección</label>
+                    <input type="text" name="Direccion" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="Email" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Suscripción (opcional)</label>
+                    <select name="suscripcionId" class="form-select">
+                        <option value="">-- Sin suscripción por ahora --</option>
+                        @foreach (var s in suscripciones)
+                        {
+                            <option value="@s.Id">@s.Nombre ($@s.Precio - @s.DuracionDias días)</option>
+                        }
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" name="Contrasenia" class="form-control" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Confirmar contraseña</label>
+                        <input type="password" name="confirmarContrasenia" class="form-control" required />
+                    </div>
+                </div>
+                <input type="hidden" name="EstaActivo" value="true" />
+                <button type="submit" class="btn btn-dark w-100">Registrarse</button>
+            </form>
+            <div class="text-center mt-3">
+                <a asp-action="Login">Ya tengo cuenta, iniciar sesión</a>
+            </div>
+        }
+    </div>
+</body>
+</html>

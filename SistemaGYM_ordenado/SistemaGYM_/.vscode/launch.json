@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API (SistemaGYM_)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-api",
+      "program": "${workspaceFolder}/API/bin/Debug/net10.0/SistemaGYM_.dll",
+      "cwd": "${workspaceFolder}/API",
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "env": { "ASPNETCORE_ENVIRONMENT": "Development" }
+    },
+    {
+      "name": "Web (SistemaGYM.Web)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-web",
+      "program": "${workspaceFolder}/SistemaGYM.Web/bin/Debug/net10.0/SistemaGYM.Web.dll",
+      "cwd": "${workspaceFolder}/SistemaGYM.Web",
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "env": { "ASPNETCORE_ENVIRONMENT": "Development" }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "API + Web",
+      "configurations": ["API (SistemaGYM_)", "Web (SistemaGYM.Web)"]
+    }
+  ]
+}

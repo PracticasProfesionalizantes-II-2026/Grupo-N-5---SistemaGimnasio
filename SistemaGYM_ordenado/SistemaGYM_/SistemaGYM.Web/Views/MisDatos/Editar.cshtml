@@ -1,0 +1,18 @@
+@model AlumnoDetalleDto
+@{ ViewData["Title"] = "Editar mis datos"; }
+<h1 class="mb-4">Editar mis datos</h1>
+@if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
+<form method="post" asp-action="Editar">
+    <div class="row">
+        <div class="col-md-6 mb-3"><label class="form-label">DNI</label><input type="number" name="Dni" class="form-control" value="@Model.Dni" required /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Teléfono</label><input type="text" name="Telefono" class="form-control" value="@Model.Telefono" required /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Nombre</label><input type="text" name="Nombre" class="form-control" value="@Model.Nombre" required /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Apellido</label><input type="text" name="Apellido" class="form-control" value="@Model.Apellido" required /></div>
+    </div>
+    <div class="mb-3"><label class="form-label">Dirección</label><input type="text" name="Direccion" class="form-control" value="@Model.Direccion" required /></div>
+    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="Email" class="form-control" value="@Model.Email" required /></div>
+    <div class="mb-3"><label class="form-label">Nueva contraseña (dejar vacío para no cambiarla)</label><input type="password" name="Contrasenia" class="form-control" /></div>
+    <input type="hidden" name="EstaActivo" value="true" />
+    <button type="submit" class="btn btn-dark">Guardar cambios</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</form>

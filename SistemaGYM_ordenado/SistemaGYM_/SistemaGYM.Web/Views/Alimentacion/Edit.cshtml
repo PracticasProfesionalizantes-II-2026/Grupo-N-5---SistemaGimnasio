@@ -1,0 +1,18 @@
+@model AlimentacionDto
+@{
+    ViewData["Title"] = "Modificar plan de alimentación";
+    var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
+}
+<h1 class="mb-4">Modificar plan de alimentación</h1>
+<form method="post" asp-action="Edit" asp-route-id="@Model.Id">
+    <div class="mb-3"><label class="form-label">Tipo de alimentación</label><input type="text" name="TipoAlimentacion" class="form-control" value="@Model.TipoAlimentacion" required /></div>
+    <div class="mb-3"><label class="form-label">Descripción</label><textarea name="Descripcion" class="form-control" rows="6" required>@Model.Descripcion</textarea></div>
+    <div class="mb-3">
+        <label class="form-label">Profesor responsable</label>
+        <select name="ProfesorId" class="form-select" required>
+            @foreach (var p in profesores) { <option value="@p.Id" selected="@(p.Id == Model.ProfesorId)">@p.Nombre @p.Apellido</option> }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-dark">Guardar cambios</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</form>

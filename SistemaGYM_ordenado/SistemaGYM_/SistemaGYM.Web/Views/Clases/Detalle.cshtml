@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Detalle de la clase";
+    var actividad = ViewBag.Actividad as ActividadDto;
+    var profesor = ViewBag.Profesor as ProfesorDetalleDto;
+}
+<h1 class="mb-4">@actividad?.Nombre</h1>
+<p>@actividad?.Descripcion</p>
+<p><strong>Horario:</strong> @actividad?.Dias, @actividad?.HoraInicio.ToString("HH:mm") a @actividad?.HoraFin.ToString("HH:mm")</p>
+
+<div class="card mb-3" style="max-width:400px;">
+    <div class="card-body">
+        <h5 class="card-title">Profesor: @profesor?.Nombre @profesor?.Apellido</h5>
+        <p class="card-text">@profesor?.Descripcion</p>
+        <p class="card-text text-muted">@profesor?.Email</p>
+    </div>
+</div>
+
+<p><strong>Alumnos anotados:</strong> @ViewBag.CantidadAlumnos</p>
+
+<form asp-action="DarDeBaja" method="post" onsubmit="return confirm('¿Está seguro que desea darse de baja de esta actividad?');">
+    <input type="hidden" name="actividadId" value="@actividad?.ActividadId" />
+    <button type="submit" class="btn btn-outline-danger">Darme de baja</button>
+</form>
+<a asp-action="Index" class="btn btn-outline-dark mt-2">Volver</a>

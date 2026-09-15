@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>GYM+ | Iniciar sesión</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="auth-card">
+        <h1>GYM+<br><small class="fs-6 fw-normal text-muted">Inicio de sesión</small></h1>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+        }
+
+        <form method="post" asp-action="Login">
+            <div class="mb-3">
+                <label class="form-label">Email / Usuario</label>
+                <input type="text" name="email" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Contraseña</label>
+                <input type="password" name="contrasenia" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-dark w-100">Ingresar</button>
+        </form>
+        <div class="text-center mt-3">
+            <a asp-action="RecuperarContrasenia">Olvidé mi contraseña</a>
+        </div>
+        <div class="text-center mt-2">
+            ¿No tenés cuenta? <a asp-action="Registro">Registrate</a>
+        </div>
+    </div>
+</body>
+</html>

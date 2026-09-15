@@ -1,0 +1,44 @@
+@model AlumnoSuscripcionDto
+@{
+    ViewData["Title"] = "Suscripción";
+    var planes = ViewBag.Planes as List<SuscripcionDto> ?? new();
+}
+<h1 class="mb-4">Mi Suscripción</h1>
+@if (TempData["Mensaje"] != null) { <div class="alert alert-success">@TempData["Mensaje"]</div> }
+
+@if (Model != null)
+{
+    <div class="card" style="max-width:450px;">
+        <div class="card-body">
+            <h5 class="card-title">@Model.NombrePlan</h5>
+            <p class="card-text">Precio: $@Model.Precio</p>
+            <p class="card-text">Desde: @Model.FechaInicio.ToString("dd/MM/yyyy")</p>
+            <p class="card-text">Hasta: @(Model.FechaFin?.ToString("dd/MM/yyyy") ?? "-")</p>
+            <form asp-action="Cancelar" method="post" onsubmit="return confirm('¿Está seguro que desea cancelar su suscripción?');">
+                <input type="hidden" name="alumnoSuscripcionId" value="@Model.Id" />
+                <button type="submit" class="btn btn-outline-danger">Cancelar suscripción</button>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">No tenés una suscripción activa. Elegí un plan:</div>
+    <div class="row g-3">
+        @foreach (var p in planes)
+        {
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@p.Nombre</h5>
+                        <p class="card-text">$@p.Precio - @p.DuracionDias días</p>
+                        <form asp-action="Asignar" method="post">
+                            <input type="hidden" name="suscripcionId" value="@p.Id" />
+                            <button type="submit" class="btn btn-dark w-100">Elegir plan</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

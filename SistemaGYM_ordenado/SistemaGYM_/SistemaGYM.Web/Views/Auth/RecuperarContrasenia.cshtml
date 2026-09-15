@@ -1,0 +1,54 @@
+@{
+    ViewData["Title"] = "Recuperar contraseña";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>GYM+ | Recuperar contraseña</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="auth-card">
+        <h1>GYM+<br><small class="fs-6 fw-normal text-muted">Restablecer contraseña</small></h1>
+
+        @if (ViewBag.Exito == true)
+        {
+            <div class="alert alert-success">Contraseña restablecida con éxito.</div>
+            <a asp-action="Login" class="btn btn-dark w-100">Iniciar sesión</a>
+        }
+        else
+        {
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+            <p class="text-muted small">Por ahora, para verificar tu identidad usamos tu email y tu DNI (todavía no enviamos el código por mail/SMS).</p>
+            <form method="post" asp-action="RecuperarContrasenia">
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">DNI</label>
+                    <input type="number" name="dni" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nueva contraseña</label>
+                    <input type="password" name="nuevaContrasenia" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Confirmar contraseña</label>
+                    <input type="password" name="confirmarContrasenia" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-dark w-100">Restablecer contraseña</button>
+            </form>
+            <div class="text-center mt-3">
+                <a asp-action="Login">Volver a inicio de sesión</a>
+            </div>
+        }
+    </div>
+</body>
+</html>
