@@ -16,10 +16,17 @@ public interface IPagoLogica
 public class PagoLogica : IPagoLogica
 {
     private readonly IPagoRepository _repo;
+    private readonly IAlumnoRepository _alumnoRepo;
+    private readonly IAlumnoSuscripcionRepository _alumnoSuscripcionRepo;
 
-    public PagoLogica(IPagoRepository repo)
+    public PagoLogica(
+        IPagoRepository repo,
+        IAlumnoRepository alumnoRepo,
+        IAlumnoSuscripcionRepository alumnoSuscripcionRepo)
     {
         _repo = repo;
+        _alumnoRepo = alumnoRepo;
+        _alumnoSuscripcionRepo = alumnoSuscripcionRepo;
     }
 
     public async Task<IEnumerable<PagoDto>> ObtenerTodosAsync()
@@ -52,6 +59,7 @@ public class PagoLogica : IPagoLogica
 
     public async Task<PagoDto> CrearAsync(PagoCreateDto dto)
     {
+        await ValidarReferenciasAsync(dto);
         var nuevo = new Pago
         {
             Monto = dto.Monto,
@@ -78,6 +86,8 @@ public class PagoLogica : IPagoLogica
         var p = await _repo.ObtenerPorIdAsync(id);
         if (p == null) return false;
 
+        await ValidarReferenciasAsync(dto);
+
         p.Monto = dto.Monto;
         p.FechaPago = dto.FechaPago;
         p.MetodoPago = dto.MetodoPago;
@@ -95,5 +105,22 @@ public class PagoLogica : IPagoLogica
 
         await _repo.EliminarAsync(p);
         return true;
+    }
+
+    private async Task ValidarReferenciasAsync(PagoCreateDto dto)
+    {
+        if (dto.FechaPago == default || dto.FechaPago.Date > DateTime.UtcNow.Date)
+            throw new ReglaDeNegocioException("La fecha del pago debe ser una fecha válida que no esté en el futuro.");
+
+        var alumno = await _alumnoRepo.ObtenerPorIdAsync(dto.AlumnoId);
+        if (alumno is null || !alumno.EstaActivo)
+            throw new ReglaDeNegocioException("El alumno indicado no existe o se encuentra inactivo.");
+
+        var suscripcion = await _alumnoSuscripcionRepo.ObtenerPorIdAsync(dto.AlumnoSuscripcionId);
+        if (suscripcion is null || suscripcion.AlumnoId != dto.AlumnoId)
+            throw new ReglaDeNegocioException("La suscripción indicada no pertenece al alumno seleccionado.");
+
+        if (!suscripcion.Activa || (suscripcion.FechaFin.HasValue && suscripcion.FechaFin.Value.Date < DateTime.UtcNow.Date))
+            throw new ReglaDeNegocioException("Solo se pueden registrar pagos para una suscripción activa y vigente.");
     }
 }

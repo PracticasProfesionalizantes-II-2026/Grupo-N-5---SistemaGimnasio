@@ -22,9 +22,17 @@ public class PagoRepository : IPagoRepository
         _db = db;
     }
 
-    public async Task<IEnumerable<Pago>> ObtenerTodosAsync() => await _db.Pagos.ToListAsync();
-    public async Task<Pago?> ObtenerPorIdAsync(int id) => await _db.Pagos.FindAsync(id);
+    public async Task<IEnumerable<Pago>> ObtenerTodosAsync() =>
+        await _db.Pagos.AsNoTracking().Where(p => p.EstaActivo).OrderByDescending(p => p.FechaPago).ToListAsync();
+
+    public async Task<Pago?> ObtenerPorIdAsync(int id) =>
+        await _db.Pagos.FirstOrDefaultAsync(p => p.Id == id && p.EstaActivo);
     public async Task AgregarAsync(Pago entidad) { await _db.Pagos.AddAsync(entidad); await _db.SaveChangesAsync(); }
     public async Task ActualizarAsync(Pago entidad) { _db.Pagos.Update(entidad); await _db.SaveChangesAsync(); }
-    public async Task EliminarAsync(Pago entidad) { _db.Pagos.Remove(entidad); await _db.SaveChangesAsync(); }
+    public async Task EliminarAsync(Pago entidad)
+    {
+        entidad.EstaActivo = false;
+        entidad.FechaBaja = DateTime.UtcNow;
+        await _db.SaveChangesAsync();
+    }
 }

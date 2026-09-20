@@ -46,12 +46,19 @@ public class PagosController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(PagoCreateDto dto)
     {
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Error = "Revisá los datos ingresados antes de registrar el pago.";
+            ViewBag.Alumnos = await _alumnoService.ObtenerTodosAsync();
+            return View(dto);
+        }
+
         var (ok, error) = await _pagoService.CrearAsync(dto);
         if (!ok)
         {
             ViewBag.Error = error;
             ViewBag.Alumnos = await _alumnoService.ObtenerTodosAsync();
-            return View();
+            return View(dto);
         }
 
         TempData["Mensaje"] = "Pago registrado con éxito en el sistema";
@@ -63,7 +70,10 @@ public class PagosController : Controller
     public async Task<JsonResult> SuscripcionesDeAlumno(int id)
     {
         var historial = await _alumnoSuscripcionService.ObtenerHistorialAsync(id);
-        var opciones = historial.Select(h => new { id = h.Id, label = $"{h.NombrePlan} - {(h.Activa ? "Activa" : "Vencida")} - ${h.Precio}" });
+        var hoy = DateTime.UtcNow.Date;
+        var opciones = historial
+            .Where(h => h.Activa && (!h.FechaFin.HasValue || h.FechaFin.Value.Date >= hoy))
+            .Select(h => new { id = h.Id, label = $"{h.NombrePlan} - vigente hasta {h.FechaFin?.ToString("dd/MM/yyyy")} - ${h.Precio}" });
         return Json(opciones);
     }
 

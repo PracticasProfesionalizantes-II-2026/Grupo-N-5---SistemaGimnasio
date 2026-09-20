@@ -79,7 +79,7 @@ public static class PagoEndpoints
         })
         .WithName("DeletePago")
         .WithSummary("Elimina un pago")
-        .WithDescription("Elimina un registro de pago del sistema.")
+        .WithDescription("Da de baja lógica un pago, conservando el comprobante para auditoría.")
         .WithTags("Pago")
         .Produces(204)
         .Produces(404)

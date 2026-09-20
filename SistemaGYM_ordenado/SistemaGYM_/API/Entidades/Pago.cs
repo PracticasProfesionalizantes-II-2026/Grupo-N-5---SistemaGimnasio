@@ -19,4 +19,7 @@ public class Pago
     public int AlumnoSuscripcionId { get; set; }
     [ForeignKey("AlumnoSuscripcionId")]
     public AlumnoSuscripcion AlumnoSuscripcion { get; set; } = null!;
+    // Los comprobantes son información contable: nunca deben borrarse de forma irreversible.
+    public bool EstaActivo { get; set; } = true;
+    public DateTime? FechaBaja { get; set; }
 }
