@@ -60,6 +60,9 @@ public class PagoLogica : IPagoLogica
     public async Task<PagoDto> CrearAsync(PagoCreateDto dto)
     {
         await ValidarReferenciasAsync(dto);
+
+        if (await _repo.ExisteActivoParaSuscripcionAsync(dto.AlumnoSuscripcionId))
+            throw new ReglaDeNegocioException("Esta suscripción ya tiene un pago registrado. Podrás cobrar nuevamente al renovar la suscripción del próximo mes.");
         var nuevo = new Pago
         {
             Monto = dto.Monto,
@@ -87,6 +90,9 @@ public class PagoLogica : IPagoLogica
         if (p == null) return false;
 
         await ValidarReferenciasAsync(dto);
+
+        if (await _repo.ExisteActivoParaSuscripcionAsync(dto.AlumnoSuscripcionId, p.Id))
+            throw new ReglaDeNegocioException("La suscripción indicada ya tiene otro pago registrado.");
 
         p.Monto = dto.Monto;
         p.FechaPago = dto.FechaPago;

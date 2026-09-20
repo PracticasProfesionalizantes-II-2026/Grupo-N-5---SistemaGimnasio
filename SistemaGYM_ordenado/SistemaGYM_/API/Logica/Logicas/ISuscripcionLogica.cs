@@ -29,7 +29,8 @@ public class SuscripcionLogica : ISuscripcionLogica
             s.Id,
             s.Nombre,
             s.Precio,
-            s.DuracionDias
+            s.DuracionDias,
+            s.DiasPorSemana
         ));
     }
 
@@ -42,7 +43,8 @@ public class SuscripcionLogica : ISuscripcionLogica
             s.Id,
             s.Nombre,
             s.Precio,
-            s.DuracionDias
+            s.DuracionDias,
+            s.DiasPorSemana
         );
     }
 
@@ -51,7 +53,8 @@ public class SuscripcionLogica : ISuscripcionLogica
         var nueva = new Suscripcion{
             Nombre = dto.Nombre,
             Precio = dto.Precio,
-            DuracionDias = dto.DuracionDias
+            DuracionDias = 30,
+            DiasPorSemana = dto.DiasPorSemana
         }; 
         
         await _repo.AgregarAsync(nueva);
@@ -60,7 +63,8 @@ public class SuscripcionLogica : ISuscripcionLogica
             nueva.Id,
             nueva.Nombre,
             nueva.Precio,
-            nueva.DuracionDias
+            nueva.DuracionDias,
+            nueva.DiasPorSemana
         );
     }
 
@@ -71,7 +75,9 @@ public class SuscripcionLogica : ISuscripcionLogica
         
         s.Nombre = dto.Nombre;
         s.Precio = dto.Precio;
-        s.DuracionDias = dto.DuracionDias;
+        // Un cambio de frecuencia no modifica la vigencia mensual del plan.
+        s.DuracionDias = 30;
+        s.DiasPorSemana = dto.DiasPorSemana;
 
         await _repo.ActualizarAsync(s);
         return true;

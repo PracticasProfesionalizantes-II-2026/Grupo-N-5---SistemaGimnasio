@@ -37,12 +37,13 @@ public class GimnasioContext(DbContextOptions<GimnasioContext> options) : DbCont
             .Property(p => p.EstaActivo)
             .HasDefaultValue(true);
 
-        modelBuilder.Entity<Usuario>().HasIndex(u => u.Email).IsUnique();
-        modelBuilder.Entity<Usuario>().HasIndex(u => u.Dni).IsUnique();
+        // La base histórica contiene duplicados. Se crean índices de búsqueda sin
+        // bloquear la migración ni eliminar registros existentes.
+        modelBuilder.Entity<Usuario>().HasIndex(u => u.Email);
+        modelBuilder.Entity<Usuario>().HasIndex(u => u.Dni);
 
         modelBuilder.Entity<ActividadAlumno>()
-            .HasIndex(x => new { x.AlumnoId, x.ActividadId })
-            .IsUnique();
+            .HasIndex(x => new { x.AlumnoId, x.ActividadId });
 
 
         modelBuilder.Entity<Actividad>()

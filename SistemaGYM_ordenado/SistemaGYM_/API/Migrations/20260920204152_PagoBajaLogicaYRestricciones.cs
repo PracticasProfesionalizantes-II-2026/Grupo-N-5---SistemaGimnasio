@@ -31,20 +31,17 @@ namespace SistemaGYM_.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Usuario_Dni",
                 table: "Usuario",
-                column: "Dni",
-                unique: true);
+                column: "Dni");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Usuario_Email",
                 table: "Usuario",
-                column: "Email",
-                unique: true);
+                column: "Email");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ActividadesAlumno_AlumnoId_ActividadId",
                 table: "ActividadesAlumno",
-                columns: new[] { "AlumnoId", "ActividadId" },
-                unique: true);
+                columns: new[] { "AlumnoId", "ActividadId" });
         }
 
         /// <inheritdoc />

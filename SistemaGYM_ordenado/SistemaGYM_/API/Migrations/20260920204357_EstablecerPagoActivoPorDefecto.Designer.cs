@@ -87,8 +87,7 @@ namespace SistemaGYM_.Migrations
 
                     b.HasIndex("ActividadId");
 
-                    b.HasIndex("AlumnoId", "ActividadId")
-                        .IsUnique();
+                    b.HasIndex("AlumnoId", "ActividadId");
 
                     b.ToTable("ActividadesAlumno");
                 });
@@ -365,11 +364,9 @@ namespace SistemaGYM_.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Dni")
-                        .IsUnique();
+                    b.HasIndex("Dni");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.HasIndex("Email");
 
                     b.ToTable("Usuario");
 

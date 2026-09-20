@@ -84,8 +84,7 @@ namespace SistemaGYM_.Migrations
 
                     b.HasIndex("ActividadId");
 
-                    b.HasIndex("AlumnoId", "ActividadId")
-                        .IsUnique();
+                    b.HasIndex("AlumnoId", "ActividadId");
 
                     b.ToTable("ActividadesAlumno");
                 });
@@ -294,6 +293,9 @@ namespace SistemaGYM_.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("DiasPorSemana")
+                        .HasColumnType("int");
+
                     b.Property<int>("DuracionDias")
                         .HasColumnType("int");
 
@@ -362,11 +364,9 @@ namespace SistemaGYM_.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Dni")
-                        .IsUnique();
+                    b.HasIndex("Dni");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.HasIndex("Email");
 
                     b.ToTable("Usuario");
 

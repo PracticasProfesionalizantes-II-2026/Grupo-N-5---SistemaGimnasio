@@ -67,7 +67,8 @@ public class AlumnoSuscripcionLogica : IAlumnoSuscripcionLogica
             AlumnoId = alumnoId,
             SuscripcionId = plan.Id,
             FechaInicio = DateTime.Now,
-            FechaFin = DateTime.Now.AddDays(plan.DuracionDias),
+            // La frecuencia semanal no define el vencimiento: cada plan dura un mes calendario.
+            FechaFin = DateTime.Now.AddMonths(1),
             Activa = true
         };
 

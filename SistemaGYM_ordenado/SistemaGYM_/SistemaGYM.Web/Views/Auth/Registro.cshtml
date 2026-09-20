@@ -59,7 +59,7 @@
                         <option value="">-- Sin suscripción por ahora --</option>
                         @foreach (var s in suscripciones)
                         {
-                            <option value="@s.Id">@s.Nombre ($@s.Precio - @s.DuracionDias días)</option>
+                            <option value="@s.Id">@s.Nombre ($@s.Precio - @s.DiasPorSemana día(s)/semana - 1 mes)</option>
                         }
                     </select>
                 </div>

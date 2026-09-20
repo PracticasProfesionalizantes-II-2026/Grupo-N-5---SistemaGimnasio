@@ -12,8 +12,8 @@ using SistemaGYM.Datos;
 namespace SistemaGYM_.Migrations
 {
     [DbContext(typeof(GimnasioContext))]
-    [Migration("20260920204152_PagoBajaLogicaYRestricciones")]
-    partial class PagoBajaLogicaYRestricciones
+    [Migration("20260920221807_SuscripcionMensualConFrecuencia")]
+    partial class SuscripcionMensualConFrecuencia
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,7 +229,9 @@ namespace SistemaGYM_.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("EstaActivo")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<DateTime?>("FechaBaja")
                         .HasColumnType("datetime2");
@@ -293,6 +295,9 @@ namespace SistemaGYM_.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DiasPorSemana")
+                        .HasColumnType("int");
 
                     b.Property<int>("DuracionDias")
                         .HasColumnType("int");

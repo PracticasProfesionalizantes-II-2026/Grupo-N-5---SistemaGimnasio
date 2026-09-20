@@ -6,7 +6,8 @@ public record SuscripcionDto(
     int Id,
     string Nombre,
     decimal Precio,
-    int DuracionDias
+    int DuracionDias,
+    int DiasPorSemana
 );
 
 public record SuscripcionCreateDto(
@@ -17,6 +18,6 @@ public record SuscripcionCreateDto(
     [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser mayor a 0")]
     decimal Precio,
 
-    [Range(1, int.MaxValue, ErrorMessage = "La duración debe ser de al menos 1 día")]
-    int DuracionDias
+    [Range(1, 7, ErrorMessage = "La frecuencia debe estar entre 1 y 7 días por semana")]
+    int DiasPorSemana
 );

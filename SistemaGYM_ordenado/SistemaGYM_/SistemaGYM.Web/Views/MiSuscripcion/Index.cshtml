@@ -31,7 +31,7 @@ else
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">@p.Nombre</h5>
-                        <p class="card-text">$@p.Precio - @p.DuracionDias días</p>
+                        <p class="card-text">$@p.Precio - @p.DiasPorSemana día(s) por semana - vigencia mensual</p>
                         <form asp-action="Asignar" method="post">
                             <input type="hidden" name="suscripcionId" value="@p.Id" />
                             <button type="submit" class="btn btn-dark w-100">Elegir plan</button>
