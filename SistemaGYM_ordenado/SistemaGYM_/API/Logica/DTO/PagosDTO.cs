@@ -12,15 +12,15 @@ public record PagoDto(
 );
 
 public record PagoCreateDto(
-    [Range(0.01, double.MaxValue, ErrorMessage = "El monto debe ser mayor a 0")]
+    [param: Range(0.01, double.MaxValue, ErrorMessage = "El monto debe ser mayor a 0")]
     decimal Monto,
 
     DateTime FechaPago,
     MetodoPago MetodoPago,
 
-    [property: Range(1, int.MaxValue, ErrorMessage = "Debe indicar un alumno válido")]
+    [param: Range(1, int.MaxValue, ErrorMessage = "Debe indicar un alumno válido")]
     int AlumnoId,
 
-    [Range(1, int.MaxValue, ErrorMessage = "Debe indicar una suscripción válida")]
+    [param: Range(1, int.MaxValue, ErrorMessage = "Debe indicar una suscripción válida")]
     int AlumnoSuscripcionId
 );
