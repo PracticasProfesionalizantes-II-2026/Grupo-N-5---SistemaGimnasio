@@ -22,8 +22,10 @@ public class RutinaRepository : IRutinaRepository
         _db = db;
     }
 
-    public async Task<IEnumerable<Rutina>> ObtenerTodosAsync() => await _db.Rutinas.ToListAsync();
-    public async Task<Rutina?> ObtenerPorIdAsync(int id) => await _db.Rutinas.FindAsync(id);
+    public async Task<IEnumerable<Rutina>> ObtenerTodosAsync() =>
+        await _db.Rutinas.Include(r => r.Alumno).Include(r => r.Actividad).ToListAsync();
+    public async Task<Rutina?> ObtenerPorIdAsync(int id) =>
+        await _db.Rutinas.Include(r => r.Alumno).Include(r => r.Actividad).FirstOrDefaultAsync(r => r.Id == id);
     public async Task AgregarAsync(Rutina entidad) { await _db.Rutinas.AddAsync(entidad); await _db.SaveChangesAsync(); }
     public async Task ActualizarAsync(Rutina entidad) { _db.Rutinas.Update(entidad); await _db.SaveChangesAsync(); }
     public async Task EliminarAsync(Rutina entidad) { _db.Rutinas.Remove(entidad); await _db.SaveChangesAsync(); }

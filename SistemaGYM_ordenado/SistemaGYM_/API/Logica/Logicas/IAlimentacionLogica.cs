@@ -16,10 +16,12 @@ public interface IAlimentacionLogica
 public class AlimentacionLogica : IAlimentacionLogica
 {
     private readonly IAlimentacionRepository _repo;
+    private readonly IActividadAlumnoRepository _actividadAlumnoRepo;
 
-    public AlimentacionLogica(IAlimentacionRepository repo)
+    public AlimentacionLogica(IAlimentacionRepository repo, IActividadAlumnoRepository actividadAlumnoRepo)
     {
         _repo = repo;
+        _actividadAlumnoRepo = actividadAlumnoRepo;
     }
 
     public async Task<IEnumerable<AlimentacionDto>> ObtenerTodosAsync()
@@ -29,7 +31,9 @@ public class AlimentacionLogica : IAlimentacionLogica
             a.Id, 
             a.TipoAlimentacion, 
             a.Descripcion, 
-            a.ProfesorId
+            a.ProfesorId,
+            a.AlumnoId,
+            NombreAlumno(a)
         ));
     }
 
@@ -42,17 +46,23 @@ public class AlimentacionLogica : IAlimentacionLogica
             a.Id, 
             a.TipoAlimentacion, 
             a.Descripcion, 
-            a.ProfesorId
+            a.ProfesorId,
+            a.AlumnoId,
+            NombreAlumno(a)
         );
     }
 
     public async Task<AlimentacionDto> CrearAsync(AlimentacionCreateDto dto)
     {
+        if (dto.AlumnoId.HasValue && !await _actividadAlumnoRepo.AlumnoPerteneceAProfesorAsync(dto.AlumnoId.Value, dto.ProfesorId))
+            throw new ReglaDeNegocioException("Solo podés asignar una alimentación a alumnos inscriptos en una actividad del profesor.");
+
         var nueva = new Alimentacion
         {
             TipoAlimentacion = dto.TipoAlimentacion,
             Descripcion = dto.Descripcion,
-            ProfesorId = dto.ProfesorId
+            ProfesorId = dto.ProfesorId,
+            AlumnoId = dto.AlumnoId
         };
         
         await _repo.AgregarAsync(nueva);
@@ -61,7 +71,9 @@ public class AlimentacionLogica : IAlimentacionLogica
             nueva.Id, 
             nueva.TipoAlimentacion, 
             nueva.Descripcion, 
-            nueva.ProfesorId
+            nueva.ProfesorId,
+            nueva.AlumnoId,
+            NombreAlumno(nueva)
         );
     }
 
@@ -72,11 +84,19 @@ public class AlimentacionLogica : IAlimentacionLogica
 
         a.TipoAlimentacion = dto.TipoAlimentacion;
         a.Descripcion = dto.Descripcion;
+        if (dto.AlumnoId.HasValue && !await _actividadAlumnoRepo.AlumnoPerteneceAProfesorAsync(dto.AlumnoId.Value, dto.ProfesorId))
+            throw new ReglaDeNegocioException("Solo podés asignar una alimentación a alumnos inscriptos en una actividad del profesor.");
         a.ProfesorId = dto.ProfesorId;
+        a.AlumnoId = dto.AlumnoId;
 
         await _repo.ActualizarAsync(a);
         return true;
     }
+
+    private static string? NombreAlumno(Alimentacion alimentacion) =>
+        alimentacion.Alumno is null
+            ? null
+            : $"{alimentacion.Alumno.Nombre} {alimentacion.Alumno.Apellido}";
 
     public async Task<bool> EliminarAsync(int id)
     {

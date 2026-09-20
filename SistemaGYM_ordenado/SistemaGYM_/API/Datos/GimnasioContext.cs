@@ -71,6 +71,12 @@ public class GimnasioContext(DbContextOptions<GimnasioContext> options) : DbCont
         .HasForeignKey(r => r.AlumnoId)
         .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Rutina>()
+            .HasOne(r => r.Actividad)
+            .WithMany()
+            .HasForeignKey(r => r.ActividadId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<Actividad>()
             .HasOne(a => a.Profesor)
             .WithMany(p => p.Actividades)
@@ -87,6 +93,12 @@ public class GimnasioContext(DbContextOptions<GimnasioContext> options) : DbCont
             .HasOne(a => a.Profesor)
             .WithMany(p => p.PlanesAlimentacion)
             .HasForeignKey(a => a.ProfesorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Alimentacion>()
+            .HasOne(a => a.Alumno)
+            .WithMany()
+            .HasForeignKey(a => a.AlumnoId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Anuncio>()

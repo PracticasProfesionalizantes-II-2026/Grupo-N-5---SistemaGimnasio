@@ -1,0 +1,5 @@
+@model List<ActividadDto>
+@{ ViewData["Title"] = "Mis actividades"; }
+<h1 class="mb-4">Mis actividades</h1>
+@if (!Model.Any()) { <div class="alert alert-info">No tenés actividades asignadas.</div> }
+else { <table class="table table-striped"><thead><tr><th>Nombre</th><th>Días</th><th>Horario</th><th></th></tr></thead><tbody>@foreach (var a in Model) { <tr><td>@a.Nombre</td><td>@a.Dias</td><td>@a.HoraInicio - @a.HoraFin</td><td><a asp-action="AlumnosActividad" asp-route-id="@a.ActividadId" class="btn btn-sm btn-outline-primary">Ver alumnos</a> <a asp-action="CrearRutina" asp-route-actividadId="@a.ActividadId" class="btn btn-sm btn-outline-success">Asignar rutina</a></td></tr> }</tbody></table> }

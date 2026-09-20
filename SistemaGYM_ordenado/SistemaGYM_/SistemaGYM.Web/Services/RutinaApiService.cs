@@ -11,6 +11,7 @@ public interface IRutinaApiService
     Task<bool> ActualizarAsync(int id, RutinaCreateDto dto);
     Task<bool> EliminarAsync(int id);
     Task<List<RutinaDto>> ObtenerDeAlumnoAsync(int alumnoId);
+    Task<List<RutinaDto>> ObtenerDeProfesorAsync(int profesorId);
 }
 
 public class RutinaApiService : IRutinaApiService
@@ -54,5 +55,11 @@ public class RutinaApiService : IRutinaApiService
     {
         var todas = await ObtenerTodasAsync();
         return todas.Where(r => r.AlumnoId == alumnoId).ToList();
+    }
+
+    public async Task<List<RutinaDto>> ObtenerDeProfesorAsync(int profesorId)
+    {
+        var todas = await ObtenerTodasAsync();
+        return todas.Where(r => r.ProfesorId == profesorId).ToList();
     }
 }

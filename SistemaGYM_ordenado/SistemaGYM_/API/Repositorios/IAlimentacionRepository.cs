@@ -22,8 +22,10 @@ public class AlimentacionRepository : IAlimentacionRepository
         _db = db;
     }
 
-    public async Task<IEnumerable<Alimentacion>> ObtenerTodosAsync() => await _db.Alimentaciones.ToListAsync();
-    public async Task<Alimentacion?> ObtenerPorIdAsync(int id) => await _db.Alimentaciones.FindAsync(id);
+    public async Task<IEnumerable<Alimentacion>> ObtenerTodosAsync() =>
+        await _db.Alimentaciones.Include(a => a.Alumno).ToListAsync();
+    public async Task<Alimentacion?> ObtenerPorIdAsync(int id) =>
+        await _db.Alimentaciones.Include(a => a.Alumno).FirstOrDefaultAsync(a => a.Id == id);
     public async Task AgregarAsync(Alimentacion entidad) { await _db.Alimentaciones.AddAsync(entidad); await _db.SaveChangesAsync(); }
     public async Task ActualizarAsync(Alimentacion entidad) { _db.Alimentaciones.Update(entidad); await _db.SaveChangesAsync(); }
     public async Task EliminarAsync(Alimentacion entidad) { _db.Alimentaciones.Remove(entidad); await _db.SaveChangesAsync(); }

@@ -16,4 +16,8 @@
         public int ProfesorId {get; set;}
         [ForeignKey("ProfesorId")]
         public Profesor Profesor { get; set; } = null!;
+        // Nulo únicamente para conservar planes genéricos ya cargados.
+        public int? AlumnoId { get; set; }
+        [ForeignKey("AlumnoId")]
+        public Alumno? Alumno { get; set; }
     }

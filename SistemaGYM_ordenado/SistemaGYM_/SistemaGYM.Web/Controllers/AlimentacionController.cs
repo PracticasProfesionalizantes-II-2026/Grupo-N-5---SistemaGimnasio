@@ -5,7 +5,7 @@ using SistemaGYM.Web.Services;
 
 namespace SistemaGYM.Web.Controllers;
 
-[SessionAuthorize("Administrador", "Alumno")]
+[SessionAuthorize("Administrador", "Alumno", "Profesor")]
 public class AlimentacionController : Controller
 {
     private readonly IAlimentacionApiService _alimentacionService;

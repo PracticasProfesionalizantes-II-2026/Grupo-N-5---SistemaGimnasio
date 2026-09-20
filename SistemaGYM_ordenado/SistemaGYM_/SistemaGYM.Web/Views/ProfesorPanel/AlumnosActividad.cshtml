@@ -1,0 +1,5 @@
+@model List<AlumnoInscriptoDto>
+@{ var actividad = ViewBag.Actividad as ActividadDto; ViewData["Title"] = "Alumnos inscriptos"; }
+<h1 class="mb-4">Alumnos inscriptos: @actividad?.Nombre</h1>
+@if (!Model.Any()) { <div class="alert alert-info">No hay alumnos inscriptos actualmente.</div> }
+else { <table class="table table-striped"><thead><tr><th>Alumno</th><th>Inscripción</th><th>Alimentación</th><th>Rutina</th></tr></thead><tbody>@foreach (var a in Model) { <tr><td>@a.Nombre @a.Apellido</td><td>@a.FechaInscripcion.ToString("dd/MM/yyyy")</td><td><a asp-action="CrearAlimentacion" asp-route-alumnoId="@a.AlumnoId" class="btn btn-sm btn-outline-success">Asignar plan</a></td><td><a asp-action="CrearRutina" asp-route-actividadId="@actividad?.ActividadId" class="btn btn-sm btn-outline-primary">Asignar rutina</a></td></tr> }</tbody></table> }

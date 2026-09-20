@@ -5,12 +5,16 @@ public record RutinaDto(
     string Nombre, 
     string Descripcion, 
     int ProfesorId, 
-    int AlumnoId
+    int AlumnoId,
+    int? ActividadId,
+    string? ActividadNombre,
+    string? AlumnoNombre
 );
 
 public record RutinaCreateDto(
     string Nombre, 
     string Descripcion, 
     int ProfesorId, 
-    int AlumnoId
+    int AlumnoId,
+    int? ActividadId
 );

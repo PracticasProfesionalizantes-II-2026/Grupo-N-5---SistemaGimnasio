@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SistemaGYM.Datos;
 
@@ -11,9 +12,11 @@ using SistemaGYM.Datos;
 namespace SistemaGYM_.Migrations
 {
     [DbContext(typeof(GimnasioContext))]
-    partial class GimnasioContextModelSnapshot : ModelSnapshot
+    [Migration("20260920230509_AlimentacionPorAlumno")]
+    partial class AlimentacionPorAlumno
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -265,9 +268,6 @@ namespace SistemaGYM_.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ActividadId")
-                        .HasColumnType("int");
-
                     b.Property<int>("AlumnoId")
                         .HasColumnType("int");
 
@@ -285,8 +285,6 @@ namespace SistemaGYM_.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ActividadId");
 
                     b.HasIndex("AlumnoId");
 
@@ -506,11 +504,6 @@ namespace SistemaGYM_.Migrations
 
             modelBuilder.Entity("SistemaGYM.Entidades.Rutina", b =>
                 {
-                    b.HasOne("SistemaGYM.Entidades.Actividad", "Actividad")
-                        .WithMany()
-                        .HasForeignKey("ActividadId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("SistemaGYM.Entidades.Alumno", "Alumno")
                         .WithMany()
                         .HasForeignKey("AlumnoId")
@@ -522,8 +515,6 @@ namespace SistemaGYM_.Migrations
                         .HasForeignKey("ProfesorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Actividad");
 
                     b.Navigation("Alumno");
 

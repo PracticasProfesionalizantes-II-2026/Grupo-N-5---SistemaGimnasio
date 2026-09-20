@@ -8,6 +8,8 @@ public interface IActividadAlumnoRepository
 {
     Task<ActividadAlumno?> ObtenerAsync(int alumnoId, int actividadId);
     Task<IEnumerable<ActividadAlumno>> ObtenerPorActividadAsync(int actividadId);
+    Task<bool> AlumnoPerteneceAProfesorAsync(int alumnoId, int profesorId);
+    Task<bool> AlumnoEstaInscriptoEnActividadDelProfesorAsync(int alumnoId, int actividadId, int profesorId);
     Task AgregarAsync(ActividadAlumno entidad);
     Task ActualizarAsync(ActividadAlumno entidad);
 }
@@ -30,6 +32,14 @@ public class ActividadAlumnoRepository : IActividadAlumnoRepository
             .Include(x => x.Alumno)
             .Where(x => x.ActividadId == actividadId && x.Activa)
             .ToListAsync();
+
+    public async Task<bool> AlumnoPerteneceAProfesorAsync(int alumnoId, int profesorId) =>
+        await _db.ActividadesAlumno.AnyAsync(x =>
+            x.AlumnoId == alumnoId && x.Activa && x.Actividad.ProfesorId == profesorId);
+
+    public async Task<bool> AlumnoEstaInscriptoEnActividadDelProfesorAsync(int alumnoId, int actividadId, int profesorId) =>
+        await _db.ActividadesAlumno.AnyAsync(x =>
+            x.AlumnoId == alumnoId && x.ActividadId == actividadId && x.Activa && x.Actividad.ProfesorId == profesorId);
 
     public async Task AgregarAsync(ActividadAlumno entidad)
     {

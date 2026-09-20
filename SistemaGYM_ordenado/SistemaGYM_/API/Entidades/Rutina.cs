@@ -18,4 +18,8 @@ namespace SistemaGYM.Entidades;
         public int AlumnoId { get; set; }          
         [ForeignKey("AlumnoId")]
         public Alumno Alumno { get; set; } = null!; 
+        // Nulo para conservar las rutinas históricas cargadas sin actividad.
+        public int? ActividadId { get; set; }
+        [ForeignKey("ActividadId")]
+        public Actividad? Actividad { get; set; }
     }

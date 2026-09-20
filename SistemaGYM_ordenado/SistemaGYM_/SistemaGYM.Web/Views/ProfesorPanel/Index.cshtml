@@ -1,0 +1,14 @@
+@using SistemaGYM.Logica.DTOs
+@{
+    ViewData["Title"] = "Panel del profesor";
+    var actividades = ViewBag.Actividades as List<ActividadDto> ?? new();
+    var rutinas = ViewBag.Rutinas as List<RutinaDto> ?? new();
+}
+<h1 class="mb-2">Panel del profesor</h1>
+<p class="text-muted">Gestioná y consultá el contenido asignado a tu perfil profesional.</p>
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-action="Actividades">Mis actividades (@actividades.Count)</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-action="Rutinas">Mis rutinas (@rutinas.Count)</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-action="Alimentaciones">Alimentaciones</a></div>
+    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Anuncios" asp-action="Notificaciones">Anuncios</a></div>
+</div>

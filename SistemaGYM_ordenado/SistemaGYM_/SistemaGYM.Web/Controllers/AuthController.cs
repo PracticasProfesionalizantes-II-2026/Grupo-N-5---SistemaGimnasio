@@ -57,7 +57,7 @@ public class AuthController : Controller
     {
         "Administrador" => RedirectToAction("Index", "Admin"),
         "Alumno" => RedirectToAction("Index", "Cliente"),
-        "Profesor" => RedirectToAction("Index", "Cliente"),
+        "Profesor" => RedirectToAction("Index", "ProfesorPanel"),
         _ => RedirectToAction("Login")
     };
 

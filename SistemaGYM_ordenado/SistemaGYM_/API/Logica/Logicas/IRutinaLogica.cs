@@ -16,10 +16,12 @@ public interface IRutinaLogica
 public class RutinaLogica : IRutinaLogica
 {
     private readonly IRutinaRepository _repo;
+    private readonly IActividadAlumnoRepository _actividadAlumnoRepo;
 
-    public RutinaLogica(IRutinaRepository repo)
+    public RutinaLogica(IRutinaRepository repo, IActividadAlumnoRepository actividadAlumnoRepo)
     {
         _repo = repo;
+        _actividadAlumnoRepo = actividadAlumnoRepo;
     }
 
     public async Task<IEnumerable<RutinaDto>> ObtenerTodosAsync()
@@ -30,7 +32,10 @@ public class RutinaLogica : IRutinaLogica
             r.Nombre, 
             r.Descripcion, 
             r.ProfesorId, 
-            r.AlumnoId
+            r.AlumnoId,
+            r.ActividadId,
+            r.Actividad?.Nombre,
+            NombreAlumno(r)
         ));
     }
 
@@ -44,18 +49,25 @@ public class RutinaLogica : IRutinaLogica
             r.Nombre, 
             r.Descripcion, 
             r.ProfesorId, 
-            r.AlumnoId
+            r.AlumnoId,
+            r.ActividadId,
+            r.Actividad?.Nombre,
+            NombreAlumno(r)
         );
     }
 
     public async Task<RutinaDto> CrearAsync(RutinaCreateDto dto)
     {
+        if (dto.ActividadId.HasValue && !await _actividadAlumnoRepo.AlumnoEstaInscriptoEnActividadDelProfesorAsync(dto.AlumnoId, dto.ActividadId.Value, dto.ProfesorId))
+            throw new ReglaDeNegocioException("Solo podés asignar una rutina a alumnos activos de la actividad seleccionada.");
+
         var nueva = new Rutina
         {
             Nombre = dto.Nombre,
             Descripcion = dto.Descripcion,
             ProfesorId = dto.ProfesorId,
-            AlumnoId = dto.AlumnoId
+            AlumnoId = dto.AlumnoId,
+            ActividadId = dto.ActividadId
         };
         
         await _repo.AgregarAsync(nueva);
@@ -65,7 +77,10 @@ public class RutinaLogica : IRutinaLogica
             nueva.Nombre, 
             nueva.Descripcion, 
             nueva.ProfesorId, 
-            nueva.AlumnoId
+            nueva.AlumnoId,
+            nueva.ActividadId,
+            null,
+            null
         );
     }
 
@@ -74,14 +89,21 @@ public class RutinaLogica : IRutinaLogica
         var r = await _repo.ObtenerPorIdAsync(id);
         if (r == null) return false;
 
+        if (dto.ActividadId.HasValue && !await _actividadAlumnoRepo.AlumnoEstaInscriptoEnActividadDelProfesorAsync(dto.AlumnoId, dto.ActividadId.Value, dto.ProfesorId))
+            throw new ReglaDeNegocioException("Solo podés asignar una rutina a alumnos activos de la actividad seleccionada.");
+
         r.Nombre = dto.Nombre;
         r.Descripcion = dto.Descripcion;
         r.ProfesorId = dto.ProfesorId;
         r.AlumnoId = dto.AlumnoId;
+        r.ActividadId = dto.ActividadId;
 
         await _repo.ActualizarAsync(r);
         return true;
     }
+
+    private static string? NombreAlumno(Rutina rutina) =>
+        rutina.Alumno is null ? null : $"{rutina.Alumno.Nombre} {rutina.Alumno.Apellido}";
 
     public async Task<bool> EliminarAsync(int id)
     {

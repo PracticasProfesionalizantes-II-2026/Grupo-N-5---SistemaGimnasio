@@ -6,6 +6,7 @@
 }
 <h1 class="mb-4">Modificar rutina</h1>
 <form method="post" asp-action="Edit" asp-route-id="@Model.Id">
+    <input type="hidden" name="ActividadId" value="@Model.ActividadId" />
     <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="Nombre" class="form-control" value="@Model.Nombre" required /></div>
     <div class="mb-3">
         <label class="form-label">Descripción</label>
