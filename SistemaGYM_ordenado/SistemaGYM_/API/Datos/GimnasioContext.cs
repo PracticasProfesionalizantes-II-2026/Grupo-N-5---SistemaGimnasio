@@ -33,6 +33,17 @@ public class GimnasioContext(DbContextOptions<GimnasioContext> options) : DbCont
             .Property(p => p.MetodoPago)
             .HasConversion<string>();
 
+        modelBuilder.Entity<Pago>()
+            .Property(p => p.EstaActivo)
+            .HasDefaultValue(true);
+
+        modelBuilder.Entity<Usuario>().HasIndex(u => u.Email).IsUnique();
+        modelBuilder.Entity<Usuario>().HasIndex(u => u.Dni).IsUnique();
+
+        modelBuilder.Entity<ActividadAlumno>()
+            .HasIndex(x => new { x.AlumnoId, x.ActividadId })
+            .IsUnique();
+
 
         modelBuilder.Entity<Actividad>()
             .Property(a => a.Dias)

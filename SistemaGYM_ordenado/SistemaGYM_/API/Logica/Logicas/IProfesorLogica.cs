@@ -84,6 +84,7 @@ public class ProfesorLogica : IProfesorLogica
         p.Telefono    = dto.Telefono;
         p.Titulo      = dto.Titulo;
         p.Descripcion = dto.Descripcion;
+        p.EstaActivo  = dto.EstaActivo;
 
         if (!string.IsNullOrWhiteSpace(dto.Contrasenia))
             p.SetContrasenia(dto.Contrasenia);

@@ -25,20 +25,26 @@ public static class PasswordHelper
 
     public static bool VerificarPassword(string password, string hashGuardado)
     {
-        var partes = hashGuardado.Split('.');
-        if (partes.Length != 2) return false;
+        if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(hashGuardado)) return false;
 
-        var salt = Convert.FromBase64String(partes[0]);
-        var hashEsperado = Convert.FromBase64String(partes[1]);
+        try
+        {
+            var partes = hashGuardado.Split('.');
+            if (partes.Length != 2) return false;
 
-        var hashCalculado = Rfc2898DeriveBytes.Pbkdf2(
-            Encoding.UTF8.GetBytes(password),
-            salt,
-            Iteraciones,
-            HashAlgorithmName.SHA256,
-            TamanioHash);
+            var salt = Convert.FromBase64String(partes[0]);
+            var hashEsperado = Convert.FromBase64String(partes[1]);
+            if (salt.Length != TamanioSalt || hashEsperado.Length != TamanioHash) return false;
 
-        // Comparación en tiempo constante para evitar timing attacks
-        return CryptographicOperations.FixedTimeEquals(hashCalculado, hashEsperado);
+            var hashCalculado = Rfc2898DeriveBytes.Pbkdf2(
+                Encoding.UTF8.GetBytes(password), salt, Iteraciones,
+                HashAlgorithmName.SHA256, TamanioHash);
+
+            return CryptographicOperations.FixedTimeEquals(hashCalculado, hashEsperado);
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
     }
 }

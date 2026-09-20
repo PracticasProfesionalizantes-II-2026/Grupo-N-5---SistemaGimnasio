@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using SistemaGYM.Logica;
 
 namespace SistemaGYM.Middleware;
 
@@ -23,6 +24,10 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
         var (statusCode, mensaje) = exception switch
         {
+            ReglaDeNegocioException regla => (
+                StatusCodes.Status400BadRequest,
+                regla.Message
+            ),
            
             DbUpdateException => (
                 StatusCodes.Status409Conflict,

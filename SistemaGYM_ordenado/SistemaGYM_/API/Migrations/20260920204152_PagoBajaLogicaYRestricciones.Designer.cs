@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SistemaGYM.Datos;
 
@@ -11,9 +12,11 @@ using SistemaGYM.Datos;
 namespace SistemaGYM_.Migrations
 {
     [DbContext(typeof(GimnasioContext))]
-    partial class GimnasioContextModelSnapshot : ModelSnapshot
+    [Migration("20260920204152_PagoBajaLogicaYRestricciones")]
+    partial class PagoBajaLogicaYRestricciones
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,9 +230,7 @@ namespace SistemaGYM_.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("EstaActivo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("FechaBaja")
                         .HasColumnType("datetime2");
