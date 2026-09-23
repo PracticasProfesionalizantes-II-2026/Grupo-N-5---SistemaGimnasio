@@ -7,6 +7,7 @@ namespace SistemaGYM.Repositorios;
 public interface IAlumnoRepository
 {
     Task<Alumno?> ObtenerPorEmailAsync(string email);
+    Task<bool> ExisteEmailODniAsync(string email, int dni, int? excluirUsuarioId = null);
     Task<IEnumerable<Alumno>> ObtenerTodosAsync();
     Task<Alumno?> ObtenerPorIdAsync(int id);
     Task<Alumno?> ObtenerDetallePorIdAsync(int id);
@@ -25,6 +26,11 @@ public class AlumnoRepository : IAlumnoRepository
     }
     public async Task<Alumno?> ObtenerPorEmailAsync(string email) =>
     await _db.Alumnos.FirstOrDefaultAsync(a => a.Email == email);
+
+    public Task<bool> ExisteEmailODniAsync(string email, int dni, int? excluirUsuarioId = null) =>
+        _db.Set<Usuario>().AnyAsync(u =>
+            (!excluirUsuarioId.HasValue || u.Id != excluirUsuarioId.Value) &&
+            (u.Email.ToLower() == email.Trim().ToLower() || u.Dni == dni));
 
 public async Task<IEnumerable<Alumno>> ObtenerTodosAsync() =>
     await _db.Alumnos.Where(a => a.EstaActivo).ToListAsync();

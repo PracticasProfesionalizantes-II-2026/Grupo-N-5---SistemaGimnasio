@@ -29,6 +29,9 @@ public class ClasesController : Controller
     public async Task<IActionResult> Todas()
     {
         var todas = await _actividadService.ObtenerTodasAsync();
+        ViewBag.ActividadesInscritas = (await _actividadService.ObtenerActividadesDeAlumnoAsync(AlumnoId))
+            .Select(a => a.ActividadId)
+            .ToHashSet();
         return View(todas);
     }
 

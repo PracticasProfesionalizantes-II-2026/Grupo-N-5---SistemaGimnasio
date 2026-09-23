@@ -53,13 +53,14 @@ public class AlumnoLogica : IAlumnoLogica
 
     public async Task<AlumnoDto> CrearAsync(AlumnoCreateDto dto)
     {
+        await ValidarDatosUnicosAsync(dto.Email, dto.Dni);
         var nuevo = new Alumno
         {
             Dni        = dto.Dni,
             Nombre     = dto.Nombre,
             Apellido   = dto.Apellido,
             Direccion  = dto.Direccion,
-            Email      = dto.Email,
+            Email      = dto.Email.Trim(),
             Telefono   = dto.Telefono,
             EstaActivo = dto.EstaActivo
         };
@@ -75,11 +76,13 @@ public class AlumnoLogica : IAlumnoLogica
         var a = await _repository.ObtenerPorIdAsync(id);
         if (a == null) return false;
 
+        await ValidarDatosUnicosAsync(dto.Email, dto.Dni, id);
+
         a.Dni        = dto.Dni;
         a.Nombre     = dto.Nombre;
         a.Apellido   = dto.Apellido;
         a.Direccion  = dto.Direccion;
-        a.Email      = dto.Email;
+        a.Email      = dto.Email.Trim();
         a.Telefono   = dto.Telefono;
         a.EstaActivo = dto.EstaActivo;
 
@@ -88,6 +91,14 @@ public class AlumnoLogica : IAlumnoLogica
 
         await _repository.ActualizarAsync(a);
         return true;
+    }
+
+    private async Task ValidarDatosUnicosAsync(string email, int dni, int? excluirUsuarioId = null)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ReglaDeNegocioException("El email es obligatorio.");
+        if (await _repository.ExisteEmailODniAsync(email, dni, excluirUsuarioId))
+            throw new ReglaDeNegocioException("Ya existe un usuario con ese email o DNI.");
     }
 
     public async Task<bool> EliminarAsync(int id)

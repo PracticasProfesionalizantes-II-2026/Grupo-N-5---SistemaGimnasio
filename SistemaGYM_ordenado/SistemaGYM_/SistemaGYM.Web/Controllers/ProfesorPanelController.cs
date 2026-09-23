@@ -76,6 +76,20 @@ public class ProfesorPanelController : Controller
         return View(await _actividadService.ObtenerAlumnosInscriptosAsync(id));
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> QuitarAlumno(int actividadId, int alumnoId)
+    {
+        var actividad = await _actividadService.ObtenerPorIdAsync(actividadId);
+        if (actividad is null || actividad.ProfesorId != ProfesorId) return Forbid();
+
+        var ok = await _actividadService.DarDeBajaAlumnoAsync(alumnoId, actividadId);
+        TempData["Mensaje"] = ok
+            ? "El alumno fue dado de baja de la actividad."
+            : "No se pudo dar de baja al alumno de la actividad.";
+        return RedirectToAction(nameof(AlumnosActividad), new { id = actividadId });
+    }
+
     public async Task<IActionResult> Alimentaciones()
     {
         var planes = (await _alimentacionService.ObtenerTodasAsync()).Where(a => a.ProfesorId == ProfesorId).ToList();

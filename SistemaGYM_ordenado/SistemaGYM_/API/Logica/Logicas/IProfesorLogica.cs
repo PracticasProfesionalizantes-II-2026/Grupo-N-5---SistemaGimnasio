@@ -17,10 +17,12 @@ public interface IProfesorLogica
 public class ProfesorLogica : IProfesorLogica
 {
     private readonly IProfesorRepository _repository;
+    private readonly IAlumnoRepository _usuarioRepository;
 
-    public ProfesorLogica(IProfesorRepository repository)
+    public ProfesorLogica(IProfesorRepository repository, IAlumnoRepository usuarioRepository)
     {
         _repository = repository;
+        _usuarioRepository = usuarioRepository;
     }
 
     public async Task<IEnumerable<ProfesorDto>> ObtenerTodosAsync()
@@ -52,13 +54,14 @@ public class ProfesorLogica : IProfesorLogica
 
     public async Task<ProfesorDto> CrearAsync(ProfesorCreateDto dto)
     {
+        await ValidarDatosUnicosAsync(dto.Email, dto.Dni);
         var nuevo = new Profesor
         {
             Dni         = dto.Dni,
             Nombre      = dto.Nombre,
             Apellido    = dto.Apellido,
             Direccion   = dto.Direccion,
-            Email       = dto.Email,
+            Email       = dto.Email.Trim(),
             Telefono    = dto.Telefono,
             Titulo      = dto.Titulo,
             Descripcion = dto.Descripcion,
@@ -76,11 +79,13 @@ public class ProfesorLogica : IProfesorLogica
         var p = await _repository.ObtenerPorIdAsync(id);
         if (p == null) return false;
 
+        await ValidarDatosUnicosAsync(dto.Email, dto.Dni, id);
+
         p.Dni         = dto.Dni;
         p.Nombre      = dto.Nombre;
         p.Apellido    = dto.Apellido;
         p.Direccion   = dto.Direccion;
-        p.Email       = dto.Email;
+        p.Email       = dto.Email.Trim();
         p.Telefono    = dto.Telefono;
         p.Titulo      = dto.Titulo;
         p.Descripcion = dto.Descripcion;
@@ -91,6 +96,14 @@ public class ProfesorLogica : IProfesorLogica
 
         await _repository.ActualizarAsync(p);
         return true;
+    }
+
+    private async Task ValidarDatosUnicosAsync(string email, int dni, int? excluirUsuarioId = null)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ReglaDeNegocioException("El email es obligatorio.");
+        if (await _usuarioRepository.ExisteEmailODniAsync(email, dni, excluirUsuarioId))
+            throw new ReglaDeNegocioException("Ya existe un usuario con ese email o DNI.");
     }
 
     public async Task<bool> EliminarAsync(int id)

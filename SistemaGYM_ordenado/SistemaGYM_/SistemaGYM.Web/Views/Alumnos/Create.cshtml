@@ -13,11 +13,11 @@
     <div class="row">
         <div class="col-md-6 mb-3">
             <label class="form-label">DNI</label>
-            <input type="number" name="Dni" class="form-control" required />
+            <input type="text" name="Dni" class="form-control" inputmode="numeric" pattern="[0-9]{7,8}" maxlength="8" minlength="7" title="El DNI debe tener 7 u 8 dígitos" required />
         </div>
         <div class="col-md-6 mb-3">
             <label class="form-label">Teléfono</label>
-            <input type="text" name="Telefono" class="form-control" required />
+            <input type="tel" name="Telefono" class="form-control" inputmode="numeric" pattern="[0-9]{1,14}" maxlength="14" title="Ingresá hasta 14 dígitos" required />
         </div>
         <div class="col-md-6 mb-3">
             <label class="form-label">Nombre</label>

@@ -28,8 +28,14 @@ public class ProfesoresController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(ProfesorCreateDto dto)
+    public async Task<IActionResult> Create(ProfesorCreateDto dto, string confirmarContrasenia)
     {
+        if (dto.Contrasenia != confirmarContrasenia)
+        {
+            ViewBag.Error = "Las contraseñas no coinciden.";
+            return View();
+        }
+
         var (ok, error) = await _profesorService.CrearAsync(dto);
         if (!ok)
         {

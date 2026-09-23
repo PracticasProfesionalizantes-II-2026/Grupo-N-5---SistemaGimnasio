@@ -1,5 +1,5 @@
 @model List<ActividadDto>
-@{ ViewData["Title"] = "Todas las clases"; }
+@{ ViewData["Title"] = "Todas las clases"; var inscriptas = ViewBag.ActividadesInscritas as HashSet<int> ?? new(); }
 <h1 class="mb-4">Clases disponibles</h1>
 @if (TempData["Mensaje"] != null) { <div class="alert alert-info">@TempData["Mensaje"]</div> }
 
@@ -13,10 +13,17 @@
             <td>@a.Dias</td>
             <td>@a.HoraInicio.ToString("HH:mm") - @a.HoraFin.ToString("HH:mm")</td>
             <td class="text-end">
-                <form asp-action="Inscribirse" method="post" class="d-inline">
-                    <input type="hidden" name="actividadId" value="@a.ActividadId" />
-                    <button type="submit" class="btn btn-sm btn-dark">Inscribirme</button>
-                </form>
+                @if (inscriptas.Contains(a.ActividadId))
+                {
+                    <span class="badge text-bg-success">Ya estás inscripto</span>
+                }
+                else
+                {
+                    <form asp-action="Inscribirse" method="post" class="d-inline">
+                        <input type="hidden" name="actividadId" value="@a.ActividadId" />
+                        <button type="submit" class="btn btn-sm btn-dark">Inscribirme</button>
+                    </form>
+                }
             </td>
         </tr>
     }

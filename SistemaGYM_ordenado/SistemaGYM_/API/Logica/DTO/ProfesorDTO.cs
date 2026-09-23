@@ -24,7 +24,11 @@ public record ProfesorCreateDto(
     string Nombre, 
     string Apellido, 
     string Direccion, 
+    [param: Required(ErrorMessage = "El email es obligatorio")]
+    [param: EmailAddress(ErrorMessage = "Ingresá un email válido")]
     string Email, 
+    [param: MaxLength(14, ErrorMessage = "El teléfono debe tener como máximo 14 dígitos")]
+    [param: RegularExpression("^[0-9]+$", ErrorMessage = "El teléfono solo puede contener números")]
     string Telefono, 
     string Titulo,
     string Descripcion,
