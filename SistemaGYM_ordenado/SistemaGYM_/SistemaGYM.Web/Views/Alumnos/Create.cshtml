@@ -1,48 +1,60 @@
+@model AlumnoCreateDto?
+@*
+    El modelo llega vacío la primera vez. Si al guardar hubo un error (por ejemplo, DNI repetido),
+    el controlador devuelve lo que se había cargado para no tener que escribirlo de nuevo.
+*@
 @{
     ViewData["Title"] = "Registrar cliente";
+    var planes = ViewBag.Planes as List<SuscripcionDto> ?? new();
+    var suscripcionId = ViewBag.SuscripcionId as int?;
 }
 
 <h1 class="mb-4">Registrar cliente</h1>
-
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger">@ViewBag.Error</div>
-}
 
 <form method="post" asp-action="Create">
     <div class="row">
         <div class="col-md-6 mb-3">
             <label class="form-label">DNI</label>
-            <input type="text" name="Dni" class="form-control" inputmode="numeric" pattern="[0-9]{7,8}" maxlength="8" minlength="7" title="El DNI debe tener 7 u 8 dígitos" required />
+            <input type="text" name="Dni" value="@(Model?.Dni > 0 ? (int?)Model.Dni : null)" class="form-control" inputmode="numeric" pattern="[0-9]{7,8}" maxlength="8" minlength="7" title="El DNI debe tener 7 u 8 dígitos" required />
         </div>
         <div class="col-md-6 mb-3">
             <label class="form-label">Teléfono</label>
-            <input type="tel" name="Telefono" class="form-control" inputmode="numeric" pattern="[0-9]{1,14}" maxlength="14" title="Ingresá hasta 14 dígitos" required />
+            <input type="tel" name="Telefono" value="@Model?.Telefono" class="form-control" inputmode="numeric" pattern="[0-9]{1,14}" maxlength="14" title="Ingresá hasta 14 dígitos" required />
         </div>
         <div class="col-md-6 mb-3">
             <label class="form-label">Nombre</label>
-            <input type="text" name="Nombre" class="form-control" required />
+            <input type="text" name="Nombre" value="@Model?.Nombre" class="form-control" required />
         </div>
         <div class="col-md-6 mb-3">
             <label class="form-label">Apellido</label>
-            <input type="text" name="Apellido" class="form-control" required />
+            <input type="text" name="Apellido" value="@Model?.Apellido" class="form-control" required />
         </div>
     </div>
     <div class="mb-3">
         <label class="form-label">Dirección</label>
-        <input type="text" name="Direccion" class="form-control" required />
+        <input type="text" name="Direccion" value="@Model?.Direccion" class="form-control" required />
     </div>
     <div class="mb-3">
         <label class="form-label">Email</label>
-        <input type="email" name="Email" class="form-control" required />
+        <input type="email" name="Email" value="@Model?.Email" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Suscripción</label>
+        <select name="suscripcionId" class="form-select">
+            <option value="">Sin suscripción por ahora</option>
+            @foreach (var p in planes)
+            {
+                <option value="@p.Id" selected="@(p.Id == suscripcionId)">@p.Nombre ($@p.Precio - @p.DiasPorSemana día(s) por semana)</option>
+            }
+        </select>
     </div>
     <div class="mb-3">
         <label class="form-label">Contraseña</label>
-        <input type="password" name="Contrasenia" class="form-control" required />
+        <input type="password" name="Contrasenia" class="form-control" minlength="6" required />
     </div>
     <div class="form-check mb-3">
-        <input type="checkbox" name="EstaActivo" value="true" class="form-check-input" checked />
-        <label class="form-check-label">Activo</label>
+        <input type="checkbox" name="EstaActivo" value="true" id="estaActivo" class="form-check-input" checked />
+        <label class="form-check-label" for="estaActivo">Activo</label>
     </div>
     <button type="submit" class="btn btn-dark">Registrar cliente</button>
     <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>

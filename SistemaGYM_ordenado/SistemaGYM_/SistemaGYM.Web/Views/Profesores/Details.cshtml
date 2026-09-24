@@ -1,10 +1,6 @@
 @model ProfesorDetalleDto
 @{ ViewData["Title"] = "Detalle del profesor"; }
 
-@if (TempData["Mensaje"] != null)
-{
-    <div class="alert alert-success">@TempData["Mensaje"]</div>
-}
 
 <h1 class="mb-4">@Model.Nombre @Model.Apellido</h1>
 <dl class="row">

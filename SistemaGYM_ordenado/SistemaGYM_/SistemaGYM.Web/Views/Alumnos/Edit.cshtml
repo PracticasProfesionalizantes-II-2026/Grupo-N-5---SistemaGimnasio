@@ -2,20 +2,18 @@
 
 @{
     ViewData["Title"] = "Modificar cliente";
+    var planes = ViewBag.Planes as List<SuscripcionDto> ?? new();
+    var suscripcionId = ViewBag.SuscripcionId as int?;
 }
 
 <h1 class="mb-4">Modificar cliente</h1>
 
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger">@ViewBag.Error</div>
-}
 
 <form method="post" asp-action="Edit" asp-route-id="@Model.Id">
     <div class="row">
         <div class="col-md-6 mb-3">
             <label class="form-label">DNI</label>
-            <input type="number" name="Dni" class="form-control" value="@Model.Dni" required />
+            <input type="text" name="Dni" class="form-control" value="@Model.Dni" inputmode="numeric" pattern="[0-9]{7,8}" maxlength="8" minlength="7" title="El DNI debe tener 7 u 8 dígitos" required />
         </div>
         <div class="col-md-6 mb-3">
             <label class="form-label">Teléfono</label>
@@ -39,12 +37,23 @@
         <input type="email" name="Email" class="form-control" value="@Model.Email" required />
     </div>
     <div class="mb-3">
+        <label class="form-label">Suscripción</label>
+        <select name="suscripcionId" class="form-select">
+            <option value="">Sin suscripción</option>
+            @foreach (var p in planes)
+            {
+                <option value="@p.Id" selected="@(p.Id == suscripcionId)">@p.Nombre ($@p.Precio - @p.DiasPorSemana día(s) por semana)</option>
+            }
+        </select>
+        <div class="form-text">Si cambiás el plan, el anterior se cancela y el nuevo empieza hoy.</div>
+    </div>
+    <div class="mb-3">
         <label class="form-label">Nueva contraseña (dejar vacío para no cambiarla)</label>
         <input type="password" name="Contrasenia" class="form-control" />
     </div>
     <div class="form-check mb-3">
-        <input type="checkbox" name="EstaActivo" value="true" class="form-check-input" checked="@Model.EstaActivo" />
-        <label class="form-check-label">Activo</label>
+        <input type="checkbox" name="EstaActivo" value="true" id="estaActivo" class="form-check-input" checked="@Model.EstaActivo" />
+        <label class="form-check-label" for="estaActivo">Activo</label>
     </div>
     <button type="submit" class="btn btn-dark">Guardar cambios</button>
     <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancelar</a>

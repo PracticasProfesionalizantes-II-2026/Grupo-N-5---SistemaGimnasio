@@ -1,16 +1,20 @@
 @model AlimentacionDto
 @{
     ViewData["Title"] = Model.TipoAlimentacion;
-    var esAdmin = Context.Session.GetString("Rol") == "Administrador";
+    var puedeGestionar = ViewBag.PuedeGestionar == true;
 }
 <h1 class="mb-4">@Model.TipoAlimentacion</h1>
-<p style="white-space: pre-line;">@Model.Descripcion</p>
+<div class="gym-tarjeta mb-3" style="max-width: 820px;">
+    <p class="mb-0" style="white-space: pre-line;">@Model.Descripcion</p>
+</div>
 
-@if (esAdmin)
-{
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Modificar</a>
-    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('¿Está seguro que desea eliminar este plan?');">
-        <button type="submit" class="btn btn-danger">Eliminar</button>
-    </form>
-}
-<a asp-action="Index" class="btn btn-outline-dark">Volver</a>
+<div class="d-flex gap-2">
+    @if (puedeGestionar)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Modificar</a>
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline" data-confirmar="¿Está seguro que desea eliminar este plan?">
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+    }
+    <a asp-action="Index" class="btn btn-outline-dark">Volver</a>
+</div>

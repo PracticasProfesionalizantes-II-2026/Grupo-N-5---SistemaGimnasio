@@ -4,7 +4,6 @@
     <h1>Reporte de pagos</h1>
     <a asp-action="Create" class="btn btn-dark">+ Registrar pago</a>
 </div>
-@if (TempData["Mensaje"] != null) { <div class="alert alert-success">@TempData["Mensaje"]</div> }
 
 <form method="get" class="row g-2 mb-3">
     <div class="col-auto"><input type="date" name="fechaDesde" class="form-control" value="@ViewBag.FechaDesde" /></div>
@@ -29,7 +28,7 @@ else
                 <td>@p.MetodoPago</td>
                 <td>@p.AlumnoId</td>
                 <td class="text-end">
-                    <form asp-action="Delete" asp-route-id="@p.Id" method="post" class="d-inline" onsubmit="return confirm('¿Está seguro que desea eliminar este pago?');">
+                    <form asp-action="Delete" asp-route-id="@p.Id" method="post" class="d-inline" data-confirmar="¿Está seguro que desea eliminar este pago?">
                         <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                     </form>
                 </td>

@@ -48,12 +48,15 @@ public class ProfesorLogica : IProfesorLogica
         return new ProfesorDetalleDto(
             p.Id, p.Dni, p.Nombre, p.Apellido,
             p.Direccion ?? string.Empty, p.Email, p.Telefono,
-            p.Descripcion ?? string.Empty, p.Titulo ?? string.Empty, p.EstaActivo 
+            p.Titulo ?? string.Empty, p.Descripcion ?? string.Empty, p.EstaActivo
         );
     }
 
     public async Task<ProfesorDto> CrearAsync(ProfesorCreateDto dto)
     {
+        if (string.IsNullOrWhiteSpace(dto.Contrasenia))
+            throw new ReglaDeNegocioException("La contraseña es obligatoria.");
+
         await ValidarDatosUnicosAsync(dto.Email, dto.Dni);
         var nuevo = new Profesor
         {
@@ -103,7 +106,7 @@ public class ProfesorLogica : IProfesorLogica
         if (string.IsNullOrWhiteSpace(email))
             throw new ReglaDeNegocioException("El email es obligatorio.");
         if (await _usuarioRepository.ExisteEmailODniAsync(email, dni, excluirUsuarioId))
-            throw new ReglaDeNegocioException("Ya existe un usuario con ese email o DNI.");
+            throw new ReglaDeNegocioException("Ya existe un cliente o profesor registrado con ese email o DNI.");
     }
 
     public async Task<bool> EliminarAsync(int id)

@@ -25,6 +25,8 @@ public static class ActividadAlumnoEndpoints
                     Results.Json(new { status = 404, message = "Actividad no encontrada" }, statusCode: 404),
                 ResultadoInscripcion.YaInscripto =>
                     Results.Json(new { status = 409, message = "El alumno ya está inscripto en esta actividad" }, statusCode: 409),
+                ResultadoInscripcion.SinCupo =>
+                    Results.Json(new { status = 409, message = "La actividad no tiene cupo disponible" }, statusCode: 409),
                 _ =>
                     Results.Json(new { status = 201, message = "Inscripción realizada correctamente", data }, statusCode: 201)
             };

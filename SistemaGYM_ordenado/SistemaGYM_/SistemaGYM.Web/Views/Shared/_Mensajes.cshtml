@@ -1,0 +1,48 @@
+@*
+    Ventanas emergentes que se usan en todo el sistema (se incluyen desde _Layout).
+
+    1) Mensaje de resultado: se muestra sola al cargar la página si el controlador dejó
+       - TempData["Mensaje"]  -> operación exitosa
+       - TempData["Error"] o ViewBag.Error -> algo salió mal (ej: DNI repetido)
+
+    2) Confirmación: reemplaza al confirm() del navegador.
+       Para usarla, al <form> se le agrega data-confirmar="¿Está seguro...?" (ver site.js).
+*@
+@{
+    var error = ViewBag.Error as string ?? TempData["Error"] as string;
+    var mensaje = TempData["Mensaje"] as string;
+}
+
+@if (error != null || mensaje != null)
+{
+    <div class="modal fade" id="modalMensaje" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content gym-modal">
+                <button type="button" class="btn-close gym-modal-cerrar" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <div class="modal-body text-center">
+                    <div class="gym-modal-icono @(error != null ? "error" : "ok")">@(error != null ? "!" : "✓")</div>
+                    <p class="mb-0">@(error ?? mensaje)</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-dark px-5" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="modal fade" id="modalConfirmar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content gym-modal">
+            <button type="button" class="btn-close gym-modal-cerrar" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-body text-center">
+                <div class="gym-modal-icono pregunta">?</div>
+                <p class="mb-0" id="modalConfirmarTexto"></p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-danger px-4" id="modalConfirmarSi">Sí</button>
+                <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>

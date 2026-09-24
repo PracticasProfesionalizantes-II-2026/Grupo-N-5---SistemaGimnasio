@@ -58,10 +58,10 @@ public class ProfesoresController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, ProfesorCreateDto dto)
     {
-        var ok = await _profesorService.ActualizarAsync(id, dto);
+        var (ok, error) = await _profesorService.ActualizarAsync(id, dto);
         if (!ok)
         {
-            ViewBag.Error = "No se pudo modificar el profesor";
+            ViewBag.Error = error;
             return View(await _profesorService.ObtenerDetalleAsync(id));
         }
 
@@ -74,9 +74,10 @@ public class ProfesoresController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var eliminado = await _profesorService.EliminarAsync(id);
-        TempData["Mensaje"] = eliminado
-            ? "El profesor se ha dado de baja correctamente del sistema"
-            : "No se pudo dar de baja al profesor.";
+        if (eliminado)
+            TempData["Mensaje"] = "El profesor se ha dado de baja correctamente del sistema";
+        else
+            TempData["Error"] = "No se pudo dar de baja al profesor.";
         return RedirectToAction("Index");
     }
 }

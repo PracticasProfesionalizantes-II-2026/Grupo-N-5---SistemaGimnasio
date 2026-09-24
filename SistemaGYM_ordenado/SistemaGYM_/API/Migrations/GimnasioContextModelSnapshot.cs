@@ -30,6 +30,9 @@ namespace SistemaGYM_.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActividadId"));
 
+                    b.Property<int>("Cupo")
+                        .HasColumnType("int");
+
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasMaxLength(500)

@@ -1,6 +1,7 @@
 @model RutinaDto
 @{
     ViewData["Title"] = "Modificar rutina";
+    var esProfesor = Context.Session.GetString("Rol") == "Profesor";
     var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
     var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
 }
@@ -10,20 +11,35 @@
     <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="Nombre" class="form-control" value="@Model.Nombre" required /></div>
     <div class="mb-3">
         <label class="form-label">Descripción</label>
-        <textarea name="Descripcion" class="form-control" rows="5">@Model.Descripcion</textarea>
+        <textarea name="Descripcion" class="form-control" rows="6" required>@Model.Descripcion</textarea>
     </div>
     <div class="mb-3">
         <label class="form-label">Alumno</label>
         <select name="AlumnoId" class="form-select" required>
-            @foreach (var a in alumnos) { <option value="@a.Id" selected="@(a.Id == Model.AlumnoId)">@a.Nombre @a.Apellido</option> }
+            @foreach (var a in alumnos.OrderBy(a => a.Apellido)) { <option value="@a.Id" selected="@(a.Id == Model.AlumnoId)">@a.Apellido, @a.Nombre</option> }
         </select>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Profesor</label>
-        <select name="ProfesorId" class="form-select" required>
-            @foreach (var p in profesores) { <option value="@p.Id" selected="@(p.Id == Model.ProfesorId)">@p.Nombre @p.Apellido</option> }
-        </select>
-    </div>
+    @if (esProfesor)
+    {
+        @* El profesor no elige profesor: la rutina sigue siendo suya (el controlador lo fuerza igual) *@
+        <input type="hidden" name="ProfesorId" value="@Model.ProfesorId" />
+    }
+    else
+    {
+        <div class="mb-3">
+            <label class="form-label">Profesor</label>
+            <select name="ProfesorId" class="form-select" required>
+                @foreach (var p in profesores) { <option value="@p.Id" selected="@(p.Id == Model.ProfesorId)">@p.Nombre @p.Apellido</option> }
+            </select>
+        </div>
+    }
     <button type="submit" class="btn btn-dark">Guardar cambios</button>
-    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    @if (esProfesor)
+    {
+        <a asp-controller="ProfesorPanel" asp-action="Rutinas" class="btn btn-outline-secondary">Cancelar</a>
+    }
+    else
+    {
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    }
 </form>

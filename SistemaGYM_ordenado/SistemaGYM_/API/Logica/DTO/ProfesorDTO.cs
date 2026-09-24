@@ -20,6 +20,7 @@ public record ProfesorDetalleDto(
 
 
 public record ProfesorCreateDto(
+    [param: Range(1000000, 99999999, ErrorMessage = "El DNI debe tener 7 u 8 dígitos")]
     int Dni, 
     string Nombre, 
     string Apellido, 
@@ -34,7 +35,7 @@ public record ProfesorCreateDto(
     string Descripcion,
     bool EstaActivo,
 
-    [Required(ErrorMessage = "La contraseña es obligatoria")]
-    [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
+    // Igual que en AlumnoCreateDto: al modificar se puede dejar vacía para no cambiarla.
+    [param: MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
     string Contrasenia
 );

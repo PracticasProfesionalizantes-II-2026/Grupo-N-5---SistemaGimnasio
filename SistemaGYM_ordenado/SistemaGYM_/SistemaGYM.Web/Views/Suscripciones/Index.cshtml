@@ -4,7 +4,6 @@
     <h1>Planes de suscripción</h1>
     <a asp-action="Create" class="btn btn-dark">+ Registrar suscripción</a>
 </div>
-@if (TempData["Mensaje"] != null) { <div class="alert alert-success">@TempData["Mensaje"]</div> }
 @if (!Model.Any())
 {
     <div class="alert alert-info">No hay planes de suscripción cargados.</div>
@@ -20,7 +19,7 @@ else
                 <td>@s.Nombre</td><td>$@s.Precio</td><td>@s.DiasPorSemana día(s) por semana</td><td>1 mes</td>
                 <td class="text-end">
                     <a asp-action="Edit" asp-route-id="@s.Id" class="btn btn-sm btn-outline-secondary">Modificar</a>
-                    <form asp-action="Delete" asp-route-id="@s.Id" method="post" class="d-inline" onsubmit="return confirm('¿Está seguro que desea eliminar la suscripción @s.Nombre del sistema?');">
+                    <form asp-action="Delete" asp-route-id="@s.Id" method="post" class="d-inline" data-confirmar="¿Está seguro que desea eliminar la suscripción @s.Nombre del sistema?">
                         <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                     </form>
                 </td>

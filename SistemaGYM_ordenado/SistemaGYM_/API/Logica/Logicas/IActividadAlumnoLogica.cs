@@ -10,6 +10,7 @@ public enum ResultadoInscripcion
     AlumnoNoEncontrado,
     ActividadNoEncontrada,
     YaInscripto,
+    SinCupo,
     InscripcionNoEncontrada
 }
 
@@ -41,13 +42,18 @@ public class ActividadAlumnoLogica : IActividadAlumnoLogica
         if (await _alumnoRepo.ObtenerPorIdAsync(alumnoId) is null)
             return (ResultadoInscripcion.AlumnoNoEncontrado, null);
 
-        if (await _actividadRepo.ObtenerPorIdAsync(actividadId) is null)
+        var actividad = await _actividadRepo.ObtenerPorIdAsync(actividadId);
+        if (actividad is null)
             return (ResultadoInscripcion.ActividadNoEncontrada, null);
 
         var existente = await _repo.ObtenerAsync(alumnoId, actividadId);
 
         if (existente is { Activa: true })
             return (ResultadoInscripcion.YaInscripto, null);
+
+        // Si ya se llenó el cupo no se aceptan más inscripciones
+        if (actividad.ActividadesAlumno.Count(x => x.Activa) >= actividad.Cupo)
+            return (ResultadoInscripcion.SinCupo, null);
 
         if (existente is { Activa: false })
         {

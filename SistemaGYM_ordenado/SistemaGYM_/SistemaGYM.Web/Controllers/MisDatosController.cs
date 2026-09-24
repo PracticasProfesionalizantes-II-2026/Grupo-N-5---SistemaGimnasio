@@ -35,10 +35,10 @@ public class MisDatosController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Editar(AlumnoCreateDto dto)
     {
-        var ok = await _alumnoService.ActualizarAsync(AlumnoId, dto);
+        var (ok, error) = await _alumnoService.ActualizarAsync(AlumnoId, dto);
         if (!ok)
         {
-            ViewBag.Error = "No se pudieron actualizar los datos";
+            ViewBag.Error = error;
             return View(await _alumnoService.ObtenerDetalleAsync(AlumnoId));
         }
 

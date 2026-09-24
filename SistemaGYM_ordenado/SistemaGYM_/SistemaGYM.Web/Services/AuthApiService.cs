@@ -33,7 +33,6 @@ public class AuthApiService : IAuthApiService
         var response = await _http.PostAsJsonAsync("auth/resetear-contrasenia", new ResetPasswordDto(email, dni, nuevaContrasenia));
         if (response.IsSuccessStatusCode) return (true, null);
 
-        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
-        return (false, resultado?.Message ?? "No se pudo restablecer la contraseña");
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo restablecer la contraseña"));
     }
 }

@@ -9,7 +9,7 @@ public interface IActividadApiService
     Task<List<ActividadDto>> ObtenerTodasAsync();
     Task<ActividadDto?> ObtenerPorIdAsync(int id);
     Task<(bool ok, string? error)> CrearAsync(ActividadCreateDto dto);
-    Task<bool> ActualizarAsync(int id, ActividadCreateDto dto);
+    Task<(bool ok, string? error)> ActualizarAsync(int id, ActividadCreateDto dto);
     Task<bool> EliminarAsync(int id);
     Task<List<AlumnoInscriptoDto>> ObtenerAlumnosInscriptosAsync(int actividadId);
     Task<(bool ok, string? error)> InscribirAlumnoAsync(int alumnoId, int actividadId);
@@ -49,14 +49,14 @@ public class ActividadApiService : IActividadApiService
     {
         var response = await _http.PostAsJsonAsync("actividades", dto);
         if (response.IsSuccessStatusCode) return (true, null);
-        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
-        return (false, resultado?.Message ?? "No se pudo registrar la actividad");
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar la actividad"));
     }
 
-    public async Task<bool> ActualizarAsync(int id, ActividadCreateDto dto)
+    public async Task<(bool ok, string? error)> ActualizarAsync(int id, ActividadCreateDto dto)
     {
         var response = await _http.PutAsJsonAsync($"actividades/{id}", dto);
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo modificar la actividad."));
     }
 
     public async Task<bool> EliminarAsync(int id)
@@ -77,8 +77,7 @@ public class ActividadApiService : IActividadApiService
     {
         var response = await _http.PostAsync($"alumnos/{alumnoId}/actividades/{actividadId}", null);
         if (response.IsSuccessStatusCode) return (true, null);
-        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
-        return (false, resultado?.Message ?? "No se pudo inscribir al alumno");
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo inscribir al alumno"));
     }
 
     public async Task<bool> DarDeBajaAlumnoAsync(int alumnoId, int actividadId)

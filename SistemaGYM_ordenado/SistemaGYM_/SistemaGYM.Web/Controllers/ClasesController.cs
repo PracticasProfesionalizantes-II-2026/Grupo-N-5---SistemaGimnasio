@@ -40,7 +40,10 @@ public class ClasesController : Controller
     public async Task<IActionResult> Inscribirse(int actividadId)
     {
         var (ok, error) = await _actividadService.InscribirAlumnoAsync(AlumnoId, actividadId);
-        TempData["Mensaje"] = ok ? "Te inscribiste correctamente a la actividad" : error;
+        if (ok)
+            TempData["Mensaje"] = "Te inscribiste correctamente a la actividad";
+        else
+            TempData["Error"] = error;
         return RedirectToAction("Todas");
     }
 
@@ -56,6 +59,7 @@ public class ClasesController : Controller
         ViewBag.Actividad = actividad;
         ViewBag.Profesor = profesor;
         ViewBag.CantidadAlumnos = inscriptos.Count(i => i.Activa);
+        ViewBag.EstaInscripto = inscriptos.Any(i => i.Activa && i.AlumnoId == AlumnoId);
         return View();
     }
 

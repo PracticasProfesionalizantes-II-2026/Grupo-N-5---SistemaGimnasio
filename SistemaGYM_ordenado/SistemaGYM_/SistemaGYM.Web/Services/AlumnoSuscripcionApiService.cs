@@ -32,8 +32,7 @@ public class AlumnoSuscripcionApiService : IAlumnoSuscripcionApiService
     {
         var response = await _http.PostAsJsonAsync($"alumnos/{alumnoId}/suscripciones", new AsignarSuscripcionDto(suscripcionId));
         if (response.IsSuccessStatusCode) return (true, null);
-        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
-        return (false, resultado?.Message ?? "No se pudo asignar la suscripción");
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo asignar la suscripción"));
     }
 
     public async Task<bool> CancelarAsync(int alumnoId, int alumnoSuscripcionId)

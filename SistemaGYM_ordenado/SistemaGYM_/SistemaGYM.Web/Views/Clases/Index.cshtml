@@ -4,7 +4,6 @@
     <h1>Mis Clases</h1>
     <a asp-action="Todas" class="btn btn-dark">Ver todas las clases</a>
 </div>
-@if (TempData["Mensaje"] != null) { <div class="alert alert-success">@TempData["Mensaje"]</div> }
 
 @if (!Model.Any())
 {

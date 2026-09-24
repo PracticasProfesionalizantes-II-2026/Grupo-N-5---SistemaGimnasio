@@ -1,7 +1,47 @@
 @using SistemaGYM.Logica.DTOs
-@{ ViewData["Title"] = "Asignar rutina"; var actividad = ViewBag.Actividad as ActividadDto; var alumnos = ViewBag.Alumnos as List<AlumnoInscriptoDto> ?? new(); }
+@{
+    ViewData["Title"] = "Asignar rutina";
+    var actividad = ViewBag.Actividad as ActividadDto;
+    var alumnos = ViewBag.Alumnos as List<AlumnoInscriptoDto> ?? new();
+}
 <h1 class="mb-2">Asignar rutina</h1>
-<p class="text-muted">Actividad: <strong>@actividad?.Nombre</strong></p>
-@if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
-@if (!alumnos.Any()) { <div class="alert alert-warning">No hay alumnos activos inscriptos en esta actividad.</div> }
-else { <form method="post" asp-action="CrearRutina"><input type="hidden" name="actividadId" value="@actividad?.ActividadId" /><div class="mb-3"><label class="form-label">Alumno inscripto</label><select name="alumnoId" class="form-select" required><option value="">-- Seleccionar --</option>@foreach (var alumno in alumnos) { <option value="@alumno.AlumnoId">@alumno.Nombre @alumno.Apellido</option> }</select></div><div class="mb-3"><label class="form-label">Nombre de la rutina</label><input name="nombre" class="form-control" placeholder="Ej: Fuerza inicial CrossFit" required /></div><div class="mb-3"><label class="form-label">Ejercicios, series y repeticiones</label><textarea name="descripcion" class="form-control" rows="6" required></textarea></div><button class="btn btn-dark">Asignar rutina</button> <a asp-action="Actividades" class="btn btn-outline-secondary">Cancelar</a></form> }
+<p class="text-muted mb-4">Actividad: <strong>@actividad?.Nombre</strong></p>
+
+@if (!alumnos.Any())
+{
+    <div class="alert alert-warning">No hay alumnos activos inscriptos en esta actividad.</div>
+    <a asp-action="Actividades" class="btn btn-outline-dark">Volver</a>
+}
+else
+{
+    <form method="post" asp-action="CrearRutina">
+        <input type="hidden" name="actividadId" value="@actividad?.ActividadId" />
+
+        <div class="mb-3">
+            <label class="form-label">Alumnos a los que se asigna la rutina</label>
+            <div class="gym-lista-check">
+                <div class="form-check border-bottom pb-2 mb-1">
+                    <input class="form-check-input" type="checkbox" id="todos" data-seleccionar-todos="alumnoIds" />
+                    <label class="form-check-label fw-semibold" for="todos">Seleccionar todos</label>
+                </div>
+                @foreach (var alumno in alumnos)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="alumnoIds" value="@alumno.AlumnoId" id="@($"alumno_{alumno.AlumnoId}")" />
+                        <label class="form-check-label" for="@($"alumno_{alumno.AlumnoId}")">@alumno.Nombre @alumno.Apellido</label>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nombre de la rutina</label>
+            <input name="nombre" class="form-control" placeholder="Ej: Fuerza inicial CrossFit" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ejercicios, series y repeticiones</label>
+            <textarea name="descripcion" class="form-control" rows="6" required></textarea>
+        </div>
+        <button class="btn btn-dark">Asignar rutina</button>
+        <a asp-action="Actividades" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+}

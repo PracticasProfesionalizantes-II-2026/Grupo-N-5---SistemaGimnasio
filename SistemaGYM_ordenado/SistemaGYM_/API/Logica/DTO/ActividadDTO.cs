@@ -9,7 +9,9 @@ public record ActividadDto(
     TimeOnly HoraInicio, 
     TimeOnly HoraFin, 
     int ProfesorId, 
-    DiasSemana Dias
+    DiasSemana Dias,
+    int Cupo,
+    int Inscriptos   // alumnos con inscripción activa (para mostrar "5 / 20")
 );
 
 public record ActividadCreateDto(
@@ -27,5 +29,8 @@ public record ActividadCreateDto(
     [Range(1, int.MaxValue, ErrorMessage = "Debe indicar un profesor válido")]
     int ProfesorId,
 
-    DiasSemana Dias
+    DiasSemana Dias,
+
+    [Range(1, 500, ErrorMessage = "El cupo debe estar entre 1 y 500 alumnos")]
+    int Cupo
 );

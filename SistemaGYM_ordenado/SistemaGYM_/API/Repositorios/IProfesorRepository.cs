@@ -27,8 +27,9 @@ public class ProfesorRepository : IProfesorRepository
     public async Task<Profesor?> ObtenerPorEmailAsync(string email) =>
     await _db.Profesores.FirstOrDefaultAsync(p => p.Email == email);
 
+    // Igual que con los alumnos: los profesores dados de baja no se listan
     public async Task<IEnumerable<Profesor>> ObtenerTodosAsync() =>
-        await _db.Profesores.ToListAsync();
+        await _db.Profesores.Where(p => p.EstaActivo).ToListAsync();
 
     public async Task<Profesor?> ObtenerPorIdAsync(int id) =>
         await _db.Profesores.FindAsync(id);

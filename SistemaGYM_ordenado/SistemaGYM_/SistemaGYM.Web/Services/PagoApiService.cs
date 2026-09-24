@@ -32,8 +32,7 @@ public class PagoApiService : IPagoApiService
     {
         var response = await _http.PostAsJsonAsync("pagos", dto);
         if (response.IsSuccessStatusCode) return (true, null);
-        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
-        return (false, resultado?.Message ?? "No se pudo registrar el pago");
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar el pago"));
     }
 
     public async Task<bool> EliminarAsync(int id)

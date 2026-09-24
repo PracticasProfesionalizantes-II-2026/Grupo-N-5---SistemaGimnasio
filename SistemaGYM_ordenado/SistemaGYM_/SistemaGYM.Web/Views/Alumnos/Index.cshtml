@@ -2,21 +2,62 @@
 
 @{
     ViewData["Title"] = "Clientes";
+    var esAdmin = Context.Session.GetString("Rol") == "Administrador";
+    var planes = ViewBag.Planes as List<SuscripcionDto> ?? new();
+    var suscripcionElegida = ViewBag.Suscripcion as string;
+    bool hayFiltros = !string.IsNullOrWhiteSpace(ViewBag.Buscar as string) || !string.IsNullOrWhiteSpace(suscripcionElegida)
+                      || ViewBag.AltaDesde as string != null || ViewBag.AltaHasta as string != null;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Clientes registrados</h1>
-    <a asp-action="Create" class="btn btn-dark">+ Registrar cliente</a>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <h1 class="mb-0">Clientes registrados</h1>
+    @if (esAdmin)
+    {
+        <a asp-action="Create" class="btn btn-dark">+ Registrar cliente</a>
+    }
 </div>
 
-@if (TempData["Mensaje"] != null)
-{
-    <div class="alert alert-success">@TempData["Mensaje"]</div>
-}
+@* Buscador: todos los campos son opcionales y se pueden combinar *@
+<form method="get" asp-action="Index" class="gym-filtros">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label">Buscar</label>
+            <input type="search" name="buscar" value="@ViewBag.Buscar" class="form-control" placeholder="Nombre, apellido, DNI o email" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Suscripción</label>
+            <select name="suscripcion" class="form-select">
+                <option value="">Todas</option>
+                @foreach (var p in planes)
+                {
+                    <option value="@p.Nombre" selected="@(p.Nombre == suscripcionElegida)">@p.Nombre</option>
+                }
+                <option value="Sin suscripción" selected="@(suscripcionElegida == "Sin suscripción")">Sin suscripción</option>
+            </select>
+        </div>
+        <div class="col-6 col-md-2">
+            <label class="form-label">Alta desde</label>
+            <input type="date" name="altaDesde" value="@ViewBag.AltaDesde" class="form-control" />
+        </div>
+        <div class="col-6 col-md-2">
+            <label class="form-label">Alta hasta</label>
+            <input type="date" name="altaHasta" value="@ViewBag.AltaHasta" class="form-control" />
+        </div>
+        <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-dark">Buscar</button>
+        </div>
+    </div>
+    @if (hayFiltros)
+    {
+        <div class="mt-2 small">
+            @Model.Count resultado(s) · <a asp-action="Index">Limpiar filtros</a>
+        </div>
+    }
+</form>
 
 @if (!Model.Any())
 {
-    <div class="alert alert-info">No hay clientes cargados todavía.</div>
+    <div class="alert alert-info">@(hayFiltros ? "No se encontraron clientes con esos filtros." : "No hay clientes cargados todavía.")</div>
 }
 else
 {
@@ -25,7 +66,8 @@ else
             <tr>
                 <th>DNI</th>
                 <th>Nombre</th>
-                <th>Apellido</th>
+                <th>Suscripción</th>
+                <th>Alta</th>
                 <th class="text-end">Acciones</th>
             </tr>
         </thead>
@@ -34,14 +76,21 @@ else
         {
             <tr>
                 <td>@alumno.Dni</td>
-                <td>@alumno.Nombre</td>
-                <td>@alumno.Apellido</td>
+                <td>
+                    <strong>@alumno.Apellido, @alumno.Nombre</strong>
+                    <div class="small text-muted">@alumno.Email</div>
+                </td>
+                <td>@alumno.Suscripcion</td>
+                <td>@alumno.FechaAlta.ToString("dd/MM/yyyy")</td>
                 <td class="text-end">
                     <a asp-action="Details" asp-route-id="@alumno.Id" class="btn btn-sm btn-outline-primary">Ver detalle</a>
-                    <a asp-action="Edit" asp-route-id="@alumno.Id" class="btn btn-sm btn-outline-secondary">Modificar</a>
-                    <form asp-action="Delete" asp-route-id="@alumno.Id" method="post" class="d-inline" onsubmit="return confirm('¿Está seguro que desea eliminar al cliente @alumno.Nombre @alumno.Apellido del sistema?');">
-                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                    </form>
+                    @if (esAdmin)
+                    {
+                        <a asp-action="Edit" asp-route-id="@alumno.Id" class="btn btn-sm btn-outline-secondary">Modificar</a>
+                        <form asp-action="Delete" asp-route-id="@alumno.Id" method="post" class="d-inline" data-confirmar="¿Está seguro que desea eliminar al cliente @alumno.Nombre @alumno.Apellido del sistema?">
+                            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                        </form>
+                    }
                 </td>
             </tr>
         }
