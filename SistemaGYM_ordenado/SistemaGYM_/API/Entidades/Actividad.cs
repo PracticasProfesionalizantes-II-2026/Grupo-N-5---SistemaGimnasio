@@ -22,5 +22,8 @@ namespace SistemaGYM.Entidades;
         public Profesor Profesor { get; set; } = null!;
         [Required]
         public DiasSemana Dias { get; set; }
+        // Cantidad máxima de alumnos que pueden inscribirse a la actividad.
+        [Range(1, 500)]
+        public int Cupo { get; set; } = 20;
         public ICollection<ActividadAlumno> ActividadesAlumno { get; set; } = new List<ActividadAlumno>();
     }

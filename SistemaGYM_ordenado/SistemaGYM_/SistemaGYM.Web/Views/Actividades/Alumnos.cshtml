@@ -3,7 +3,8 @@
     ViewData["Title"] = "Alumnos inscriptos";
     var actividad = ViewBag.Actividad as ActividadDto;
 }
-<h1 class="mb-4">Alumnos inscriptos en @actividad?.Nombre</h1>
+<h1 class="mb-2">Alumnos inscriptos en @actividad?.Nombre</h1>
+<p class="text-muted mb-4">Cupo ocupado: @actividad?.Inscriptos de @actividad?.Cupo</p>
 
 @if (!Model.Any())
 {
@@ -11,14 +12,22 @@
 }
 else
 {
-    <table class="table table-striped">
-        <thead><tr><th>Nombre</th><th>Apellido</th><th>Fecha inscripción</th><th>Estado</th></tr></thead>
+    <table class="table table-striped align-middle">
+        <thead><tr><th>Nombre</th><th>Apellido</th><th>Fecha inscripción</th><th class="text-end">Acciones</th></tr></thead>
         <tbody>
         @foreach (var a in Model)
         {
             <tr>
-                <td>@a.Nombre</td><td>@a.Apellido</td><td>@a.FechaInscripcion.ToString("dd/MM/yyyy")</td>
-                <td><span class="badge @(a.Activa ? "bg-success" : "bg-secondary")">@(a.Activa ? "Activa" : "Inactiva")</span></td>
+                <td>@a.Nombre</td>
+                <td>@a.Apellido</td>
+                <td>@a.FechaInscripcion.ToString("dd/MM/yyyy")</td>
+                <td class="text-end">
+                    <form asp-action="QuitarAlumno" method="post" class="d-inline" data-confirmar="¿Dar de baja a @a.Nombre @a.Apellido de esta actividad?">
+                        <input type="hidden" name="actividadId" value="@actividad?.ActividadId" />
+                        <input type="hidden" name="alumnoId" value="@a.AlumnoId" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Quitar de la actividad</button>
+                    </form>
+                </td>
             </tr>
         }
         </tbody>

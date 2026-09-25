@@ -60,8 +60,11 @@ public class SuscripcionesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        await _suscripcionService.EliminarAsync(id);
-        TempData["Mensaje"] = "La suscripción se ha eliminado con éxito del sistema";
+        var ok = await _suscripcionService.EliminarAsync(id);
+        if (ok)
+            TempData["Mensaje"] = "La suscripción se ha eliminado con éxito del sistema";
+        else
+            TempData["Error"] = "No se pudo eliminar la suscripción. Revisá que no haya clientes con ese plan.";
         return RedirectToAction("Index");
     }
 }

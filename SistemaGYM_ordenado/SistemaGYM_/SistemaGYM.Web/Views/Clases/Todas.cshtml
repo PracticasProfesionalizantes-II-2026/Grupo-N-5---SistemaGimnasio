@@ -1,21 +1,30 @@
 @model List<ActividadDto>
-@{ ViewData["Title"] = "Todas las clases"; var inscriptas = ViewBag.ActividadesInscritas as HashSet<int> ?? new(); }
+@{
+    ViewData["Title"] = "Todas las clases";
+    var inscriptas = ViewBag.ActividadesInscritas as HashSet<int> ?? new();
+}
 <h1 class="mb-4">Clases disponibles</h1>
-@if (TempData["Mensaje"] != null) { <div class="alert alert-info">@TempData["Mensaje"]</div> }
 
 <table class="table table-striped table-hover align-middle">
-    <thead><tr><th>Nombre</th><th>Días</th><th>Horario</th><th class="text-end">Acción</th></tr></thead>
+    <thead><tr><th>Nombre</th><th>Días</th><th>Horario</th><th>Cupo</th><th class="text-end">Inscripción</th></tr></thead>
     <tbody>
     @foreach (var a in Model)
     {
+        var sinCupo = a.Inscriptos >= a.Cupo;
         <tr>
-            <td>@a.Nombre</td>
+            <td><strong>@a.Nombre</strong></td>
             <td>@a.Dias</td>
             <td>@a.HoraInicio.ToString("HH:mm") - @a.HoraFin.ToString("HH:mm")</td>
+            <td><span class="gym-cupo @(sinCupo ? "lleno" : "")">@a.Inscriptos / @a.Cupo</span></td>
             <td class="text-end">
                 @if (inscriptas.Contains(a.ActividadId))
                 {
-                    <span class="badge text-bg-success">Ya estás inscripto</span>
+                    @* Ya inscripto: el botón se reemplaza por una tilde *@
+                    <span class="gym-tilde" title="Ya estás inscripto">✓</span>
+                }
+                else if (sinCupo)
+                {
+                    <button type="button" class="btn btn-sm btn-outline-secondary" disabled>Sin cupo</button>
                 }
                 else
                 {

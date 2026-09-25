@@ -6,7 +6,10 @@ public record AlumnoDto(
     int Id, 
     int Dni, 
     string Nombre, 
-    string Apellido
+    string Apellido,
+    string Email,
+    string Suscripcion,   // nombre del plan activo o "Sin suscripción"
+    DateTime FechaAlta
 );
 
 public record AlumnoDetalleDto(
@@ -22,6 +25,7 @@ public record AlumnoDetalleDto(
 );
 
 public record AlumnoCreateDto(
+    [param: Range(1000000, 99999999, ErrorMessage = "El DNI debe tener 7 u 8 dígitos")]
     int Dni, 
     string Nombre, 
     string Apellido, 
@@ -34,7 +38,8 @@ public record AlumnoCreateDto(
     string Telefono, 
     bool EstaActivo,
 
-    [ Required(ErrorMessage = "La contraseña es obligatoria")]
-    [ MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
+    // No es [Required] porque al modificar un cliente se puede dejar vacía para no cambiarla.
+    // Al crear, AlumnoLogica controla que venga cargada.
+    [param: MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
     string Contrasenia
 );

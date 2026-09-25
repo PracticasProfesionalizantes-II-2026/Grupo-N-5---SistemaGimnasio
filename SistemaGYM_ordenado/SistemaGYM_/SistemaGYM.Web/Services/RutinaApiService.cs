@@ -8,7 +8,7 @@ public interface IRutinaApiService
 {
     Task<List<RutinaDto>> ObtenerTodasAsync();
     Task<(bool ok, string? error)> CrearAsync(RutinaCreateDto dto);
-    Task<bool> ActualizarAsync(int id, RutinaCreateDto dto);
+    Task<(bool ok, string? error)> ActualizarAsync(int id, RutinaCreateDto dto);
     Task<bool> EliminarAsync(int id);
     Task<List<RutinaDto>> ObtenerDeAlumnoAsync(int alumnoId);
     Task<List<RutinaDto>> ObtenerDeProfesorAsync(int profesorId);
@@ -35,14 +35,14 @@ public class RutinaApiService : IRutinaApiService
     {
         var response = await _http.PostAsJsonAsync("rutinas", dto);
         if (response.IsSuccessStatusCode) return (true, null);
-        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
-        return (false, resultado?.Message ?? "No se pudo registrar la rutina");
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar la rutina"));
     }
 
-    public async Task<bool> ActualizarAsync(int id, RutinaCreateDto dto)
+    public async Task<(bool ok, string? error)> ActualizarAsync(int id, RutinaCreateDto dto)
     {
         var response = await _http.PutAsJsonAsync($"rutinas/{id}", dto);
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo modificar la rutina."));
     }
 
     public async Task<bool> EliminarAsync(int id)

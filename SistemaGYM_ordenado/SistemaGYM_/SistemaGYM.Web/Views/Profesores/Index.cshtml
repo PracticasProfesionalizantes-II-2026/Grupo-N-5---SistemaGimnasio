@@ -6,10 +6,6 @@
     <a asp-action="Create" class="btn btn-dark">+ Registrar profesor</a>
 </div>
 
-@if (TempData["Mensaje"] != null)
-{
-    <div class="alert alert-success">@TempData["Mensaje"]</div>
-}
 
 @if (!Model.Any())
 {
@@ -27,7 +23,7 @@ else
                 <td class="text-end">
                     <a asp-action="Details" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary">Ver detalle</a>
                     <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-outline-secondary">Modificar</a>
-                    <form asp-action="Delete" asp-route-id="@p.Id" method="post" class="d-inline" onsubmit="return confirm('¿Está seguro que desea eliminar al profesor @p.Nombre @p.Apellido del sistema?');">
+                    <form asp-action="Delete" asp-route-id="@p.Id" method="post" class="d-inline" data-confirmar="¿Está seguro que desea eliminar al profesor @p.Nombre @p.Apellido del sistema?">
                         <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                     </form>
                 </td>

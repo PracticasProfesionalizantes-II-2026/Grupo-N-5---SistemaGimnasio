@@ -31,16 +31,22 @@ public class AlumnoApiService : IAlumnoApiService
         return resultado?.Data;
     }
 
-    public async Task<bool> CrearAsync(AlumnoCreateDto dto)
+    // Devuelve también el alumno creado, así se le puede asignar la suscripción con su Id
+    public async Task<(bool ok, string? error, AlumnoDto? creado)> CrearAsync(AlumnoCreateDto dto)
     {
         var response = await _http.PostAsJsonAsync("alumnos", dto);
-        return response.IsSuccessStatusCode;
+        if (!response.IsSuccessStatusCode)
+            return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar el cliente."), null);
+
+        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<AlumnoDto>>();
+        return (true, null, resultado?.Data);
     }
 
-    public async Task<bool> ActualizarAsync(int id, AlumnoCreateDto dto)
+    public async Task<(bool ok, string? error)> ActualizarAsync(int id, AlumnoCreateDto dto)
     {
         var response = await _http.PutAsJsonAsync($"alumnos/{id}", dto);
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo modificar el cliente."));
     }
 
     public async Task<bool> EliminarAsync(int id)

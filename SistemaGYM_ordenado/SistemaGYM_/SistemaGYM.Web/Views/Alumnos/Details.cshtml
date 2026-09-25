@@ -4,10 +4,6 @@
     ViewData["Title"] = "Detalle del cliente";
 }
 
-@if (TempData["Mensaje"] != null)
-{
-    <div class="alert alert-success">@TempData["Mensaje"]</div>
-}
 
 <h1 class="mb-4">@Model.Nombre @Model.Apellido</h1>
 
@@ -35,5 +31,8 @@
     </dd>
 </dl>
 
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Modificar</a>
+@if (Context.Session.GetString("Rol") == "Administrador")
+{
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Modificar</a>
+}
 <a asp-action="Index" class="btn btn-outline-dark">Volver al listado</a>

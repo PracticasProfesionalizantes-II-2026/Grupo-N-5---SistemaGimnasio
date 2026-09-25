@@ -3,18 +3,27 @@
     ViewData["Title"] = "Alimentación";
     var esAdmin = Context.Session.GetString("Rol") == "Administrador";
 }
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Planes de alimentación</h1>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <h1 class="mb-0">Planes de alimentación</h1>
     @if (esAdmin)
     {
         <a asp-action="Create" class="btn btn-dark">+ Crear plan</a>
     }
 </div>
-@if (TempData["Mensaje"] != null) { <div class="alert alert-success">@TempData["Mensaje"]</div> }
 
-<div class="list-group">
-@foreach (var a in Model)
+@if (!Model.Any())
 {
-    <a asp-action="Details" asp-route-id="@a.Id" class="list-group-item list-group-item-action">@a.TipoAlimentacion</a>
+    <div class="alert alert-info">Todavía no hay planes de alimentación disponibles.</div>
 }
-</div>
+else
+{
+    <div class="list-group">
+    @foreach (var a in Model)
+    {
+        <a asp-action="Details" asp-route-id="@a.Id" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <strong>@a.TipoAlimentacion</strong>
+            <span class="badge text-bg-light">@(a.AlumnoNombre ?? "Plan general")</span>
+        </a>
+    }
+    </div>
+}

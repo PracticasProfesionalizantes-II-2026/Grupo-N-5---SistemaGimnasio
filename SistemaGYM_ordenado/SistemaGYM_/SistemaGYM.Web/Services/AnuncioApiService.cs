@@ -33,8 +33,7 @@ public class AnuncioApiService : IAnuncioApiService
     {
         var response = await _http.PostAsJsonAsync("anuncios", dto);
         if (response.IsSuccessStatusCode) return (true, null);
-        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
-        return (false, resultado?.Message ?? "No se pudo registrar el anuncio");
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar el anuncio"));
     }
 
     public async Task<bool> ActualizarAsync(int id, AnuncioCreateDto dto)

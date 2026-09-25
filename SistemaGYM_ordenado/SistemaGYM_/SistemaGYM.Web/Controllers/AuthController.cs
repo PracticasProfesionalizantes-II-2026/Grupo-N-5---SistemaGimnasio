@@ -92,21 +92,16 @@ public class AuthController : Controller
         }
 
         var dtoActivo = dto with { EstaActivo = true };
-        var creado = await _alumnoService.CrearAsync(dtoActivo);
-        if (!creado)
+        var (ok, error, creado) = await _alumnoService.CrearAsync(dtoActivo);
+        if (!ok || creado is null)
         {
-            ViewBag.Error = "No se pudo registrar el cliente. Verificá que el email no esté en uso y que todos los campos sean válidos.";
+            ViewBag.Error = error;
             return View();
         }
 
+        // La API devuelve el cliente creado, así que usamos su Id para asignarle el plan
         if (suscripcionId.HasValue)
-        {
-            // AlumnoDto no trae email, así que ubicamos al recién creado por DNI (único) para asignarle el plan
-            var alumnos = await _alumnoService.ObtenerTodosAsync();
-            var nuevo = alumnos.OrderByDescending(a => a.Id).FirstOrDefault(a => a.Dni == dto.Dni);
-            if (nuevo is not null)
-                await _alumnoSuscripcionService.AsignarAsync(nuevo.Id, suscripcionId.Value);
-        }
+            await _alumnoSuscripcionService.AsignarAsync(creado.Id, suscripcionId.Value);
 
         ViewBag.Exito = true;
         return View();

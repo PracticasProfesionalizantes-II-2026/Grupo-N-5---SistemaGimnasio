@@ -1,37 +1,479 @@
+/* =========================================================================
+   GYM+  -  Estilos generales del sistema
+   Basado en los mockups de Figma: fondo gris, tarjetas blancas redondeadas
+   con sombra suave, botones tipo "píldora" y un color de acento naranja.
+   Bootstrap se sigue usando para la grilla y los componentes; acá solo se
+   ajusta cómo se ven.
+   ========================================================================= */
+
+/* ---------- 1. Colores y medidas (se cambian en un solo lugar) ---------- */
+:root {
+    --gym-fondo: #e4e4e7;
+    --gym-tarjeta: #ffffff;
+    --gym-texto: #1c1c1f;
+    --gym-texto-suave: #6b6b73;
+    --gym-borde: #d9d9de;
+    --gym-oscuro: #17171a;
+    --gym-acento: #ff6a13;          /* naranja */
+    --gym-acento-hover: #e85a05;
+    --gym-acento-suave: #fff1e8;
+    --gym-exito: #1f9d55;
+    --gym-peligro: #e03131;
+    --gym-radio: 16px;
+    --gym-sombra: 0 4px 16px rgba(0, 0, 0, .08);
+    --gym-sombra-hover: 0 10px 24px rgba(0, 0, 0, .14);
+    --gym-fuente-logo: "Bebas Neue", "Impact", "Arial Narrow", sans-serif;
+    --gym-fuente: "Inter", "Segoe UI", Arial, sans-serif;
+
+    /* Bootstrap toma estos valores para links y el foco de los campos */
+    --bs-link-color: var(--gym-acento);
+    --bs-link-hover-color: var(--gym-acento-hover);
+    --bs-link-color-rgb: 255, 106, 19;
+}
+
+/* ---------- 2. Base ---------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body {
-    background-color: #f4f5f7;
+    background-color: var(--gym-fondo);
+    color: var(--gym-texto);
+    font-family: var(--gym-fuente);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-.auth-card {
-    max-width: 420px;
-    margin: 60px auto;
-    padding: 2rem;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+.gym-main {
+    flex: 1;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
 }
 
-.auth-card h1 {
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 1.5rem;
+/* Títulos de cada página: con una barrita naranja a la izquierda */
+.gym-main h1 {
+    font-family: var(--gym-fuente-logo);
+    font-size: 2.6rem;
+    letter-spacing: .5px;
+    line-height: 1;
+    padding-left: .75rem;
+    border-left: 6px solid var(--gym-acento);
 }
 
-.dashboard-tile {
-    display: block;
-    padding: 2rem 1rem;
-    text-align: center;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    text-decoration: none;
-    color: #212529;
+.gym-main h1 small,
+.text-muted {
+    color: var(--gym-texto-suave) !important;
+}
+
+/* ---------- 3. Barra de navegación ---------- */
+.gym-navbar {
+    background: var(--gym-oscuro);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .25);
+    padding-top: .6rem;
+    padding-bottom: .6rem;
+}
+
+.gym-logo {
+    font-family: var(--gym-fuente-logo);
+    font-size: 2rem;
+    letter-spacing: 1px;
+    line-height: 1;
+    color: #fff !important;
+}
+
+.gym-logo span {
+    color: var(--gym-acento);
+}
+
+.gym-navbar .nav-link {
+    color: rgba(255, 255, 255, .75);
+    font-weight: 500;
+    border-radius: 999px;
+    padding: .4rem .9rem !important;
+    transition: background-color .15s, color .15s;
+}
+
+.gym-navbar .nav-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, .08);
+}
+
+.gym-navbar .nav-link.active {
+    color: #fff;
+    background: var(--gym-acento);
+}
+
+.gym-usuario {
+    color: #fff;
     font-weight: 600;
-    transition: transform .1s ease-in-out, box-shadow .1s ease-in-out;
+    line-height: 1.1;
+    text-align: right;
+}
+
+.gym-usuario small {
+    display: block;
+    color: var(--gym-acento);
+    font-weight: 500;
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+/* ---------- 4. Botones (tipo píldora, como en el mockup) ---------- */
+.btn {
+    border-radius: 999px;
+    font-weight: 600;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    transition: transform .1s, box-shadow .15s, background-color .15s;
+}
+
+.btn-sm {
+    padding-left: .85rem;
+    padding-right: .85rem;
+}
+
+.btn:active {
+    transform: scale(.97);
+}
+
+/* Botón principal: negro, y naranja al pasar el mouse */
+.btn-dark {
+    background: var(--gym-oscuro);
+    border-color: var(--gym-oscuro);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .18);
+}
+
+.btn-dark:hover,
+.btn-dark:focus {
+    background: var(--gym-acento);
+    border-color: var(--gym-acento);
+}
+
+.btn-danger {
+    background: var(--gym-peligro);
+    border-color: var(--gym-peligro);
+}
+
+.btn-outline-primary {
+    color: var(--gym-acento);
+    border-color: var(--gym-acento);
+}
+
+.btn-outline-primary:hover {
+    background: var(--gym-acento);
+    border-color: var(--gym-acento);
+    color: #fff;
+}
+
+.btn-outline-secondary,
+.btn-outline-dark {
+    background: #fff;
+    border-color: var(--gym-borde);
+    color: var(--gym-texto);
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-dark:hover {
+    background: var(--gym-oscuro);
+    border-color: var(--gym-oscuro);
+    color: #fff;
+}
+
+/* ---------- 5. Formularios ---------- */
+/* Los formularios de alta/modificación (method="post") se muestran como una tarjeta blanca */
+.gym-main > form[method="post"],
+.gym-tarjeta {
+    background: var(--gym-tarjeta);
+    border-radius: var(--gym-radio);
+    box-shadow: var(--gym-sombra);
+    padding: 1.75rem;
+}
+
+.gym-main > form[method="post"] {
+    max-width: 820px;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: .9rem;
+    margin-bottom: .3rem;
+}
+
+.form-control,
+.form-select {
+    border-radius: 12px;
+    border-color: var(--gym-borde);
+    background-color: #f7f7f8;
+    padding: .6rem .9rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #fff;
+    border-color: var(--gym-acento);
+    box-shadow: 0 0 0 .2rem rgba(255, 106, 19, .2);
+}
+
+.form-check-input:checked {
+    background-color: var(--gym-acento);
+    border-color: var(--gym-acento);
+}
+
+.form-check-input:focus {
+    border-color: var(--gym-acento);
+    box-shadow: 0 0 0 .2rem rgba(255, 106, 19, .2);
+}
+
+/* Lista de casillas (por ejemplo, elegir varios alumnos para una rutina) */
+.gym-lista-check {
+    max-height: 260px;
+    overflow-y: auto;
+    border: 1px solid var(--gym-borde);
+    border-radius: 12px;
+    padding: .5rem .9rem;
+    background: #f7f7f8;
+}
+
+.gym-lista-check .form-check {
+    padding-top: .3rem;
+    padding-bottom: .3rem;
+}
+
+/* ---------- 6. Tablas ---------- */
+.table {
+    background: var(--gym-tarjeta);
+    border-radius: var(--gym-radio);
+    overflow: hidden;
+    box-shadow: var(--gym-sombra);
+    --bs-table-striped-bg: #f7f7f8;
+    --bs-table-hover-bg: var(--gym-acento-suave);
+}
+
+.table > :not(caption) > * > * {
+    padding: .85rem 1rem;
+    border-bottom-color: #eeeef0;
+}
+
+.table thead th {
+    background: var(--gym-oscuro);
+    color: #fff;
+    font-weight: 600;
+    font-size: .85rem;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    border: none;
+}
+
+/* ---------- 7. Tarjetas, listas y detalle ---------- */
+.card,
+.list-group {
+    border: none;
+    border-radius: var(--gym-radio);
+    box-shadow: var(--gym-sombra);
+    overflow: hidden;
+}
+
+.list-group-item {
+    border-color: #eeeef0;
+    padding: 1rem 1.25rem;
+}
+
+.list-group-item-action:hover {
+    background: var(--gym-acento-suave);
+}
+
+/* Bloque de datos (ficha de un cliente, un profesor, "Mis datos") */
+dl.row {
+    background: var(--gym-tarjeta);
+    border-radius: var(--gym-radio);
+    box-shadow: var(--gym-sombra);
+    padding: 1.5rem 1rem .5rem;
+    max-width: 820px;
+}
+
+dl.row dt {
+    color: var(--gym-texto-suave);
+    font-weight: 600;
+}
+
+/* Avisos que quedan dentro de la página (ej: "No hay clientes cargados") */
+.alert {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--gym-sombra);
+}
+
+.alert-info {
+    background: #fff;
+    color: var(--gym-texto-suave);
+    border-left: 5px solid var(--gym-acento);
+}
+
+.badge {
+    border-radius: 999px;
+    padding: .4em .8em;
+    font-weight: 600;
+}
+
+/* ---------- 8. Menú principal (tarjetas cuadradas) ---------- */
+.dashboard-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    background: var(--gym-tarjeta);
+    border-radius: var(--gym-radio);
+    border-bottom: 4px solid transparent;
+    box-shadow: var(--gym-sombra);
+    text-decoration: none;
+    color: var(--gym-texto);
+    font-weight: 600;
+    transition: transform .15s ease-in-out, box-shadow .15s ease-in-out, border-color .15s;
 }
 
 .dashboard-tile:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 14px rgba(0,0,0,.12);
-    color: #212529;
+    transform: translateY(-4px);
+    box-shadow: var(--gym-sombra-hover);
+    border-bottom-color: var(--gym-acento);
+    color: var(--gym-texto);
+}
+
+/* ---------- 9. Buscador / filtros ---------- */
+.gym-filtros {
+    background: var(--gym-tarjeta);
+    border-radius: var(--gym-radio);
+    box-shadow: var(--gym-sombra);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ---------- 10. Clases: inscripción y cupo ---------- */
+/* Tilde que reemplaza al botón "Inscribirme" cuando el alumno ya está anotado */
+.gym-tilde {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--gym-exito);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(31, 157, 85, .35);
+}
+
+.gym-cupo {
+    font-weight: 600;
+}
+
+.gym-cupo.lleno {
+    color: var(--gym-peligro);
+}
+
+/* ---------- 11. Ventanas emergentes (mensajes y confirmaciones) ---------- */
+.gym-modal {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
+    padding: 1.5rem 1rem 1rem;
+}
+
+.gym-modal .modal-body {
+    font-size: 1.05rem;
+}
+
+.gym-modal .modal-footer {
+    border-top: none;
+    padding-top: 0;
+}
+
+.gym-modal-cerrar {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.gym-modal-icono {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.gym-modal-icono.ok { background: var(--gym-exito); }
+.gym-modal-icono.error { background: var(--gym-peligro); }
+.gym-modal-icono.pregunta { background: var(--gym-acento); }
+
+/* ---------- 12. Pantallas de inicio de sesión / registro ---------- */
+.auth-card {
+    max-width: 420px;
+    margin: 60px auto;
+    padding: 2.25rem 2rem;
+    background: var(--gym-tarjeta);
+    border-radius: 22px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, .12);
+}
+
+.auth-card h1 {
+    font-family: var(--gym-fuente-logo);
+    font-size: 3.2rem;
+    letter-spacing: 1px;
+    line-height: .95;
+    text-align: center;
+    margin-bottom: 1.75rem;
+}
+
+.auth-card h1 small {
+    display: block;
+    font-family: var(--gym-fuente);
+    font-size: .95rem !important;
+    letter-spacing: 0;
+    margin-top: .35rem;
+}
+
+/* ---------- 13. Pie de página ---------- */
+.gym-footer {
+    background: var(--gym-oscuro);
+    color: rgba(255, 255, 255, .55);
+    font-size: .85rem;
+    padding: 1rem 0;
+}
+
+/* ---------- 14. Celulares ---------- */
+@media (max-width: 768px) {
+    .gym-main h1 {
+        font-size: 2rem;
+    }
+
+    .gym-main > form[method="post"],
+    .gym-tarjeta {
+        padding: 1.25rem;
+    }
+
+    .gym-usuario {
+        text-align: left;
+    }
+
+    /* En pantallas chicas las tablas se pueden desplazar hacia el costado */
+    .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+.auth-card h1 .mas {
+    color: var(--gym-acento);
 }

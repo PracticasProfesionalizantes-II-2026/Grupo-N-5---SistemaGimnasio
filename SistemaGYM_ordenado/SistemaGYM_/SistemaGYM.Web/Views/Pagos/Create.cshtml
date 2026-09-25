@@ -4,7 +4,6 @@
     var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
 }
 <h1 class="mb-4">Registrar pago</h1>
-@if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
 <form method="post" asp-action="Create">
     <div class="mb-3">
         <label class="form-label">Alumno</label>

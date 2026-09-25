@@ -9,7 +9,7 @@ public interface IProfesorApiService
     Task<List<ProfesorDto>> ObtenerTodosAsync();
     Task<ProfesorDetalleDto?> ObtenerDetalleAsync(int id);
     Task<(bool ok, string? error)> CrearAsync(ProfesorCreateDto dto);
-    Task<bool> ActualizarAsync(int id, ProfesorCreateDto dto);
+    Task<(bool ok, string? error)> ActualizarAsync(int id, ProfesorCreateDto dto);
     Task<bool> EliminarAsync(int id);
 }
 
@@ -42,14 +42,14 @@ public class ProfesorApiService : IProfesorApiService
     {
         var response = await _http.PostAsJsonAsync("profesores", dto);
         if (response.IsSuccessStatusCode) return (true, null);
-        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
-        return (false, resultado?.Message ?? "No se pudo registrar el profesor");
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar el profesor"));
     }
 
-    public async Task<bool> ActualizarAsync(int id, ProfesorCreateDto dto)
+    public async Task<(bool ok, string? error)> ActualizarAsync(int id, ProfesorCreateDto dto)
     {
         var response = await _http.PutAsJsonAsync($"profesores/{id}", dto);
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo modificar el profesor."));
     }
 
     public async Task<bool> EliminarAsync(int id)

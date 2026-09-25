@@ -6,7 +6,7 @@ public interface IAlumnoApiService
 {
     Task<List<AlumnoDto>> ObtenerTodosAsync();
     Task<AlumnoDetalleDto?> ObtenerDetalleAsync(int id);
-    Task<bool> CrearAsync(AlumnoCreateDto dto);
-    Task<bool> ActualizarAsync(int id, AlumnoCreateDto dto);
+    Task<(bool ok, string? error, AlumnoDto? creado)> CrearAsync(AlumnoCreateDto dto);
+    Task<(bool ok, string? error)> ActualizarAsync(int id, AlumnoCreateDto dto);
     Task<bool> EliminarAsync(int id);
 }

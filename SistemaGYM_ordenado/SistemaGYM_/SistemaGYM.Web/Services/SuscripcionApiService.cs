@@ -42,8 +42,7 @@ public class SuscripcionApiService : ISuscripcionApiService
     {
         var response = await _http.PostAsJsonAsync("suscripciones", dto);
         if (response.IsSuccessStatusCode) return (true, null);
-        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
-        return (false, resultado?.Message ?? "No se pudo registrar la suscripción");
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar la suscripción"));
     }
 
     public async Task<bool> ActualizarAsync(int id, SuscripcionCreateDto dto)

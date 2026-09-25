@@ -52,15 +52,30 @@ public class ProfesorPanelController : Controller
         return View();
     }
 
+    // La misma rutina se puede asignar a varios alumnos de la actividad:
+    // se guarda una copia por cada alumno seleccionado.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CrearRutina(int actividadId, int alumnoId, string nombre, string descripcion)
+    public async Task<IActionResult> CrearRutina(int actividadId, List<int> alumnoIds, string nombre, string descripcion)
     {
         var actividad = await _actividadService.ObtenerPorIdAsync(actividadId);
         if (actividad is null || actividad.ProfesorId != ProfesorId) return Forbid();
 
-        var (ok, error) = await _rutinaService.CrearAsync(new(nombre, descripcion, ProfesorId, alumnoId, actividadId));
-        if (ok) return RedirectToAction(nameof(Rutinas));
+        string? error = alumnoIds.Count == 0 ? "Seleccioná al menos un alumno." : null;
+
+        foreach (var alumnoId in alumnoIds)
+        {
+            var (ok, errorApi) = await _rutinaService.CrearAsync(new(nombre, descripcion, ProfesorId, alumnoId, actividadId));
+            if (!ok) { error = errorApi; break; }
+        }
+
+        if (error == null)
+        {
+            TempData["Mensaje"] = alumnoIds.Count == 1
+                ? "Rutina asignada con éxito"
+                : $"Rutina asignada con éxito a {alumnoIds.Count} alumnos";
+            return RedirectToAction(nameof(Rutinas));
+        }
 
         ViewBag.Error = error;
         ViewBag.Actividad = actividad;
@@ -84,9 +99,10 @@ public class ProfesorPanelController : Controller
         if (actividad is null || actividad.ProfesorId != ProfesorId) return Forbid();
 
         var ok = await _actividadService.DarDeBajaAlumnoAsync(alumnoId, actividadId);
-        TempData["Mensaje"] = ok
-            ? "El alumno fue dado de baja de la actividad."
-            : "No se pudo dar de baja al alumno de la actividad.";
+        if (ok)
+            TempData["Mensaje"] = "El alumno fue dado de baja de la actividad.";
+        else
+            TempData["Error"] = "No se pudo dar de baja al alumno de la actividad.";
         return RedirectToAction(nameof(AlumnosActividad), new { id = actividadId });
     }
 
@@ -108,7 +124,11 @@ public class ProfesorPanelController : Controller
     public async Task<IActionResult> CrearAlimentacion(string tipoAlimentacion, string descripcion, int alumnoId)
     {
         var (ok, error) = await _alimentacionService.CrearAsync(new(tipoAlimentacion, descripcion, ProfesorId, alumnoId));
-        if (ok) return RedirectToAction(nameof(Alimentaciones));
+        if (ok)
+        {
+            TempData["Mensaje"] = "Plan de alimentación asignado con éxito";
+            return RedirectToAction(nameof(Alimentaciones));
+        }
         ViewBag.Error = error;
         await CargarAlumnosAsignablesAsync();
         return View();

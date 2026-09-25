@@ -8,11 +8,13 @@
     <meta charset="utf-8" />
     <title>GYM+ | Iniciar sesión</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
     <div class="auth-card">
-        <h1>GYM+<br><small class="fs-6 fw-normal text-muted">Inicio de sesión</small></h1>
+        <h1>GYM<span class="mas">+</span><br><small class="fs-6 fw-normal text-muted">Inicio de sesión</small></h1>
 
         @if (ViewBag.Error != null)
         {

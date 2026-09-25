@@ -8,11 +8,13 @@
     <meta charset="utf-8" />
     <title>GYM+ | Acceso denegado</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
     <div class="auth-card text-center">
-        <h1>GYM+</h1>
+        <h1>GYM<span class="mas">+</span></h1>
         <div class="alert alert-warning">No tenés permisos para acceder a esta sección.</div>
         <a asp-action="Login" class="btn btn-dark w-100">Volver</a>
     </div>

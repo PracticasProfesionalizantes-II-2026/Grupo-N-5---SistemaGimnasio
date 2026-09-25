@@ -5,13 +5,13 @@
     var diasSeleccionados = Model.Dias.ToString().Split(", ");
 }
 <h1 class="mb-4">Modificar actividad</h1>
-@if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
 <form method="post" asp-action="Edit" asp-route-id="@Model.ActividadId">
     <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="nombre" class="form-control" value="@Model.Nombre" required /></div>
     <div class="mb-3"><label class="form-label">Descripción</label><textarea name="descripcion" class="form-control" required>@Model.Descripcion</textarea></div>
     <div class="row">
-        <div class="col-md-6 mb-3"><label class="form-label">Hora inicio</label><input type="time" name="horaInicio" class="form-control" value="@Model.HoraInicio.ToString("HH:mm")" required /></div>
-        <div class="col-md-6 mb-3"><label class="form-label">Hora fin</label><input type="time" name="horaFin" class="form-control" value="@Model.HoraFin.ToString("HH:mm")" required /></div>
+        <div class="col-md-4 mb-3"><label class="form-label">Hora inicio</label><input type="time" name="horaInicio" class="form-control" value="@Model.HoraInicio.ToString("HH:mm")" required /></div>
+        <div class="col-md-4 mb-3"><label class="form-label">Hora fin</label><input type="time" name="horaFin" class="form-control" value="@Model.HoraFin.ToString("HH:mm")" required /></div>
+        <div class="col-md-4 mb-3"><label class="form-label">Cupo (máx. alumnos)</label><input type="number" name="cupo" class="form-control" min="@Math.Max(1, Model.Inscriptos)" max="500" value="@Model.Cupo" required /><div class="form-text">Inscriptos actualmente: @Model.Inscriptos</div></div>
     </div>
     <div class="mb-3">
         <label class="form-label">Profesor</label>

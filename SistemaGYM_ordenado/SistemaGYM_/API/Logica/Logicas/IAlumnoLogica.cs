@@ -26,13 +26,23 @@ public class AlumnoLogica : IAlumnoLogica
     public async Task<IEnumerable<AlumnoDto>> ObtenerTodosAsync()
     {
         var alumnos = await _repository.ObtenerTodosAsync();
-        return alumnos.Select(a => new AlumnoDto(a.Id, a.Dni, a.Nombre, a.Apellido));
+        return alumnos.Select(a => ADto(a));
     }
 
     public async Task<AlumnoDto?> ObtenerPorIdAsync(int id)
     {
-        var a = await _repository.ObtenerPorIdAsync(id);
-        return a == null ? null : new AlumnoDto(a.Id, a.Dni, a.Nombre, a.Apellido);
+        var a = await _repository.ObtenerDetallePorIdAsync(id);
+        return a == null ? null : ADto(a);
+    }
+
+    // Arma el DTO resumido. Necesita que el alumno venga con sus suscripciones activas cargadas.
+    private static AlumnoDto ADto(Alumno a)
+    {
+        var suscripcion = a.AlumnoSuscripciones
+            .FirstOrDefault(s => s.Activa)
+            ?.Suscripcion?.Nombre ?? "Sin suscripción";
+
+        return new AlumnoDto(a.Id, a.Dni, a.Nombre, a.Apellido, a.Email, suscripcion, a.FechaAlta);
     }
 
     public async Task<AlumnoDetalleDto?> ObtenerDetallePorIdAsync(int id)
@@ -53,6 +63,9 @@ public class AlumnoLogica : IAlumnoLogica
 
     public async Task<AlumnoDto> CrearAsync(AlumnoCreateDto dto)
     {
+        if (string.IsNullOrWhiteSpace(dto.Contrasenia))
+            throw new ReglaDeNegocioException("La contraseña es obligatoria.");
+
         await ValidarDatosUnicosAsync(dto.Email, dto.Dni);
         var nuevo = new Alumno
         {
@@ -68,7 +81,7 @@ public class AlumnoLogica : IAlumnoLogica
         nuevo.SetContrasenia(dto.Contrasenia); // ya no mas texto plano!! ahora hasheadaaa
 
         await _repository.AgregarAsync(nuevo);
-        return new AlumnoDto(nuevo.Id, nuevo.Dni, nuevo.Nombre, nuevo.Apellido);
+        return ADto(nuevo); // recién creado: todavía no tiene suscripción
     }
 
     public async Task<bool> ActualizarAsync(int id, AlumnoCreateDto dto)
@@ -98,7 +111,7 @@ public class AlumnoLogica : IAlumnoLogica
         if (string.IsNullOrWhiteSpace(email))
             throw new ReglaDeNegocioException("El email es obligatorio.");
         if (await _repository.ExisteEmailODniAsync(email, dni, excluirUsuarioId))
-            throw new ReglaDeNegocioException("Ya existe un usuario con ese email o DNI.");
+            throw new ReglaDeNegocioException("Ya existe un cliente o profesor registrado con ese email o DNI.");
     }
 
     public async Task<bool> EliminarAsync(int id)

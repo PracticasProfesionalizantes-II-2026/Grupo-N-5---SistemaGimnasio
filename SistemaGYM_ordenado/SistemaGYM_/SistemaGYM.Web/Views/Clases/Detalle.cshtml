@@ -7,7 +7,7 @@
 <p>@actividad?.Descripcion</p>
 <p><strong>Horario:</strong> @actividad?.Dias, @actividad?.HoraInicio.ToString("HH:mm") a @actividad?.HoraFin.ToString("HH:mm")</p>
 
-<div class="card mb-3" style="max-width:400px;">
+<div class="card mb-3" style="max-width:420px;">
     <div class="card-body">
         <h5 class="card-title">Profesor: @profesor?.Nombre @profesor?.Apellido</h5>
         <p class="card-text">@profesor?.Descripcion</p>
@@ -15,10 +15,15 @@
     </div>
 </div>
 
-<p><strong>Alumnos anotados:</strong> @ViewBag.CantidadAlumnos</p>
+<p><strong>Alumnos anotados:</strong> @ViewBag.CantidadAlumnos de @actividad?.Cupo</p>
 
-<form asp-action="DarDeBaja" method="post" onsubmit="return confirm('¿Está seguro que desea darse de baja de esta actividad?');">
-    <input type="hidden" name="actividadId" value="@actividad?.ActividadId" />
-    <button type="submit" class="btn btn-outline-danger">Darme de baja</button>
-</form>
-<a asp-action="Index" class="btn btn-outline-dark mt-2">Volver</a>
+<div class="d-flex gap-2">
+    @if (ViewBag.EstaInscripto == true)
+    {
+        <form asp-action="DarDeBaja" method="post" data-confirmar="¿Está seguro que desea darse de baja de esta actividad?">
+            <input type="hidden" name="actividadId" value="@actividad?.ActividadId" />
+            <button type="submit" class="btn btn-outline-danger">Darme de baja</button>
+        </form>
+    }
+    <a asp-action="Index" class="btn btn-outline-dark">Volver</a>
+</div>

@@ -1,7 +1,6 @@
 @using SistemaGYM.Logica.DTOs
 @{ ViewData["Title"] = "Asignar alimentación"; var alumnos = ViewBag.Alumnos as List<AlumnoInscriptoDto> ?? new(); var alumnoPreseleccionado = ViewBag.AlumnoPreseleccionado as int?; }
 <h1 class="mb-4">Asignar alimentación a un alumno</h1>
-@if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
 <form method="post" asp-action="CrearAlimentacion">
     <div class="mb-3"><label class="form-label">Alumno inscripto en mis actividades</label><select name="alumnoId" class="form-select" required><option value="">-- Seleccionar --</option>@foreach (var alumno in alumnos) { if (alumno.AlumnoId == alumnoPreseleccionado) { <option value="@alumno.AlumnoId" selected>@alumno.Nombre @alumno.Apellido</option> } else { <option value="@alumno.AlumnoId">@alumno.Nombre @alumno.Apellido</option> } }</select></div>
     <div class="mb-3"><label class="form-label">Tipo de alimentación</label><input name="tipoAlimentacion" class="form-control" required /></div>

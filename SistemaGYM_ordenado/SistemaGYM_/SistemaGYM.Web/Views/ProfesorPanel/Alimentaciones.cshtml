@@ -1,5 +1,33 @@
 @model List<AlimentacionDto>
 @{ ViewData["Title"] = "Alimentaciones asignadas"; }
-<div class="d-flex justify-content-between align-items-center mb-4"><h1>Alimentaciones de mis alumnos</h1><a asp-action="CrearAlimentacion" class="btn btn-dark">+ Asignar alimentación</a></div>
-@if (!Model.Any()) { <div class="alert alert-info">Todavía no asignaste planes de alimentación.</div> }
-else { <table class="table table-striped"><thead><tr><th>Tipo</th><th>Alumno</th><th>Descripción</th></tr></thead><tbody>@foreach (var a in Model) { <tr><td>@a.TipoAlimentacion</td><td>@(a.AlumnoNombre ?? "Plan general")</td><td>@a.Descripcion</td></tr> }</tbody></table> }
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <h1 class="mb-0">Alimentaciones de mis alumnos</h1>
+    <a asp-action="CrearAlimentacion" class="btn btn-dark">+ Asignar alimentación</a>
+</div>
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Todavía no asignaste planes de alimentación.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead><tr><th>Tipo</th><th>Alumno</th><th>Descripción</th><th class="text-end">Acciones</th></tr></thead>
+        <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td><strong>@a.TipoAlimentacion</strong></td>
+                <td>@(a.AlumnoNombre ?? "Plan general")</td>
+                <td class="small" style="white-space: pre-line;">@a.Descripcion</td>
+                <td class="text-end text-nowrap">
+                    @* Solo se listan los planes del profesor, así que puede modificarlos y eliminarlos *@
+                    <a asp-controller="Alimentacion" asp-action="Edit" asp-route-id="@a.Id" class="btn btn-sm btn-outline-secondary">Modificar</a>
+                    <form asp-controller="Alimentacion" asp-action="Delete" asp-route-id="@a.Id" method="post" class="d-inline" data-confirmar="¿Está seguro que desea eliminar este plan de alimentación?">
+                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

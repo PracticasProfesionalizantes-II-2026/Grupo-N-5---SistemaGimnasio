@@ -34,7 +34,10 @@ public class MiSuscripcionController : Controller
     public async Task<IActionResult> Asignar(int suscripcionId)
     {
         var (ok, error) = await _alumnoSuscripcionService.AsignarAsync(AlumnoId, suscripcionId);
-        TempData["Mensaje"] = ok ? "Se ha registrado la suscripción con éxito" : error;
+        if (ok)
+            TempData["Mensaje"] = "Se ha registrado la suscripción con éxito";
+        else
+            TempData["Error"] = error;
         return RedirectToAction("Index");
     }
 

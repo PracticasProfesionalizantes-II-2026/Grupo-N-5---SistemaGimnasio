@@ -9,7 +9,7 @@ public interface IAlimentacionApiService
     Task<List<AlimentacionDto>> ObtenerTodasAsync();
     Task<AlimentacionDto?> ObtenerPorIdAsync(int id);
     Task<(bool ok, string? error)> CrearAsync(AlimentacionCreateDto dto);
-    Task<bool> ActualizarAsync(int id, AlimentacionCreateDto dto);
+    Task<(bool ok, string? error)> ActualizarAsync(int id, AlimentacionCreateDto dto);
     Task<bool> EliminarAsync(int id);
 }
 
@@ -42,14 +42,14 @@ public class AlimentacionApiService : IAlimentacionApiService
     {
         var response = await _http.PostAsJsonAsync("alimentacion", dto);
         if (response.IsSuccessStatusCode) return (true, null);
-        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
-        return (false, resultado?.Message ?? "No se pudo registrar el plan");
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar el plan"));
     }
 
-    public async Task<bool> ActualizarAsync(int id, AlimentacionCreateDto dto)
+    public async Task<(bool ok, string? error)> ActualizarAsync(int id, AlimentacionCreateDto dto)
     {
         var response = await _http.PutAsJsonAsync($"alimentacion/{id}", dto);
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo modificar el plan."));
     }
 
     public async Task<bool> EliminarAsync(int id)

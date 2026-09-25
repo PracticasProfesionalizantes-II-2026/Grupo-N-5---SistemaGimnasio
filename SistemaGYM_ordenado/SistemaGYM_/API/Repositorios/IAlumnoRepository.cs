@@ -32,8 +32,13 @@ public class AlumnoRepository : IAlumnoRepository
             (!excluirUsuarioId.HasValue || u.Id != excluirUsuarioId.Value) &&
             (u.Email.ToLower() == email.Trim().ToLower() || u.Dni == dni));
 
-public async Task<IEnumerable<Alumno>> ObtenerTodosAsync() =>
-    await _db.Alumnos.Where(a => a.EstaActivo).ToListAsync();
+    // Incluye la suscripción activa para poder mostrarla y filtrar por ella en el listado
+    public async Task<IEnumerable<Alumno>> ObtenerTodosAsync() =>
+        await _db.Alumnos
+            .Where(a => a.EstaActivo)
+            .Include(a => a.AlumnoSuscripciones.Where(s => s.Activa))
+                .ThenInclude(s => s.Suscripcion)
+            .ToListAsync();
 
     public async Task<Alumno?> ObtenerPorIdAsync(int id) =>
         await _db.Alumnos.FindAsync(id);

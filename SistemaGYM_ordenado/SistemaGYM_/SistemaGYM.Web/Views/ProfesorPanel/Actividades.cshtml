@@ -1,5 +1,28 @@
 @model List<ActividadDto>
 @{ ViewData["Title"] = "Mis actividades"; }
 <h1 class="mb-4">Mis actividades</h1>
-@if (!Model.Any()) { <div class="alert alert-info">No tenés actividades asignadas.</div> }
-else { <table class="table table-striped"><thead><tr><th>Nombre</th><th>Días</th><th>Horario</th><th></th></tr></thead><tbody>@foreach (var a in Model) { <tr><td>@a.Nombre</td><td>@a.Dias</td><td>@a.HoraInicio - @a.HoraFin</td><td><a asp-action="AlumnosActividad" asp-route-id="@a.ActividadId" class="btn btn-sm btn-outline-primary">Ver alumnos</a> <a asp-action="CrearRutina" asp-route-actividadId="@a.ActividadId" class="btn btn-sm btn-outline-success">Asignar rutina</a></td></tr> }</tbody></table> }
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No tenés actividades asignadas.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead><tr><th>Nombre</th><th>Días</th><th>Horario</th><th>Cupo</th><th class="text-end">Acciones</th></tr></thead>
+        <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td><strong>@a.Nombre</strong></td>
+                <td>@a.Dias</td>
+                <td>@a.HoraInicio.ToString("HH:mm") - @a.HoraFin.ToString("HH:mm")</td>
+                <td><span class="gym-cupo @(a.Inscriptos >= a.Cupo ? "lleno" : "")">@a.Inscriptos / @a.Cupo</span></td>
+                <td class="text-end">
+                    <a asp-action="AlumnosActividad" asp-route-id="@a.ActividadId" class="btn btn-sm btn-outline-primary">Ver alumnos</a>
+                    <a asp-action="CrearRutina" asp-route-actividadId="@a.ActividadId" class="btn btn-sm btn-dark">Asignar rutina</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
