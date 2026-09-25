@@ -4,7 +4,7 @@
     var actividad = ViewBag.Actividad as ActividadDto;
     var alumnos = ViewBag.Alumnos as List<AlumnoInscriptoDto> ?? new();
 }
-<h1 class="mb-2">Asignar rutina</h1>
+<h1 class="mb-2 gym-titulo"><partial name="_Icono" model='"rutinas"' />Asignar rutina</h1>
 <p class="text-muted mb-4">Actividad: <strong>@actividad?.Nombre</strong></p>
 
 @if (!alumnos.Any())

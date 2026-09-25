@@ -3,7 +3,7 @@
     var actividad = ViewBag.Actividad as ActividadDto;
     ViewData["Title"] = "Alumnos inscriptos";
 }
-<h1 class="mb-2">Alumnos inscriptos: @actividad?.Nombre</h1>
+<h1 class="mb-2 gym-titulo"><partial name="_Icono" model='"clientes"' />Alumnos inscriptos: @actividad?.Nombre</h1>
 <p class="text-muted mb-4">Cupo ocupado: @actividad?.Inscriptos de @actividad?.Cupo</p>
 
 @if (!Model.Any(a => a.Activa))

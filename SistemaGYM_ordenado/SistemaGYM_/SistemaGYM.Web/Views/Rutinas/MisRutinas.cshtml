@@ -1,6 +1,6 @@
 @model List<RutinaDto>
 @{ ViewData["Title"] = "Mis rutinas"; }
-<h1 class="mb-4">Mis rutinas</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"rutinas"' />Mis rutinas</h1>
 @if (!Model.Any())
 {
     <div class="alert alert-info">Todavía no tenés rutinas asignadas. Consultá con tu profesor.</div>

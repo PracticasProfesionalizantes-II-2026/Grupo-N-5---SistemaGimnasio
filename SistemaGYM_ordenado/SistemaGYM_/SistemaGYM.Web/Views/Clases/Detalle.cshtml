@@ -3,7 +3,7 @@
     var actividad = ViewBag.Actividad as ActividadDto;
     var profesor = ViewBag.Profesor as ProfesorDetalleDto;
 }
-<h1 class="mb-4">@actividad?.Nombre</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"clases"' />@actividad?.Nombre</h1>
 <p>@actividad?.Descripcion</p>
 <p><strong>Horario:</strong> @actividad?.Dias, @actividad?.HoraInicio.ToString("HH:mm") a @actividad?.HoraFin.ToString("HH:mm")</p>
 

@@ -87,7 +87,7 @@ public class ActividadesController : Controller
         if (ok)
             TempData["Mensaje"] = "La actividad se ha eliminado con éxito del sistema";
         else
-            TempData["Error"] = "No se pudo eliminar la actividad. Revisá que no tenga rutinas asignadas.";
+            TempData["Error"] = "No se pudo eliminar la actividad. Revisá que no tenga alumnos inscriptos ni rutinas asignadas.";
         return RedirectToAction("Index");
     }
 

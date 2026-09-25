@@ -1,0 +1,17 @@
+@model List<DatoCategoria>
+@{ ViewData["Title"] = "Clientes por plan"; }
+<h1 class="mb-2 gym-titulo"><partial name="_Icono" model='"porplan"' />Clientes por plan</h1>
+<p class="text-muted mb-4">Cantidad de clientes activos según el plan que tienen hoy.</p>
+
+<div class="gym-tarjeta mb-3">
+    <div class="gym-dato-grande">@ViewBag.TotalClientes <small>clientes activos</small></div>
+    @if (!Model.Any())
+    {
+        <p class="text-muted mb-0">No hay clientes cargados.</p>
+    }
+    else
+    {
+        <partial name="_BarrasCategorias" model="(Model, false)" />
+    }
+</div>
+<a asp-action="Index" class="btn btn-outline-dark">Volver</a>

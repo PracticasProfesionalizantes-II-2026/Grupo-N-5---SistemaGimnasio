@@ -1,0 +1,13 @@
+@model List<DatoMensual>
+@{
+    ViewData["Title"] = "Suscriptos por mes";
+    var total = Model.Sum(d => d.Valor);
+}
+<h1 class="mb-2 gym-titulo"><partial name="_Icono" model='"suscriptos"' />Suscriptos por mes</h1>
+<p class="text-muted mb-4">Suscripciones nuevas que empezaron en cada uno de los últimos 12 meses (un cambio de plan cuenta como una suscripción nueva).</p>
+
+<div class="gym-tarjeta mb-3">
+    <div class="gym-dato-grande">@total.ToString("0") <small>suscripciones nuevas en el último año</small></div>
+    <partial name="_BarrasMensuales" model="(Model, false)" />
+</div>
+<a asp-action="Index" class="btn btn-outline-dark">Volver</a>

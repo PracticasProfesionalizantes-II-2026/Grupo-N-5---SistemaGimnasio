@@ -1,7 +1,23 @@
 @{ ViewData["Title"] = "Reportes"; }
-<h1 class="mb-4">Reportes del sistema</h1>
-<div class="row g-3">
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Pagos" asp-action="Index">Pagos registrados</a></div>
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-action="Suscripciones" asp-route-soloActivas="true">Suscripciones activas</a></div>
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-action="Suscripciones" asp-route-soloActivas="false">Suscripciones vencidas</a></div>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"reportes"' />Reportes del sistema</h1>
+
+@* Los reportes están agrupados por tema, separados por una barrita naranja *@
+<div class="gym-separador"><span>Pagos</span></div>
+<div class="gym-menu gym-menu-chico">
+    <a class="gym-menu-tile" asp-controller="Pagos" asp-action="Index">Pagos registrados<partial name="_Icono" model='"pagos"' /></a>
+    <a class="gym-menu-tile" asp-action="Ingresos">Ingresos por mes<partial name="_Icono" model='"ingresos"' /></a>
+</div>
+
+<div class="gym-separador"><span>Suscripciones</span></div>
+<div class="gym-menu gym-menu-chico">
+    <a class="gym-menu-tile" asp-action="Suscripciones" asp-route-soloActivas="true">Suscripciones activas<partial name="_Icono" model='"activas"' /></a>
+    <a class="gym-menu-tile" asp-action="Suscripciones" asp-route-soloActivas="false">Suscripciones vencidas<partial name="_Icono" model='"vencidas"' /></a>
+    <a class="gym-menu-tile" asp-action="PorVencer">Por vencer (7 días)<partial name="_Icono" model='"porvencer"' /></a>
+    <a class="gym-menu-tile" asp-action="SuscriptosPorMes">Suscriptos por mes<partial name="_Icono" model='"suscriptos"' /></a>
+    <a class="gym-menu-tile" asp-action="ClientesPorPlan">Clientes por plan<partial name="_Icono" model='"porplan"' /></a>
+</div>
+
+<div class="gym-separador"><span>Actividades</span></div>
+<div class="gym-menu gym-menu-chico">
+    <a class="gym-menu-tile" asp-action="Ocupacion">Ocupación de actividades<partial name="_Icono" model='"ocupacion"' /></a>
 </div>

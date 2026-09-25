@@ -1,6 +1,6 @@
 @model AlumnoDetalleDto
 @{ ViewData["Title"] = "Mis Datos"; }
-<h1 class="mb-4">Mis Datos</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"misdatos"' />Mis Datos</h1>
 
 <dl class="row">
     <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.Nombre</dd>

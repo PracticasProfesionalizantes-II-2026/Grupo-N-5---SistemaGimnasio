@@ -7,7 +7,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h1 class="mb-0">Actividades registradas</h1>
+    <h1 class="mb-0 gym-titulo"><partial name="_Icono" model='"actividades"' />Actividades registradas</h1>
     <a asp-action="Create" class="btn btn-dark">+ Crear actividad</a>
 </div>
 
@@ -17,26 +17,36 @@
 }
 else
 {
-    <table class="table table-striped table-hover align-middle">
-        <thead><tr><th>Nombre</th><th>Profesor</th><th>Horario</th><th>Días</th><th>Cupo</th><th class="text-end">Acciones</th></tr></thead>
-        <tbody>
-        @foreach (var a in Model)
-        {
-            <tr>
-                <td><strong>@a.Nombre</strong></td>
-                <td>@(profesores.TryGetValue(a.ProfesorId, out var nombreProfesor) ? nombreProfesor : "Profesor dado de baja")</td>
-                <td>@a.HoraInicio.ToString("HH:mm") - @a.HoraFin.ToString("HH:mm")</td>
-                <td>@a.Dias</td>
-                <td><span class="gym-cupo @(a.Inscriptos >= a.Cupo ? "lleno" : "")">@a.Inscriptos / @a.Cupo</span></td>
-                <td class="text-end">
+    @* Cada actividad se muestra como una tarjeta con su horario, días y cupo *@
+    <div class="row g-3">
+    @foreach (var a in Model)
+    {
+        var porcentaje = a.Cupo == 0 ? 0 : Math.Min(100, (int)Math.Round(a.Inscriptos * 100.0 / a.Cupo));
+        var llena = a.Inscriptos >= a.Cupo;
+        <div class="col-md-6 col-lg-4">
+            <div class="gym-ficha gym-ficha-actividad">
+                <div class="d-flex justify-content-between align-items-start gap-2">
+                    <strong class="fs-5">@a.Nombre</strong>
+                    <span class="gym-horario">@a.HoraInicio.ToString("HH:mm") - @a.HoraFin.ToString("HH:mm")</span>
+                </div>
+                <div class="small text-muted mb-2">@(profesores.TryGetValue(a.ProfesorId, out var nombreProfesor) ? nombreProfesor : "Profesor dado de baja")</div>
+                <div class="d-flex flex-wrap gap-1 mb-3">
+                    @foreach (var dia in a.Dias.ToString().Split(", ")) { <span class="gym-chip">@dia</span> }
+                </div>
+                <div class="d-flex justify-content-between small mb-1">
+                    <span>Cupo</span>
+                    <span class="gym-cupo @(llena ? "lleno" : "")">@a.Inscriptos / @a.Cupo</span>
+                </div>
+                <div class="gym-progreso mb-3"><div class="gym-progreso-relleno @(llena ? "lleno" : "")" style="width: @(porcentaje)%"></div></div>
+                <div class="d-flex flex-wrap gap-2">
                     <a asp-action="Alumnos" asp-route-id="@a.ActividadId" class="btn btn-sm btn-outline-primary">Ver alumnos</a>
                     <a asp-action="Edit" asp-route-id="@a.ActividadId" class="btn btn-sm btn-outline-secondary">Modificar</a>
                     <form asp-action="Delete" asp-route-id="@a.ActividadId" method="post" class="d-inline" data-confirmar="¿Está seguro que desea eliminar la actividad @a.Nombre del sistema?">
                         <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                     </form>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
 }

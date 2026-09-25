@@ -1,7 +1,7 @@
 @model List<RutinaDto>
 @{ ViewData["Title"] = "Mis rutinas"; }
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h1 class="mb-0">Rutinas asignadas por mí</h1>
+    <h1 class="mb-0 gym-titulo"><partial name="_Icono" model='"rutinas"' />Rutinas asignadas por mí</h1>
     <a asp-action="Actividades" class="btn btn-dark">+ Asignar desde una actividad</a>
 </div>
 @if (!Model.Any())

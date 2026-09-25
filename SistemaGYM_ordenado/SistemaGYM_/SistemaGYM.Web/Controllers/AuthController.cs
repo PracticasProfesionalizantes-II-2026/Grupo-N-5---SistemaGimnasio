@@ -88,7 +88,7 @@ public class AuthController : Controller
         if (dto.Contrasenia != confirmarContrasenia)
         {
             ViewBag.Error = "Las contraseñas no coinciden";
-            return View();
+            return View(dto); // se devuelven los datos para no tener que cargarlos de nuevo
         }
 
         var dtoActivo = dto with { EstaActivo = true };
@@ -96,7 +96,8 @@ public class AuthController : Controller
         if (!ok || creado is null)
         {
             ViewBag.Error = error;
-            return View();
+            ViewBag.SuscripcionId = suscripcionId;
+            return View(dto); // por ejemplo, DNI repetido: se conserva lo que había escrito
         }
 
         // La API devuelve el cliente creado, así que usamos su Id para asignarle el plan

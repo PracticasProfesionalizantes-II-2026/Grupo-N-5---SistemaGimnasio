@@ -1,7 +1,7 @@
 @model List<ActividadDto>
 @{ ViewData["Title"] = "Mis Clases"; }
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Mis Clases</h1>
+    <h1 class="mb-0 gym-titulo"><partial name="_Icono" model='"clases"' />Mis Clases</h1>
     <a asp-action="Todas" class="btn btn-dark">Ver todas las clases</a>
 </div>
 

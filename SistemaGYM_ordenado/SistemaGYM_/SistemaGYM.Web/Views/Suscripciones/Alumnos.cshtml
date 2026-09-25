@@ -1,0 +1,44 @@
+@model List<AlumnoDto>
+@{
+    var plan = ViewBag.Plan as SuscripcionDto;
+    var actividadesPorAlumno = ViewBag.ActividadesPorAlumno as Dictionary<int, List<string>> ?? new();
+    ViewData["Title"] = $"Clientes del plan {plan?.Nombre}";
+}
+<h1 class="mb-2 gym-titulo"><partial name="_Icono" model='"suscripciones"' />@plan?.Nombre</h1>
+<p class="text-muted mb-4">Clientes con este plan activo y las actividades a las que están inscriptos.</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Ningún cliente tiene este plan activo por el momento.</div>
+}
+else
+{
+    <div class="row g-3">
+    @foreach (var a in Model)
+    {
+        var actividades = actividadesPorAlumno.TryGetValue(a.Id, out var lista) ? lista : new List<string>();
+        <div class="col-md-6 col-lg-4">
+            <div class="gym-ficha">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <span class="gym-avatar">@($"{a.Nombre.FirstOrDefault()}{a.Apellido.FirstOrDefault()}")</span>
+                    <div>
+                        <strong>@a.Nombre @a.Apellido</strong>
+                        <div class="small text-muted">DNI @a.Dni</div>
+                    </div>
+                </div>
+                @if (actividades.Any())
+                {
+                    <div class="d-flex flex-wrap gap-1">
+                        @foreach (var nombre in actividades) { <span class="gym-chip">@nombre</span> }
+                    </div>
+                }
+                else
+                {
+                    <div class="small text-muted">Sin actividades</div>
+                }
+            </div>
+        </div>
+    }
+    </div>
+}
+<a asp-action="Index" class="btn btn-outline-dark mt-3">Volver a los planes</a>

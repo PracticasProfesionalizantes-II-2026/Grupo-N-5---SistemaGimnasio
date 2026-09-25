@@ -111,8 +111,11 @@ public class ProfesorLogica : IProfesorLogica
 
     public async Task<bool> EliminarAsync(int id)
     {
-        var p = await _repository.ObtenerPorIdAsync(id);
+        var p = await _repository.ObtenerDetallePorIdAsync(id); // trae sus actividades
         if (p == null) return false;
+
+        if (p.Actividades.Any())
+            throw new ReglaDeNegocioException("No se puede dar de baja al profesor porque tiene actividades a cargo. Asignalas a otro profesor primero.");
 
         await _repository.EliminarAsync(p);
         return true;

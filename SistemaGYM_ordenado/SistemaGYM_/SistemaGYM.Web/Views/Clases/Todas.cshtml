@@ -3,7 +3,7 @@
     ViewData["Title"] = "Todas las clases";
     var inscriptas = ViewBag.ActividadesInscritas as HashSet<int> ?? new();
 }
-<h1 class="mb-4">Clases disponibles</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"clases"' />Clases disponibles</h1>
 
 <table class="table table-striped table-hover align-middle">
     <thead><tr><th>Nombre</th><th>Días</th><th>Horario</th><th>Cupo</th><th class="text-end">Inscripción</th></tr></thead>

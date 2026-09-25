@@ -1,0 +1,30 @@
+@model List<ActividadDto>
+@{ ViewData["Title"] = "Ocupación de actividades"; }
+<h1 class="mb-2 gym-titulo"><partial name="_Icono" model='"ocupacion"' />Ocupación de actividades</h1>
+<p class="text-muted mb-4">Alumnos inscriptos sobre el cupo de cada actividad, de la más llena a la más vacía.</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay actividades registradas.</div>
+}
+else
+{
+    <div class="gym-tarjeta mb-3">
+    @foreach (var a in Model)
+    {
+        var porcentaje = a.Cupo == 0 ? 0 : (int)Math.Round(a.Inscriptos * 100.0 / a.Cupo);
+        var llena = a.Inscriptos >= a.Cupo;
+        <div class="gym-ocupacion">
+            <div class="d-flex justify-content-between align-items-baseline mb-1">
+                <strong>@a.Nombre</strong>
+                <span class="small">
+                    @a.Inscriptos / @a.Cupo · @porcentaje%
+                    @if (llena) { <span class="badge text-bg-danger ms-1">Completa</span> }
+                </span>
+            </div>
+            <div class="gym-progreso"><div class="gym-progreso-relleno @(llena ? "lleno" : "")" style="width: @(Math.Min(porcentaje, 100))%"></div></div>
+        </div>
+    }
+    </div>
+}
+<a asp-action="Index" class="btn btn-outline-dark">Volver</a>

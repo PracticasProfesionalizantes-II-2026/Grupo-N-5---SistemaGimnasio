@@ -10,7 +10,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h1 class="mb-0">Clientes registrados</h1>
+    <h1 class="mb-0 gym-titulo"><partial name="_Icono" model='"clientes"' />Clientes registrados</h1>
     @if (esAdmin)
     {
         <a asp-action="Create" class="btn btn-dark">+ Registrar cliente</a>
@@ -77,8 +77,13 @@ else
             <tr>
                 <td>@alumno.Dni</td>
                 <td>
-                    <strong>@alumno.Apellido, @alumno.Nombre</strong>
-                    <div class="small text-muted">@alumno.Email</div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="gym-avatar">@($"{alumno.Nombre.FirstOrDefault()}{alumno.Apellido.FirstOrDefault()}")</span>
+                        <div>
+                            <strong>@alumno.Apellido, @alumno.Nombre</strong>
+                            <div class="small text-muted">@alumno.Email</div>
+                        </div>
+                    </div>
                 </td>
                 <td>@alumno.Suscripcion</td>
                 <td>@alumno.FechaAlta.ToString("dd/MM/yyyy")</td>

@@ -3,7 +3,7 @@
     ViewData["Title"] = Model.TipoAlimentacion;
     var puedeGestionar = ViewBag.PuedeGestionar == true;
 }
-<h1 class="mb-4">@Model.TipoAlimentacion</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"alimentacion"' />@Model.TipoAlimentacion</h1>
 <div class="gym-tarjeta mb-3" style="max-width: 820px;">
     <p class="mb-0" style="white-space: pre-line;">@Model.Descripcion</p>
 </div>

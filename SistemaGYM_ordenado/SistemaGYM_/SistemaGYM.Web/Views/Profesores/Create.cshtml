@@ -1,16 +1,18 @@
+@model ProfesorCreateDto?
+@* Si hubo un error al guardar, el controlador devuelve lo cargado para no escribirlo de nuevo *@
 @{ ViewData["Title"] = "Registrar profesor"; }
-<h1 class="mb-4">Registrar profesor</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"profesores"' />Registrar profesor</h1>
 <form method="post" asp-action="Create" id="form-profesor">
     <div class="row">
-        <div class="col-md-6 mb-3"><label class="form-label">DNI</label><input type="text" name="Dni" class="form-control" inputmode="numeric" pattern="[0-9]{7,8}" maxlength="8" minlength="7" title="El DNI debe tener 7 u 8 dígitos" required /></div>
-        <div class="col-md-6 mb-3"><label class="form-label">Teléfono</label><input type="tel" name="Telefono" class="form-control" inputmode="numeric" pattern="[0-9]{1,14}" maxlength="14" title="Ingresá hasta 14 dígitos" required /></div>
-        <div class="col-md-6 mb-3"><label class="form-label">Nombre</label><input type="text" name="Nombre" class="form-control" required /></div>
-        <div class="col-md-6 mb-3"><label class="form-label">Apellido</label><input type="text" name="Apellido" class="form-control" required /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">DNI</label><input type="text" name="Dni" value="@(Model?.Dni > 0 ? (int?)Model.Dni : null)" class="form-control" inputmode="numeric" pattern="[0-9]{7,8}" maxlength="8" minlength="7" title="El DNI debe tener 7 u 8 dígitos" required /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Teléfono</label><input type="tel" name="Telefono" value="@Model?.Telefono" class="form-control" inputmode="numeric" pattern="[0-9]{1,14}" maxlength="14" title="Ingresá hasta 14 dígitos" required /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Nombre</label><input type="text" name="Nombre" value="@Model?.Nombre" class="form-control" required /></div>
+        <div class="col-md-6 mb-3"><label class="form-label">Apellido</label><input type="text" name="Apellido" value="@Model?.Apellido" class="form-control" required /></div>
     </div>
-    <div class="mb-3"><label class="form-label">Dirección</label><input type="text" name="Direccion" class="form-control" required /></div>
-    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="Email" class="form-control" required /></div>
-    <div class="mb-3"><label class="form-label">Título</label><input type="text" name="Titulo" class="form-control" /></div>
-    <div class="mb-3"><label class="form-label">Descripción</label><textarea name="Descripcion" class="form-control"></textarea></div>
+    <div class="mb-3"><label class="form-label">Dirección</label><input type="text" name="Direccion" value="@Model?.Direccion" class="form-control" required /></div>
+    <div class="mb-3"><label class="form-label">Email</label><input type="email" name="Email" value="@Model?.Email" class="form-control" required /></div>
+    <div class="mb-3"><label class="form-label">Título</label><input type="text" name="Titulo" value="@Model?.Titulo" class="form-control" /></div>
+    <div class="mb-3"><label class="form-label">Descripción</label><textarea name="Descripcion" class="form-control">@Model?.Descripcion</textarea></div>
     <div class="mb-3"><label class="form-label">Contraseña</label><input type="password" name="Contrasenia" id="contrasenia" class="form-control" minlength="6" required /></div>
     <div class="mb-3"><label class="form-label">Repetir contraseña</label><input type="password" name="confirmarContrasenia" id="confirmarContrasenia" class="form-control" minlength="6" required /><div id="error-contrasenia" class="text-danger small mt-1 d-none">Las contraseñas no coinciden.</div></div>
     <div class="form-check mb-3"><input type="checkbox" id="mostrarContrasenias" class="form-check-input" /><label class="form-check-label" for="mostrarContrasenias">Mostrar contraseñas</label></div>

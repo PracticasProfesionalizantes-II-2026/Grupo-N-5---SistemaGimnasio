@@ -3,7 +3,7 @@
     var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
     var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
 }
-<h1 class="mb-4">Crear rutina</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"rutinas"' />Crear rutina</h1>
 <form method="post" asp-action="Create">
     <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="nombre" class="form-control" required /></div>
     <div class="mb-3">

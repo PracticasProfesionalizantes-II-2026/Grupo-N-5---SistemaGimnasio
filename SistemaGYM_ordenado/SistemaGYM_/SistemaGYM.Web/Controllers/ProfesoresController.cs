@@ -9,13 +9,45 @@ namespace SistemaGYM.Web.Controllers;
 public class ProfesoresController : Controller
 {
     private readonly IProfesorApiService _profesorService;
+    private readonly IActividadApiService _actividadService;
 
-    public ProfesoresController(IProfesorApiService profesorService)
+    public ProfesoresController(IProfesorApiService profesorService, IActividadApiService actividadService)
     {
         _profesorService = profesorService;
+        _actividadService = actividadService;
     }
 
-    public async Task<IActionResult> Index() => View(await _profesorService.ObtenerTodosAsync());
+    // GET /Profesores?buscar=ana&actividadId=3
+    // Los dos filtros son opcionales y se pueden combinar.
+    public async Task<IActionResult> Index(string? buscar, int? actividadId)
+    {
+        var profesores = await _profesorService.ObtenerTodosAsync();
+        var actividades = await _actividadService.ObtenerTodasAsync();
+
+        // Texto libre: busca en nombre, apellido, DNI, email o descripción
+        if (!string.IsNullOrWhiteSpace(buscar))
+        {
+            var texto = buscar.Trim().ToLower();
+            profesores = profesores.Where(p =>
+                $"{p.Nombre} {p.Apellido}".ToLower().Contains(texto) ||
+                p.Dni.ToString().Contains(texto) ||
+                (p.Email ?? "").ToLower().Contains(texto) ||
+                (p.Descripcion ?? "").ToLower().Contains(texto)).ToList();
+        }
+
+        // Profesor a cargo de una actividad en particular
+        if (actividadId.HasValue)
+        {
+            var actividad = actividades.FirstOrDefault(a => a.ActividadId == actividadId.Value);
+            profesores = profesores.Where(p => p.Id == actividad?.ProfesorId).ToList();
+        }
+
+        ViewBag.Buscar = buscar;
+        ViewBag.ActividadId = actividadId;
+        ViewBag.Actividades = actividades;
+
+        return View(profesores.OrderBy(p => p.Apellido).ThenBy(p => p.Nombre).ToList());
+    }
 
     public async Task<IActionResult> Details(int id)
     {
@@ -33,14 +65,14 @@ public class ProfesoresController : Controller
         if (dto.Contrasenia != confirmarContrasenia)
         {
             ViewBag.Error = "Las contraseñas no coinciden.";
-            return View();
+            return View(dto); // se devuelven los datos para no tener que cargarlos de nuevo
         }
 
         var (ok, error) = await _profesorService.CrearAsync(dto);
         if (!ok)
         {
             ViewBag.Error = error;
-            return View();
+            return View(dto); // por ejemplo, DNI repetido: se conserva lo que había escrito
         }
 
         TempData["Mensaje"] = "Profesor registrado con éxito en el sistema";
@@ -77,7 +109,7 @@ public class ProfesoresController : Controller
         if (eliminado)
             TempData["Mensaje"] = "El profesor se ha dado de baja correctamente del sistema";
         else
-            TempData["Error"] = "No se pudo dar de baja al profesor.";
+            TempData["Error"] = "No se pudo dar de baja al profesor. Revisá que no tenga actividades a cargo.";
         return RedirectToAction("Index");
     }
 }

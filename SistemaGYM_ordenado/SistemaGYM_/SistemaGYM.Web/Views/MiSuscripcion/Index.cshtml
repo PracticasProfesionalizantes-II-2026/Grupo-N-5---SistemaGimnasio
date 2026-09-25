@@ -3,7 +3,7 @@
     ViewData["Title"] = "Suscripción";
     var planes = ViewBag.Planes as List<SuscripcionDto> ?? new();
 }
-<h1 class="mb-4">Mi Suscripción</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"suscripciones"' />Mi Suscripción</h1>
 
 @if (Model != null)
 {

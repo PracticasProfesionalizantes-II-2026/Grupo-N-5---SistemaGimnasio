@@ -1,0 +1,21 @@
+@model (List<DatoCategoria> Datos, bool EsMoneda)
+@*
+    Barras horizontales (una por categoría) hechas con HTML y CSS.
+    El largo de cada barra es un porcentaje del valor más alto.
+    Uso: <partial name="_BarrasCategorias" model="(datos, true)" />
+*@
+@{
+    var cultura = new System.Globalization.CultureInfo("es-AR");
+    var maximo = Model.Datos.Any() ? Model.Datos.Max(d => d.Valor) : 0;
+}
+<div class="gym-barras-h">
+    @foreach (var d in Model.Datos)
+    {
+        var largo = maximo == 0 ? 0 : (int)Math.Round(d.Valor / maximo * 100);
+        <div class="gym-barra-h-fila">
+            <span class="gym-barra-h-nombre">@d.Nombre</span>
+            <div class="gym-barra-h-zona"><div class="gym-barra-h" style="width: @(largo)%"></div></div>
+            <span class="gym-barra-h-valor">@(Model.EsMoneda ? d.Valor.ToString("C0", cultura) : d.Valor.ToString("0"))</span>
+        </div>
+    }
+</div>

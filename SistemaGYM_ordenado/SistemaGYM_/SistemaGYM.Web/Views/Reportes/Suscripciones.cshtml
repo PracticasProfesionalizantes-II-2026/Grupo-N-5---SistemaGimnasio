@@ -1,6 +1,6 @@
 @model List<(AlumnoDto Alumno, AlumnoSuscripcionDto Suscripcion)>
 @{ ViewData["Title"] = "Reporte de suscripciones"; }
-<h1 class="mb-4">Suscripciones @(ViewBag.SoloActivas ? "activas" : "vencidas")</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='@(ViewBag.SoloActivas ? "activas" : "vencidas")' />Suscripciones @(ViewBag.SoloActivas ? "activas" : "vencidas")</h1>
 
 @if (!Model.Any())
 {

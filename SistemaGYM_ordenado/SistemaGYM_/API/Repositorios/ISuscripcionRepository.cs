@@ -11,6 +11,7 @@ public interface ISuscripcionRepository
     Task AgregarAsync(Suscripcion entidad);
     Task ActualizarAsync(Suscripcion entidad);
     Task EliminarAsync(Suscripcion entidad);
+    Task<bool> TieneClientesAsync(int suscripcionId);
 }
 
 public class SuscripcionRepository : ISuscripcionRepository
@@ -27,4 +28,8 @@ public class SuscripcionRepository : ISuscripcionRepository
     public async Task AgregarAsync(Suscripcion entidad) { await _db.Suscripciones.AddAsync(entidad); await _db.SaveChangesAsync(); }
     public async Task ActualizarAsync(Suscripcion entidad) { _db.Suscripciones.Update(entidad); await _db.SaveChangesAsync(); }
     public async Task EliminarAsync(Suscripcion entidad) { _db.Suscripciones.Remove(entidad); await _db.SaveChangesAsync(); }
+
+    // True si algún cliente tiene o tuvo este plan (incluye el historial y sus pagos)
+    public Task<bool> TieneClientesAsync(int suscripcionId) =>
+        _db.AlumnoSuscripciones.AnyAsync(x => x.SuscripcionId == suscripcionId);
 }

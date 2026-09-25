@@ -12,7 +12,8 @@ public record PagoDto(
 );
 
 public record PagoCreateDto(
-    [param: Range(0.01, double.MaxValue, ErrorMessage = "El monto debe ser mayor a 0")]
+    // La columna Monto es decimal(10,2): admite hasta 99.999.999,99
+    [param: Range(0.01, 99999999.99, ErrorMessage = "El monto debe ser mayor a 0 y menor a 100.000.000")]
     decimal Monto,
 
     DateTime FechaPago,

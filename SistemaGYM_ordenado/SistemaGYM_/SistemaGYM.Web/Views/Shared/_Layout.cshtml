@@ -18,7 +18,13 @@
         // Marca como "active" el link de la sección en la que está el usuario
         string Activo(string c, string? a = null) =>
             controlador == c && (a == null || accion == a) ? "active" : "";
+
+        // En los menús principales la barra negra solo muestra el usuario y "Salir" (sin links)
+        var esMenuPrincipal = accion == "Index" &&
+            (controlador == "Admin" || controlador == "Cliente" || controlador == "ProfesorPanel");
     }
+    @if (!esMenuPrincipal)
+    {
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark gym-navbar">
             <div class="container">
@@ -72,8 +78,29 @@
             </div>
         </nav>
     </header>
+    <script>
+        // Si se llegó desde un botón del menú principal, la barra baja con una animación (ver site.js y site.css)
+        try {
+            if (sessionStorage.getItem('gymAnimarBarra')) {
+                sessionStorage.removeItem('gymAnimarBarra');
+                document.querySelector('.gym-navbar').classList.add('gym-navbar-entrada');
+            }
+        } catch (e) { }
+    </script>
+    }
+    else
+    {
+    <header>
+        <nav class="navbar navbar-dark gym-navbar">
+            <div class="container justify-content-end gap-3">
+                <span class="gym-usuario">Hola, @Context.Session.GetString("Nombre") @Context.Session.GetString("Apellido")</span>
+                <a class="btn btn-sm btn-outline-light" asp-controller="Auth" asp-action="Logout">Salir</a>
+            </div>
+        </nav>
+    </header>
+    }
 
-    <main role="main" class="container gym-main">
+    <main role="main" class="container gym-main @(esMenuPrincipal ? "gym-main-menu" : "")">
         @RenderBody()
     </main>
 

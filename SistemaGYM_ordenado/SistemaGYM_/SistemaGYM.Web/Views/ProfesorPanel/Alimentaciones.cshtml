@@ -1,7 +1,7 @@
 @model List<AlimentacionDto>
 @{ ViewData["Title"] = "Alimentaciones asignadas"; }
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h1 class="mb-0">Alimentaciones de mis alumnos</h1>
+    <h1 class="mb-0 gym-titulo"><partial name="_Icono" model='"alimentacion"' />Alimentaciones de mis alumnos</h1>
     <a asp-action="CrearAlimentacion" class="btn btn-dark">+ Asignar alimentación</a>
 </div>
 @if (!Model.Any())

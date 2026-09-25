@@ -83,6 +83,10 @@ public class ActividadLogica : IActividadLogica
         var a = await _repo.ObtenerPorIdAsync(id);
         if (a == null) return false;
 
+        // Si se borrara, la base eliminaría también las inscripciones de los alumnos
+        if (a.ActividadesAlumno.Any(x => x.Activa))
+            throw new ReglaDeNegocioException("No se puede eliminar la actividad porque tiene alumnos inscriptos.");
+
         await _repo.EliminarAsync(a);
         return true;
     }

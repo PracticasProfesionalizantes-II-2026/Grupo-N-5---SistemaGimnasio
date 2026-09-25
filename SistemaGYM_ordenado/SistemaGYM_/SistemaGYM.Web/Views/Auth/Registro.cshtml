@@ -1,7 +1,10 @@
+@model AlumnoCreateDto?
+@* Si hubo un error al registrarse, el controlador devuelve lo cargado para no escribirlo de nuevo *@
 @{
     ViewData["Title"] = "Registrarse";
     Layout = null;
     var suscripciones = ViewBag.Suscripciones as List<SuscripcionDto> ?? new();
+    var suscripcionId = ViewBag.SuscripcionId as int?;
 }
 <!DOCTYPE html>
 <html lang="es">
@@ -32,28 +35,28 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">DNI</label>
-                        <input type="number" name="Dni" class="form-control" required />
+                        <input type="number" name="Dni" value="@(Model?.Dni > 0 ? (int?)Model.Dni : null)" class="form-control" required />
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Teléfono</label>
-                        <input type="text" name="Telefono" class="form-control" required />
+                        <input type="text" name="Telefono" value="@Model?.Telefono" class="form-control" required />
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Nombre</label>
-                        <input type="text" name="Nombre" class="form-control" required />
+                        <input type="text" name="Nombre" value="@Model?.Nombre" class="form-control" required />
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Apellido</label>
-                        <input type="text" name="Apellido" class="form-control" required />
+                        <input type="text" name="Apellido" value="@Model?.Apellido" class="form-control" required />
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Dirección</label>
-                    <input type="text" name="Direccion" class="form-control" required />
+                    <input type="text" name="Direccion" value="@Model?.Direccion" class="form-control" required />
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Email</label>
-                    <input type="email" name="Email" class="form-control" required />
+                    <input type="email" name="Email" value="@Model?.Email" class="form-control" required />
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Suscripción (opcional)</label>
@@ -61,7 +64,7 @@
                         <option value="">-- Sin suscripción por ahora --</option>
                         @foreach (var s in suscripciones)
                         {
-                            <option value="@s.Id">@s.Nombre ($@s.Precio - @s.DiasPorSemana día(s)/semana - 1 mes)</option>
+                            <option value="@s.Id" selected="@(s.Id == suscripcionId)">@s.Nombre ($@s.Precio - @s.DiasPorSemana día(s)/semana - 1 mes)</option>
                         }
                     </select>
                 </div>

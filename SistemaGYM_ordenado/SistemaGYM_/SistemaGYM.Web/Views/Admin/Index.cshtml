@@ -1,15 +1,20 @@
 @{
     ViewData["Title"] = "Menú administrador";
 }
-<h1 class="mb-4">Menú administrador</h1>
-<div class="row g-3">
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Alumnos" asp-action="Index">Administrar clientes</a></div>
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Profesores" asp-action="Index">Administrar profesores</a></div>
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Actividades" asp-action="Index">Administrar actividades</a></div>
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Suscripciones" asp-action="Index">Administrar suscripciones</a></div>
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Pagos" asp-action="Create">Registrar pago</a></div>
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Reportes" asp-action="Index">Reportes</a></div>
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Rutinas" asp-action="Index">Administrar rutinas</a></div>
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Alimentacion" asp-action="Index">Administrar alimentación</a></div>
-    <div class="col-6 col-md-3"><a class="dashboard-tile" asp-controller="Anuncios" asp-action="Index">Administrar anuncios</a></div>
+@*
+    Menú principal. En esta página no se muestra la barra de navegación (ver _Layout):
+    la barra aparece con una animación al entrar a cualquier sección desde acá.
+*@
+<partial name="_EncabezadoMenu" />
+
+<div class="gym-menu">
+    <a class="gym-menu-tile" asp-controller="Alumnos" asp-action="Index">Clientes<partial name="_Icono" model='"clientes"' /></a>
+    <a class="gym-menu-tile" asp-controller="Profesores" asp-action="Index">Profesores<partial name="_Icono" model='"profesores"' /></a>
+    <a class="gym-menu-tile" asp-controller="Actividades" asp-action="Index">Actividades<partial name="_Icono" model='"actividades"' /></a>
+    <a class="gym-menu-tile" asp-controller="Suscripciones" asp-action="Index">Suscripciones<partial name="_Icono" model='"suscripciones"' /></a>
+    <a class="gym-menu-tile" asp-controller="Pagos" asp-action="Create">Registrar pago<partial name="_Icono" model='"pagos"' /></a>
+    <a class="gym-menu-tile" asp-controller="Reportes" asp-action="Index">Reportes<partial name="_Icono" model='"reportes"' /></a>
+    <a class="gym-menu-tile" asp-controller="Rutinas" asp-action="Index">Rutinas<partial name="_Icono" model='"rutinas"' /></a>
+    <a class="gym-menu-tile" asp-controller="Alimentacion" asp-action="Index">Alimentación<partial name="_Icono" model='"alimentacion"' /></a>
+    <a class="gym-menu-tile" asp-controller="Anuncios" asp-action="Index">Anuncios<partial name="_Icono" model='"anuncios"' /></a>
 </div>

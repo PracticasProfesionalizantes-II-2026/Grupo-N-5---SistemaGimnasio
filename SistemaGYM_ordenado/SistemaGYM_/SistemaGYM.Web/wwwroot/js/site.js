@@ -2,6 +2,14 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    // 0) Menú principal: al tocar un botón se deja una marca para que, en la página siguiente,
+    //    la barra de navegación aparezca bajando con una animación (ver _Layout.cshtml)
+    document.querySelectorAll('.gym-main-menu .gym-menu-tile').forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            try { sessionStorage.setItem('gymAnimarBarra', '1'); } catch (e) { }
+        });
+    });
+
     // 1) Si la página trae un mensaje de éxito o de error, se muestra la ventana automáticamente
     const modalMensaje = document.getElementById('modalMensaje');
     if (modalMensaje) {

@@ -88,6 +88,10 @@ public class SuscripcionLogica : ISuscripcionLogica
         var s = await _repo.ObtenerPorIdAsync(id);
         if (s == null) return false;
 
+        // Si se borrara, la base eliminaría en cascada el historial de suscripciones y los pagos de esos clientes
+        if (await _repo.TieneClientesAsync(id))
+            throw new ReglaDeNegocioException("No se puede eliminar el plan porque hay clientes que lo tienen o lo tuvieron.");
+
         await _repo.EliminarAsync(s);
         return true;
     }

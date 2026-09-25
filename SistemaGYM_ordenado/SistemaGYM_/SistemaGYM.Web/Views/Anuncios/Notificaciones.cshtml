@@ -1,21 +1,24 @@
 @model List<AnuncioDto>
 @{ ViewData["Title"] = "Notificaciones"; }
-<h1 class="mb-4">Notificaciones</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"notificaciones"' />Notificaciones</h1>
 @if (!Model.Any())
 {
     <div class="alert alert-info">No hay notificaciones por el momento.</div>
 }
 else
 {
-    <div class="list-group">
+    <div class="gym-muro">
     @foreach (var a in Model)
     {
-        <div class="list-group-item">
-            <div class="d-flex justify-content-between">
-                <strong>@a.Titulo</strong>
-                <small class="text-muted">@a.FechaPublicacion.ToString("dd/MM/yyyy")</small>
+        <div class="gym-publicacion">
+            <div class="gym-publicacion-fecha">
+                <strong>@a.FechaPublicacion.ToString("dd")</strong>
+                <span>@a.FechaPublicacion.ToString("MMM", new System.Globalization.CultureInfo("es-AR"))</span>
             </div>
-            <p class="mb-0">@a.Descripcion</p>
+            <div class="flex-grow-1">
+                <strong>@a.Titulo</strong>
+                <p class="mb-0 small text-muted" style="white-space: pre-line;">@a.Descripcion</p>
+            </div>
         </div>
     }
     </div>

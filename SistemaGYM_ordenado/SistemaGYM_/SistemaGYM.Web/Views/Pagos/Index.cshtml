@@ -1,7 +1,7 @@
 @model List<PagoDto>
 @{ ViewData["Title"] = "Reporte de pagos"; }
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Reporte de pagos</h1>
+    <h1 class="mb-0 gym-titulo"><partial name="_Icono" model='"pagos"' />Reporte de pagos</h1>
     <a asp-action="Create" class="btn btn-dark">+ Registrar pago</a>
 </div>
 

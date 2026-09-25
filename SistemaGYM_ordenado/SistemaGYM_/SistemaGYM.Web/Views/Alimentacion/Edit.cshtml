@@ -4,7 +4,7 @@
     var esProfesor = Context.Session.GetString("Rol") == "Profesor";
     var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
 }
-<h1 class="mb-2">Modificar plan de alimentación</h1>
+<h1 class="mb-2 gym-titulo"><partial name="_Icono" model='"alimentacion"' />Modificar plan de alimentación</h1>
 <p class="text-muted mb-4">Asignado a: <strong>@(Model.AlumnoNombre ?? "Plan general")</strong></p>
 <form method="post" asp-action="Edit" asp-route-id="@Model.Id">
     @* Se conserva el alumno al que está asignado el plan *@

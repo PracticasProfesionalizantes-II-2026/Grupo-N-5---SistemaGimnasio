@@ -1,6 +1,6 @@
 @model AlumnoDetalleDto
 @{ ViewData["Title"] = "Editar mis datos"; }
-<h1 class="mb-4">Editar mis datos</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"misdatos"' />Editar mis datos</h1>
 <form method="post" asp-action="Editar">
     <div class="row">
         <div class="col-md-6 mb-3"><label class="form-label">DNI</label><input type="number" name="Dni" class="form-control" value="@Model.Dni" required /></div>

@@ -2,7 +2,7 @@
     ViewData["Title"] = "Crear actividad";
     var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
 }
-<h1 class="mb-4">Crear actividad</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"actividades"' />Crear actividad</h1>
 <form method="post" asp-action="Create">
     <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="nombre" class="form-control" required /></div>
     <div class="mb-3"><label class="form-label">Descripción</label><textarea name="descripcion" class="form-control" required></textarea></div>

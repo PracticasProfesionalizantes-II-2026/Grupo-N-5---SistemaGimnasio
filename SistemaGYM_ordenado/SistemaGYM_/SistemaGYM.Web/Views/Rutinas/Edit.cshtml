@@ -5,7 +5,7 @@
     var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
     var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
 }
-<h1 class="mb-4">Modificar rutina</h1>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"rutinas"' />Modificar rutina</h1>
 <form method="post" asp-action="Edit" asp-route-id="@Model.Id">
     <input type="hidden" name="ActividadId" value="@Model.ActividadId" />
     <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="Nombre" class="form-control" value="@Model.Nombre" required /></div>

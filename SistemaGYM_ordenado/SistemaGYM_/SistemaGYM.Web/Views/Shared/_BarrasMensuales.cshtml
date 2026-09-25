@@ -1,0 +1,38 @@
+@model (List<DatoMensual> Datos, bool EsMoneda)
+@*
+    Gráfico de barras verticales hecho solo con HTML y CSS (una barra por mes).
+    La altura de cada barra es un porcentaje del valor más alto.
+    Al pasar el mouse se ve el valor exacto (ver .gym-barra en site.css).
+    Uso: <partial name="_BarrasMensuales" model="(datos, false)" />
+*@
+@{
+    var cultura = new System.Globalization.CultureInfo("es-AR");
+    var maximo = Model.Datos.Any() ? Model.Datos.Max(d => d.Valor) : 0;
+    string Formato(decimal v) => Model.EsMoneda ? v.ToString("C0", cultura) : v.ToString("0");
+}
+<div class="gym-grafico">
+    @foreach (var d in Model.Datos)
+    {
+        var alto = maximo == 0 ? 0 : (int)Math.Round(d.Valor / maximo * 100);
+        <div class="gym-grafico-columna">
+            <div class="gym-barra-zona">
+                <div class="gym-barra" style="height: @(alto)%" data-valor="@Formato(d.Valor)"></div>
+            </div>
+            <span class="gym-grafico-etiqueta">@d.Mes.ToString("MMM yy", cultura)</span>
+        </div>
+    }
+</div>
+
+@* La misma información en una tabla, para quien prefiera leer los números *@
+<details class="gym-detalle-tabla">
+    <summary>Ver como tabla</summary>
+    <table class="table table-sm mt-2 mb-0">
+        <thead><tr><th>Mes</th><th class="text-end">@(Model.EsMoneda ? "Total" : "Cantidad")</th></tr></thead>
+        <tbody>
+        @foreach (var d in Model.Datos.AsEnumerable().Reverse())
+        {
+            <tr><td>@d.Mes.ToString("MMMM yyyy", cultura)</td><td class="text-end">@Formato(d.Valor)</td></tr>
+        }
+        </tbody>
+    </table>
+</details>

@@ -1,0 +1,33 @@
+@model List<(AlumnoDto Alumno, AlumnoSuscripcionDto Suscripcion)>
+@{ ViewData["Title"] = "Suscripciones por vencer"; }
+<h1 class="mb-2 gym-titulo"><partial name="_Icono" model='"porvencer"' />Suscripciones por vencer</h1>
+<p class="text-muted mb-4">Clientes cuyo plan vence en los próximos 7 días.</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay suscripciones que venzan en los próximos 7 días.</div>
+}
+else
+{
+    <div class="gym-lista-avisos">
+    @foreach (var fila in Model)
+    {
+        var dias = (fila.Suscripcion.FechaFin!.Value.Date - DateTime.Today).Days;
+        <div class="gym-aviso">
+            <div class="gym-aviso-dias @(dias <= 2 ? "urgente" : "")">
+                <strong>@dias</strong>
+                <span>@(dias == 1 ? "día" : "días")</span>
+            </div>
+            <div class="flex-grow-1">
+                <strong>@fila.Alumno.Nombre @fila.Alumno.Apellido</strong>
+                <div class="small text-muted">@fila.Alumno.Email</div>
+            </div>
+            <div class="text-end">
+                <div>@fila.Suscripcion.NombrePlan</div>
+                <div class="small text-muted">Vence el @fila.Suscripcion.FechaFin?.ToString("dd/MM/yyyy")</div>
+            </div>
+        </div>
+    }
+    </div>
+}
+<a asp-action="Index" class="btn btn-outline-dark mt-3">Volver</a>

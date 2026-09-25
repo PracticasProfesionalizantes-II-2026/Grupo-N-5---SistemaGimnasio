@@ -1,0 +1,124 @@
+@model string
+@*
+    Íconos minimalistas de cada sección (dibujados con SVG, no necesitan archivos de imagen).
+    Uso:  <partial name="_Icono" model='"alimentacion"' />
+    Toman el color del texto que los rodea (currentColor), así se pueden pintar desde el CSS.
+*@
+<svg class="gym-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    @switch (Model)
+    {
+        case "clientes":        @* dos personas *@
+            <circle cx="9" cy="8" r="3.5" />
+            <path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" />
+            <circle cx="17" cy="9" r="2.5" />
+            <path d="M17 14c2.6.2 4.5 2.2 4.5 5" />
+            break;
+
+        case "profesores":      @* cronómetro de entrenador *@
+            <circle cx="12" cy="13.5" r="7.5" />
+            <path d="M12 13.5V9.5" />
+            <path d="M9.5 2.5h5M12 2.5V6" />
+            <path d="M18.5 6.5l1.5-1.5" />
+            break;
+
+        case "actividades":     @* mancuerna *@
+            <path d="M6.5 7v10M17.5 7v10" />
+            <path d="M3.5 9.5v5M20.5 9.5v5" />
+            <path d="M6.5 12h11" />
+            break;
+
+        case "suscripciones":   @* tarjeta *@
+            <rect x="3" y="6" width="18" height="12" rx="2.5" />
+            <path d="M3 10h18M7 14.5h4" />
+            break;
+
+        case "pagos":           @* moneda *@
+            <circle cx="12" cy="12" r="9" />
+            <path d="M14.8 9.3c-.5-.9-1.5-1.5-2.8-1.5-1.7 0-2.8.9-2.8 2.1 0 2.9 5.6 1.5 5.6 4.3 0 1.2-1.2 2.1-2.8 2.1-1.4 0-2.4-.6-2.9-1.6M12 6.3v1.5M12 16.3v1.4" />
+            break;
+
+        case "reportes":        @* gráfico de barras *@
+            <path d="M4 20h16" />
+            <path d="M7 16v-5M12 16V6M17 16v-8" />
+            break;
+
+        case "rutinas":         @* planilla de ejercicios *@
+            <rect x="5" y="4.5" width="14" height="16.5" rx="2" />
+            <path d="M9 3h6v3H9z" />
+            <path d="M8.5 11h7M8.5 14.5h7M8.5 18h4" />
+            break;
+
+        case "alimentacion":    @* pata de pollo *@
+            <path d="M9.6 14.4C7.5 12.3 7.9 8.2 10.6 5.8 13.2 3.4 17.3 3.1 19.4 5.2s1.8 6.2-.6 8.8c-2.4 2.7-6.5 3.1-8.6 1z" />
+            <path d="M13.2 7.6c1.1-.8 2.6-1 3.7-.4" />
+            <path d="M10 14.8l-3.3 3.3" />
+            <circle cx="5.1" cy="17.9" r="1.4" />
+            <circle cx="6.9" cy="19.7" r="1.4" />
+            break;
+
+        case "anuncios":        @* megáfono *@
+            <path d="M3.5 10v4a1 1 0 0 0 1 1H7l6 4V5L7 9H4.5a1 1 0 0 0-1 1z" />
+            <path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11" />
+            break;
+
+        case "notificaciones":  @* campana *@
+            <path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z" />
+            <path d="M10 20.5a2 2 0 0 0 4 0" />
+            break;
+
+        case "clases":          @* calendario *@
+            <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+            <path d="M3.5 10h17M8 3v4M16 3v4" />
+            <path d="M8 14h2M12 14h2M8 17h2" />
+            break;
+
+        case "misdatos":        @* credencial *@
+            <rect x="3" y="5" width="18" height="14" rx="2.5" />
+            <circle cx="9" cy="11" r="2.2" />
+            <path d="M5.8 16c.5-1.5 1.7-2.3 3.2-2.3s2.7.8 3.2 2.3M14.5 10h3.5M14.5 13.5h3.5" />
+            break;
+
+        case "ingresos":        @* flecha de crecimiento *@
+            <path d="M3 17l6-6 4 4 8-8" />
+            <path d="M15 7h6v6" />
+            break;
+
+        case "activas":         @* tarjeta con tilde *@
+            <rect x="3" y="6" width="18" height="12" rx="2.5" />
+            <path d="M8.5 12l2.3 2.3 4.7-4.6" />
+            break;
+
+        case "vencidas":        @* calendario con cruz *@
+            <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+            <path d="M3.5 10h17M8 3v4M16 3v4" />
+            <path d="M10 13.5l4 4M14 13.5l-4 4" />
+            break;
+
+        case "porvencer":       @* reloj de arena *@
+            <path d="M6.5 3h11M6.5 21h11" />
+            <path d="M7.5 3c0 4.5 4.5 5.5 4.5 9s-4.5 4.5-4.5 9M16.5 3c0 4.5-4.5 5.5-4.5 9s4.5 4.5 4.5 9" />
+            break;
+
+        case "ocupacion":       @* medidor *@
+            <path d="M3.5 17a8.5 8.5 0 1 1 17 0" />
+            <path d="M12 17l4-5" />
+            <circle cx="12" cy="17" r="1.3" />
+            break;
+
+        case "porplan":         @* gráfico de torta *@
+            <path d="M12 3a9 9 0 1 0 9 9h-9z" />
+            <path d="M15 3.5A8.5 8.5 0 0 1 20.5 9H15z" />
+            break;
+
+        case "suscriptos":      @* persona con signo más *@
+            <circle cx="9.5" cy="8" r="3.5" />
+            <path d="M3 20c0-3.6 2.9-6 6.5-6 1.6 0 3 .5 4.1 1.3" />
+            <path d="M18 14v6M15 17h6" />
+            break;
+
+        default:                @* por si falta alguno: mancuerna *@
+            <path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11" />
+            break;
+    }
+</svg>
