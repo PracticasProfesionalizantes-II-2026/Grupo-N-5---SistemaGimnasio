@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ícono de la pestaña: "G+" con los colores de la app (fondo oscuro, + naranja) -->
+  <rect width="64" height="64" rx="14" fill="#17171a"/>
+  <text x="27" y="45" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#ffffff">G</text>
+  <text x="50" y="36" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="900" fill="#ff6a13">+</text>
+</svg>

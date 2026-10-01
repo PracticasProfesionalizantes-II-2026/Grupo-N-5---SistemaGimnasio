@@ -5,8 +5,9 @@
     var esAdmin = Context.Session.GetString("Rol") == "Administrador";
     var planes = ViewBag.Planes as List<SuscripcionDto> ?? new();
     var suscripcionElegida = ViewBag.Suscripcion as string;
+    var verInactivos = ViewBag.VerInactivos as bool? ?? false;
     bool hayFiltros = !string.IsNullOrWhiteSpace(ViewBag.Buscar as string) || !string.IsNullOrWhiteSpace(suscripcionElegida)
-                      || ViewBag.AltaDesde as string != null || ViewBag.AltaHasta as string != null;
+                      || ViewBag.AltaDesde as string != null || ViewBag.AltaHasta as string != null || verInactivos;
 }
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
@@ -20,11 +21,18 @@
 @* Buscador: todos los campos son opcionales y se pueden combinar *@
 <form method="get" asp-action="Index" class="gym-filtros">
     <div class="row g-3 align-items-end">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label class="form-label">Buscar</label>
             <input type="search" name="buscar" value="@ViewBag.Buscar" class="form-control" placeholder="Nombre, apellido, DNI o email" />
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <label class="form-label">Estado</label>
+            <select name="estado" class="form-select">
+                <option value="activos">Activos</option>
+                <option value="inactivos" selected="@verInactivos">Inactivos</option>
+            </select>
+        </div>
+        <div class="col-md-2">
             <label class="form-label">Suscripción</label>
             <select name="suscripcion" class="form-select">
                 <option value="">Todas</option>
@@ -81,6 +89,7 @@ else
                         <span class="gym-avatar">@($"{alumno.Nombre.FirstOrDefault()}{alumno.Apellido.FirstOrDefault()}")</span>
                         <div>
                             <strong>@alumno.Apellido, @alumno.Nombre</strong>
+                            @if (verInactivos) { <span class="badge text-bg-secondary ms-1">Inactivo</span> }
                             <div class="small text-muted">@alumno.Email</div>
                         </div>
                     </div>
@@ -89,9 +98,13 @@ else
                 <td>@alumno.FechaAlta.ToString("dd/MM/yyyy")</td>
                 <td class="text-end">
                     <a asp-action="Details" asp-route-id="@alumno.Id" class="btn btn-sm btn-outline-primary">Ver detalle</a>
+                    @* Los inactivos ya están dados de baja: solo se pueden ver o modificar (por ejemplo, para reactivarlos) *@
                     @if (esAdmin)
                     {
                         <a asp-action="Edit" asp-route-id="@alumno.Id" class="btn btn-sm btn-outline-secondary">Modificar</a>
+                    }
+                    @if (esAdmin && !verInactivos)
+                    {
                         <form asp-action="Delete" asp-route-id="@alumno.Id" method="post" class="d-inline" data-confirmar="¿Está seguro que desea eliminar al cliente @alumno.Nombre @alumno.Apellido del sistema?">
                             <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                         </form>

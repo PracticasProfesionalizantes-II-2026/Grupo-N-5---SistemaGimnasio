@@ -1,7 +1,13 @@
 @model List<AnuncioDto>
-@{ ViewData["Title"] = "Anuncios"; }
+@{
+    ViewData["Title"] = "Anuncios";
+    var esAdmin = Context.Session.GetString("Rol") == "Administrador";
+    var usuarioId = int.Parse(Context.Session.GetString("UserId") ?? "0");
+    var profesores = (ViewBag.Profesores as List<ProfesorDto> ?? new())
+        .ToDictionary(p => p.Id, p => $"{p.Nombre} {p.Apellido}");
+}
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h1 class="mb-0 gym-titulo"><partial name="_Icono" model='"anuncios"' />@(Context.Session.GetString("Rol") == "Profesor" ? "Mis anuncios" : "Anuncios publicados")</h1>
+    <h1 class="mb-0 gym-titulo"><partial name="_Icono" model='"anuncios"' />Anuncios publicados</h1>
     <a asp-action="Create" class="btn btn-dark">+ Publicar anuncio</a>
 </div>
 @if (!Model.Any())
@@ -21,11 +27,16 @@ else
             </div>
             <div class="flex-grow-1">
                 <strong>@a.Titulo</strong>
+                <div class="small text-muted">Publicado por @(profesores.TryGetValue(a.ProfesorId, out var autor) ? autor : "profesor dado de baja")</div>
                 <p class="mb-0 small text-muted" style="white-space: pre-line;">@a.Descripcion</p>
             </div>
-            <form asp-action="Delete" asp-route-id="@a.Id" method="post" data-confirmar="¿Está seguro que desea eliminar el anuncio @a.Titulo?">
-                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
-            </form>
+            @* El admin puede eliminar cualquier anuncio; el profesor solo los suyos (el controlador lo vuelve a controlar) *@
+            @if (esAdmin || a.ProfesorId == usuarioId)
+            {
+                <form asp-action="Delete" asp-route-id="@a.Id" method="post" data-confirmar="¿Está seguro que desea eliminar el anuncio @a.Titulo?">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                </form>
+            }
         </div>
     }
     </div>

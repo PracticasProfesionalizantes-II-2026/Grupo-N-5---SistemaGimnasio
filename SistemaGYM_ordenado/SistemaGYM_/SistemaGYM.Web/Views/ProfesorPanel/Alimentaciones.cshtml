@@ -1,33 +1,35 @@
 @model List<AlimentacionDto>
 @{ ViewData["Title"] = "Alimentaciones asignadas"; }
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h1 class="mb-0 gym-titulo"><partial name="_Icono" model='"alimentacion"' />Alimentaciones de mis alumnos</h1>
-    <a asp-action="CrearAlimentacion" class="btn btn-dark">+ Asignar alimentación</a>
+    <h1 class="mb-0 gym-titulo"><partial name="_Icono" model='"alimentacion"' />Mis planes de alimentación</h1>
+    <a asp-controller="Alimentacion" asp-action="Create" class="btn btn-dark">+ Crear plan</a>
 </div>
 @if (!Model.Any())
 {
-    <div class="alert alert-info">Todavía no asignaste planes de alimentación.</div>
+    <div class="alert alert-info">Todavía no creaste planes de alimentación.</div>
 }
 else
 {
-    <table class="table table-striped align-middle">
-        <thead><tr><th>Tipo</th><th>Alumno</th><th>Descripción</th><th class="text-end">Acciones</th></tr></thead>
-        <tbody>
-        @foreach (var a in Model)
-        {
-            <tr>
-                <td><strong>@a.TipoAlimentacion</strong></td>
-                <td>@(a.AlumnoNombre ?? "Plan general")</td>
-                <td class="small" style="white-space: pre-line;">@a.Descripcion</td>
-                <td class="text-end text-nowrap">
-                    @* Solo se listan los planes del profesor, así que puede modificarlos y eliminarlos *@
+    @* Mismas tarjetas que ve el admin. Solo se listan los planes del profesor, así que puede modificarlos y eliminarlos *@
+    <div class="row g-3">
+    @foreach (var a in Model)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="gym-plan">
+                <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                    <strong>@a.TipoAlimentacion</strong>
+                    <span class="badge text-bg-light">@(a.AlumnoNombre ?? "Plan general")</span>
+                </div>
+                <p class="gym-plan-texto">@a.Descripcion</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a asp-controller="Alimentacion" asp-action="Details" asp-route-id="@a.Id" class="btn btn-sm btn-outline-primary">Ver plan</a>
                     <a asp-controller="Alimentacion" asp-action="Edit" asp-route-id="@a.Id" class="btn btn-sm btn-outline-secondary">Modificar</a>
                     <form asp-controller="Alimentacion" asp-action="Delete" asp-route-id="@a.Id" method="post" class="d-inline" data-confirmar="¿Está seguro que desea eliminar este plan de alimentación?">
                         <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                     </form>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
 }

@@ -16,12 +16,10 @@ public interface IAlimentacionLogica
 public class AlimentacionLogica : IAlimentacionLogica
 {
     private readonly IAlimentacionRepository _repo;
-    private readonly IActividadAlumnoRepository _actividadAlumnoRepo;
 
-    public AlimentacionLogica(IAlimentacionRepository repo, IActividadAlumnoRepository actividadAlumnoRepo)
+    public AlimentacionLogica(IAlimentacionRepository repo)
     {
         _repo = repo;
-        _actividadAlumnoRepo = actividadAlumnoRepo;
     }
 
     public async Task<IEnumerable<AlimentacionDto>> ObtenerTodosAsync()
@@ -52,11 +50,9 @@ public class AlimentacionLogica : IAlimentacionLogica
         );
     }
 
+    // AlumnoId es opcional: si viene nulo, el plan es general y lo ven todos los alumnos.
     public async Task<AlimentacionDto> CrearAsync(AlimentacionCreateDto dto)
     {
-        if (dto.AlumnoId.HasValue && !await _actividadAlumnoRepo.AlumnoPerteneceAProfesorAsync(dto.AlumnoId.Value, dto.ProfesorId))
-            throw new ReglaDeNegocioException("Solo podés asignar una alimentación a alumnos inscriptos en una actividad del profesor.");
-
         var nueva = new Alimentacion
         {
             TipoAlimentacion = dto.TipoAlimentacion,
@@ -84,8 +80,6 @@ public class AlimentacionLogica : IAlimentacionLogica
 
         a.TipoAlimentacion = dto.TipoAlimentacion;
         a.Descripcion = dto.Descripcion;
-        if (dto.AlumnoId.HasValue && !await _actividadAlumnoRepo.AlumnoPerteneceAProfesorAsync(dto.AlumnoId.Value, dto.ProfesorId))
-            throw new ReglaDeNegocioException("Solo podés asignar una alimentación a alumnos inscriptos en una actividad del profesor.");
         a.ProfesorId = dto.ProfesorId;
         a.AlumnoId = dto.AlumnoId;
 

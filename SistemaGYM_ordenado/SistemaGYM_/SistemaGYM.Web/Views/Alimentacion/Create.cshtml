@@ -1,18 +1,35 @@
 @{
     ViewData["Title"] = "Crear plan de alimentación";
+    var esProfesor = Context.Session.GetString("Rol") == "Profesor";
     var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
+    var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
 }
 <h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"alimentacion"' />Crear plan de alimentación</h1>
 <form method="post" asp-action="Create">
     <div class="mb-3"><label class="form-label">Tipo de alimentación</label><input type="text" name="TipoAlimentacion" class="form-control" required /></div>
     <div class="mb-3"><label class="form-label">Descripción</label><textarea name="Descripcion" class="form-control" rows="6" required></textarea></div>
+    @if (!esProfesor)
+    {
+        @* El profesor no elige profesor: el plan queda a su nombre (lo fuerza el controlador) *@
+        <div class="mb-3">
+            <label class="form-label">Profesor responsable</label>
+            <select name="ProfesorId" class="form-select" required>
+                <option value="">-- Seleccionar --</option>
+                @foreach (var p in profesores) { <option value="@p.Id">@p.Nombre @p.Apellido</option> }
+            </select>
+        </div>
+    }
     <div class="mb-3">
-        <label class="form-label">Profesor responsable</label>
-        <select name="ProfesorId" class="form-select" required>
-            <option value="">-- Seleccionar --</option>
-            @foreach (var p in profesores) { <option value="@p.Id">@p.Nombre @p.Apellido</option> }
-        </select>
+        <label class="form-label">Alumnos <span class="text-muted small">(opcional: si no elegís ninguno, es un plan general para todos)</span></label>
+        <partial name="_ListaAlumnos" model="alumnos" />
     </div>
     <button type="submit" class="btn btn-dark">Registrar plan</button>
-    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    @if (esProfesor)
+    {
+        <a asp-controller="ProfesorPanel" asp-action="Alimentaciones" class="btn btn-outline-secondary">Cancelar</a>
+    }
+    else
+    {
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    }
 </form>

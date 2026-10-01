@@ -9,10 +9,14 @@ namespace SistemaGYM.Web.Controllers;
 public class MisDatosController : Controller
 {
     private readonly IAlumnoApiService _alumnoService;
+    private readonly IPagoApiService _pagoService;
+    private readonly IAlumnoSuscripcionApiService _alumnoSuscripcionService;
 
-    public MisDatosController(IAlumnoApiService alumnoService)
+    public MisDatosController(IAlumnoApiService alumnoService, IPagoApiService pagoService, IAlumnoSuscripcionApiService alumnoSuscripcionService)
     {
         _alumnoService = alumnoService;
+        _pagoService = pagoService;
+        _alumnoSuscripcionService = alumnoSuscripcionService;
     }
 
     private int AlumnoId => int.Parse(HttpContext.Session.GetString("UserId")!);
@@ -21,6 +25,17 @@ public class MisDatosController : Controller
     {
         var detalle = await _alumnoService.ObtenerDetalleAsync(AlumnoId);
         if (detalle == null) return NotFound();
+
+        // Historial de pagos del cliente, del más nuevo al más viejo
+        ViewBag.Pagos = (await _pagoService.ObtenerTodosAsync())
+            .Where(p => p.AlumnoId == AlumnoId)
+            .OrderByDescending(p => p.FechaPago)
+            .ToList();
+
+        // Id de la suscripción -> nombre del plan, para mostrar qué se pagó
+        ViewBag.Planes = (await _alumnoSuscripcionService.ObtenerHistorialAsync(AlumnoId))
+            .ToDictionary(s => s.Id, s => s.NombrePlan);
+
         return View(detalle);
     }
 

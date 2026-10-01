@@ -10,6 +10,7 @@
       "cwd": "${workspaceFolder}/API",
       "console": "internalConsole",
       "stopAtEntry": false,
+      "justMyCode": false,
       "env": { "ASPNETCORE_ENVIRONMENT": "Development" }
     },
     {

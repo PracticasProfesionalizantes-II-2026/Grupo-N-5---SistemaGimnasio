@@ -1,5 +1,6 @@
 @{
     ViewData["Title"] = "Crear rutina";
+    var esProfesor = Context.Session.GetString("Rol") == "Profesor";
     var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
     var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
 }
@@ -10,29 +11,28 @@
         <label class="form-label">Descripción (ejercicios, series y repeticiones)</label>
         <textarea name="descripcion" class="form-control" rows="5" placeholder="Ej: Press militar 4 series de 12, 10 y 8 repeticiones" required></textarea>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Profesor</label>
-        <select name="profesorId" class="form-select" required>
-            <option value="">-- Seleccionar --</option>
-            @foreach (var p in profesores) { <option value="@p.Id">@p.Nombre @p.Apellido</option> }
-        </select>
-    </div>
+    @if (!esProfesor)
+    {
+        @* El profesor no elige profesor: la rutina queda a su nombre (lo fuerza el controlador) *@
+        <div class="mb-3">
+            <label class="form-label">Profesor</label>
+            <select name="profesorId" class="form-select" required>
+                <option value="">-- Seleccionar --</option>
+                @foreach (var p in profesores) { <option value="@p.Id">@p.Nombre @p.Apellido</option> }
+            </select>
+        </div>
+    }
     <div class="mb-3">
         <label class="form-label">Alumnos (podés elegir varios)</label>
-        <div class="gym-lista-check">
-            <div class="form-check border-bottom pb-2 mb-1">
-                <input class="form-check-input" type="checkbox" id="todos" data-seleccionar-todos="alumnoIds" />
-                <label class="form-check-label fw-semibold" for="todos">Seleccionar todos</label>
-            </div>
-            @foreach (var a in alumnos.OrderBy(a => a.Apellido))
-            {
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="alumnoIds" value="@a.Id" id="@($"alumno_{a.Id}")" />
-                    <label class="form-check-label" for="@($"alumno_{a.Id}")">@a.Apellido, @a.Nombre <span class="text-muted small">(DNI @a.Dni)</span></label>
-                </div>
-            }
-        </div>
+        <partial name="_ListaAlumnos" model="alumnos" />
     </div>
     <button type="submit" class="btn btn-dark">Registrar rutina</button>
-    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    @if (esProfesor)
+    {
+        <a asp-controller="ProfesorPanel" asp-action="Rutinas" class="btn btn-outline-secondary">Cancelar</a>
+    }
+    else
+    {
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    }
 </form>

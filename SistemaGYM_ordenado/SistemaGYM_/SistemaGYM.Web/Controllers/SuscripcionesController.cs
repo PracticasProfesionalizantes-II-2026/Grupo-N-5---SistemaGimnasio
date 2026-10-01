@@ -96,10 +96,10 @@ public class SuscripcionesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, SuscripcionCreateDto dto)
     {
-        var ok = await _suscripcionService.ActualizarAsync(id, dto);
+        var (ok, error) = await _suscripcionService.ActualizarAsync(id, dto);
         if (!ok)
         {
-            ViewBag.Error = "No se pudo modificar la suscripción";
+            ViewBag.Error = error;
             return View(await _suscripcionService.ObtenerPorIdAsync(id));
         }
 
@@ -111,11 +111,11 @@ public class SuscripcionesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        var ok = await _suscripcionService.EliminarAsync(id);
+        var (ok, error) = await _suscripcionService.EliminarAsync(id);
         if (ok)
             TempData["Mensaje"] = "La suscripción se ha eliminado con éxito del sistema";
         else
-            TempData["Error"] = "No se pudo eliminar la suscripción. Revisá que ningún cliente tenga o haya tenido ese plan.";
+            TempData["Error"] = error;
         return RedirectToAction("Index");
     }
 }

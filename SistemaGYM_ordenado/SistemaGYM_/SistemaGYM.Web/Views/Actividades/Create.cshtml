@@ -1,6 +1,7 @@
 @{
     ViewData["Title"] = "Crear actividad";
     var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
+    var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
 }
 <h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"actividades"' />Crear actividad</h1>
 <form method="post" asp-action="Create">
@@ -32,6 +33,10 @@
                 </div>
             }
         </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Inscribir alumnos <span class="text-muted small">(opcional, también se pueden inscribir después)</span></label>
+        <partial name="_ListaAlumnos" model="alumnos" />
     </div>
     <button type="submit" class="btn btn-dark">Registrar actividad</button>
     <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>

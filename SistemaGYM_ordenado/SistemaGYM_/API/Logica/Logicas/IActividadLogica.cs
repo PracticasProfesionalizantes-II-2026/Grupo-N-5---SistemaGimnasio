@@ -10,7 +10,7 @@ public interface IActividadLogica
     Task<ActividadDto?> ObtenerPorIdAsync(int id);
     Task<ActividadDto> CrearAsync(ActividadCreateDto dto);
     Task<bool> ActualizarAsync(int id, ActividadCreateDto dto);
-    Task<bool> EliminarAsync(int id);
+    Task<(bool eliminado, string? error)> EliminarAsync(int id);
 }
 
 public class ActividadLogica : IActividadLogica
@@ -78,17 +78,17 @@ public class ActividadLogica : IActividadLogica
         return true;
     }
 
-    public async Task<bool> EliminarAsync(int id)
+    public async Task<(bool eliminado, string? error)> EliminarAsync(int id)
     {
         var a = await _repo.ObtenerPorIdAsync(id);
-        if (a == null) return false;
+        if (a == null) return (false, null);
 
         // Si se borrara, la base eliminaría también las inscripciones de los alumnos
         if (a.ActividadesAlumno.Any(x => x.Activa))
-            throw new ReglaDeNegocioException("No se puede eliminar la actividad porque tiene alumnos inscriptos.");
+            return (false, "No se puede eliminar la actividad porque tiene alumnos inscriptos.");
 
         await _repo.EliminarAsync(a);
-        return true;
+        return (true, null);
     }
 
     // Reglas que valen tanto al crear como al modificar una actividad

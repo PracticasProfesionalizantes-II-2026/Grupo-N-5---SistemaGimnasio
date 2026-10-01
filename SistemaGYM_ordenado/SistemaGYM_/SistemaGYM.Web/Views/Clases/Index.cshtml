@@ -1,6 +1,10 @@
 @model List<ActividadDto>
-@{ ViewData["Title"] = "Mis Clases"; }
-<div class="d-flex justify-content-between align-items-center mb-4">
+@{
+    ViewData["Title"] = "Mis Clases";
+    var profesores = (ViewBag.Profesores as List<ProfesorDto> ?? new())
+        .ToDictionary(p => p.Id, p => $"{p.Nombre} {p.Apellido}");
+}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <h1 class="mb-0 gym-titulo"><partial name="_Icono" model='"clases"' />Mis Clases</h1>
     <a asp-action="Todas" class="btn btn-dark">Ver todas las clases</a>
 </div>
@@ -11,12 +15,23 @@
 }
 else
 {
-    <div class="list-group">
-        @foreach (var a in Model)
-        {
-            <a asp-action="Detalle" asp-route-id="@a.ActividadId" class="list-group-item list-group-item-action">
-                <strong>@a.Nombre</strong> — @a.Dias — @a.HoraInicio.ToString("HH:mm") a @a.HoraFin.ToString("HH:mm")
-            </a>
-        }
+    @* Mismas tarjetas que ve el admin, pero el alumno solo puede ver el detalle o darse de baja *@
+    <div class="row g-3">
+    @foreach (var a in Model)
+    {
+        var nombreProfesor = profesores.TryGetValue(a.ProfesorId, out var nombre) ? nombre : "Profesor dado de baja";
+        <div class="col-md-6 col-lg-4">
+            <div class="gym-ficha gym-ficha-actividad">
+                <partial name="_ActividadResumen" model="a" view-data='new ViewDataDictionary(ViewData) { ["NombreProfesor"] = nombreProfesor }' />
+                <div class="d-flex flex-wrap gap-2">
+                    <a asp-action="Detalle" asp-route-id="@a.ActividadId" class="btn btn-sm btn-outline-primary">Ver detalle</a>
+                    <form asp-action="DarDeBaja" method="post" class="d-inline" data-confirmar="¿Está seguro que desea darse de baja de @a.Nombre?">
+                        <input type="hidden" name="actividadId" value="@a.ActividadId" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Darme de baja</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
     </div>
 }

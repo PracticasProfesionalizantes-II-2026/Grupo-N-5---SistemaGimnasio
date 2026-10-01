@@ -11,7 +11,7 @@ public interface IProfesorLogica
     Task<ProfesorDetalleDto?> ObtenerDetallePorIdAsync(int id);
     Task<ProfesorDto> CrearAsync(ProfesorCreateDto dto);
     Task<bool> ActualizarAsync(int id, ProfesorCreateDto dto);
-    Task<bool> EliminarAsync(int id);
+    Task<(bool eliminado, string? error)> EliminarAsync(int id);
 }
 
 public class ProfesorLogica : IProfesorLogica
@@ -109,15 +109,15 @@ public class ProfesorLogica : IProfesorLogica
             throw new ReglaDeNegocioException("Ya existe un cliente o profesor registrado con ese email o DNI.");
     }
 
-    public async Task<bool> EliminarAsync(int id)
+    public async Task<(bool eliminado, string? error)> EliminarAsync(int id)
     {
         var p = await _repository.ObtenerDetallePorIdAsync(id); // trae sus actividades
-        if (p == null) return false;
+        if (p == null) return (false, null);
 
         if (p.Actividades.Any())
-            throw new ReglaDeNegocioException("No se puede dar de baja al profesor porque tiene actividades a cargo. Asignalas a otro profesor primero.");
+            return (false, "No se puede dar de baja al profesor porque tiene actividades a cargo. Asignalas a otro profesor primero.");
 
         await _repository.EliminarAsync(p);
-        return true;
+        return (true, null);
     }
 }

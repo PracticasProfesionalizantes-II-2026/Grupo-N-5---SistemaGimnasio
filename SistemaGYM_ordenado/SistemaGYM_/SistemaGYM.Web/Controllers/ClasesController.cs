@@ -18,10 +18,17 @@ public class ClasesController : Controller
 
     private int AlumnoId => int.Parse(HttpContext.Session.GetString("UserId")!);
 
+    // Para mostrar el nombre del profesor en cada tarjeta, igual que en la vista del admin
+    private async Task CargarProfesoresAsync()
+    {
+        ViewBag.Profesores = await _profesorService.ObtenerTodosAsync();
+    }
+
     // GET /Clases -> Mis Clases
     public async Task<IActionResult> Index()
     {
         var misActividades = await _actividadService.ObtenerActividadesDeAlumnoAsync(AlumnoId);
+        await CargarProfesoresAsync();
         return View(misActividades);
     }
 
@@ -29,6 +36,7 @@ public class ClasesController : Controller
     public async Task<IActionResult> Todas()
     {
         var todas = await _actividadService.ObtenerTodasAsync();
+        await CargarProfesoresAsync();
         ViewBag.ActividadesInscritas = (await _actividadService.ObtenerActividadesDeAlumnoAsync(AlumnoId))
             .Select(a => a.ActividadId)
             .ToHashSet();
@@ -67,8 +75,11 @@ public class ClasesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DarDeBaja(int actividadId)
     {
-        await _actividadService.DarDeBajaAlumnoAsync(AlumnoId, actividadId);
-        TempData["Mensaje"] = "Te diste de baja de la actividad";
+        var (ok, error) = await _actividadService.DarDeBajaAlumnoAsync(AlumnoId, actividadId);
+        if (ok)
+            TempData["Mensaje"] = "Te diste de baja de la actividad";
+        else
+            TempData["Error"] = error;
         return RedirectToAction("Index");
     }
 }

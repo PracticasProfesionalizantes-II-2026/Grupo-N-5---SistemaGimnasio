@@ -10,11 +10,13 @@ public class ActividadesController : Controller
 {
     private readonly IActividadApiService _actividadService;
     private readonly IProfesorApiService _profesorService;
+    private readonly IAlumnoApiService _alumnoService;
 
-    public ActividadesController(IActividadApiService actividadService, IProfesorApiService profesorService)
+    public ActividadesController(IActividadApiService actividadService, IProfesorApiService profesorService, IAlumnoApiService alumnoService)
     {
         _actividadService = actividadService;
         _profesorService = profesorService;
+        _alumnoService = alumnoService;
     }
 
     public async Task<IActionResult> Index()
@@ -32,24 +34,31 @@ public class ActividadesController : Controller
     public async Task<IActionResult> Create()
     {
         await CargarProfesoresAsync();
+        ViewBag.Alumnos = await _alumnoService.ObtenerTodosAsync();
         return View();
     }
 
+    // Los alumnos son opcionales: la actividad se puede crear vacía e inscribirlos después.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(string nombre, string descripcion, TimeOnly horaInicio, TimeOnly horaFin, int profesorId, int cupo, List<string> dias)
+    public async Task<IActionResult> Create(string nombre, string descripcion, TimeOnly horaInicio, TimeOnly horaFin, int profesorId, int cupo, List<string> dias, List<int> alumnoIds)
     {
         var dto = new ActividadCreateDto(nombre, descripcion, horaInicio, horaFin, profesorId, CombinarDias(dias), cupo);
-        var (ok, error) = await _actividadService.CrearAsync(dto);
+        var (ok, error, creada) = await _actividadService.CrearAsync(dto);
 
-        if (!ok)
+        if (!ok || creada is null)
         {
             ViewBag.Error = error;
             await CargarProfesoresAsync();
+            ViewBag.Alumnos = await _alumnoService.ObtenerTodosAsync();
             return View();
         }
 
-        TempData["Mensaje"] = "Actividad registrada con éxito en el sistema";
+        var (_, errores) = await _actividadService.InscribirAlumnosAsync(creada.ActividadId, alumnoIds);
+        if (errores.Any())
+            TempData["Error"] = $"La actividad se registró, pero algunos alumnos no se pudieron inscribir: {string.Join(" ", errores)}";
+        else
+            TempData["Mensaje"] = "Actividad registrada con éxito en el sistema";
         return RedirectToAction("Index");
     }
 
@@ -83,22 +92,50 @@ public class ActividadesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        var ok = await _actividadService.EliminarAsync(id);
+        var (ok, error) = await _actividadService.EliminarAsync(id);
         if (ok)
             TempData["Mensaje"] = "La actividad se ha eliminado con éxito del sistema";
         else
-            TempData["Error"] = "No se pudo eliminar la actividad. Revisá que no tenga alumnos inscriptos ni rutinas asignadas.";
+            TempData["Error"] = error;
         return RedirectToAction("Index");
     }
 
-    // GET /Actividades/Alumnos/5 -> ver alumnos inscriptos
+    // GET /Actividades/Alumnos/5 -> ver alumnos inscriptos e inscribir nuevos
     public async Task<IActionResult> Alumnos(int id)
     {
         var actividad = await _actividadService.ObtenerPorIdAsync(id);
         if (actividad == null) return NotFound();
 
+        var inscriptos = await _actividadService.ObtenerAlumnosInscriptosAsync(id);
         ViewBag.Actividad = actividad;
-        return View(await _actividadService.ObtenerAlumnosInscriptosAsync(id));
+        ViewBag.AlumnosDisponibles = await AlumnosNoInscriptosAsync(inscriptos);
+        return View(inscriptos);
+    }
+
+    // POST /Actividades/InscribirAlumnos -> el admin inscribe a uno o varios alumnos
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> InscribirAlumnos(int actividadId, List<int> alumnoIds)
+    {
+        if (alumnoIds.Count == 0)
+        {
+            TempData["Error"] = "Seleccioná al menos un alumno.";
+            return RedirectToAction(nameof(Alumnos), new { id = actividadId });
+        }
+
+        var (inscriptos, errores) = await _actividadService.InscribirAlumnosAsync(actividadId, alumnoIds);
+        if (errores.Any())
+            TempData["Error"] = $"Se inscribieron {inscriptos} de {alumnoIds.Count} alumnos. {string.Join(" ", errores)}";
+        else
+            TempData["Mensaje"] = inscriptos == 1 ? "Alumno inscripto con éxito" : $"{inscriptos} alumnos inscriptos con éxito";
+        return RedirectToAction(nameof(Alumnos), new { id = actividadId });
+    }
+
+    // Clientes activos que todavía no están inscriptos en la actividad
+    private async Task<List<AlumnoDto>> AlumnosNoInscriptosAsync(List<AlumnoInscriptoDto> inscriptos)
+    {
+        var idsInscriptos = inscriptos.Where(i => i.Activa).Select(i => i.AlumnoId).ToHashSet();
+        return (await _alumnoService.ObtenerTodosAsync()).Where(a => !idsInscriptos.Contains(a.Id)).ToList();
     }
 
     // POST /Actividades/QuitarAlumno -> el admin da de baja a un alumno de la actividad
@@ -106,11 +143,11 @@ public class ActividadesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> QuitarAlumno(int actividadId, int alumnoId)
     {
-        var ok = await _actividadService.DarDeBajaAlumnoAsync(alumnoId, actividadId);
+        var (ok, error) = await _actividadService.DarDeBajaAlumnoAsync(alumnoId, actividadId);
         if (ok)
             TempData["Mensaje"] = "El alumno fue dado de baja de la actividad.";
         else
-            TempData["Error"] = "No se pudo dar de baja al alumno de la actividad.";
+            TempData["Error"] = error;
         return RedirectToAction(nameof(Alumnos), new { id = actividadId });
     }
 

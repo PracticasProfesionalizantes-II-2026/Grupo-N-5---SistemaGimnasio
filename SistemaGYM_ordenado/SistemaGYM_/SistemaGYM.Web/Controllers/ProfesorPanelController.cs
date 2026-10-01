@@ -11,12 +11,14 @@ public class ProfesorPanelController : Controller
     private readonly IActividadApiService _actividadService;
     private readonly IRutinaApiService _rutinaService;
     private readonly IAlimentacionApiService _alimentacionService;
+    private readonly IAlumnoApiService _alumnoService;
 
-    public ProfesorPanelController(IActividadApiService actividadService, IRutinaApiService rutinaService, IAlimentacionApiService alimentacionService)
+    public ProfesorPanelController(IActividadApiService actividadService, IRutinaApiService rutinaService, IAlimentacionApiService alimentacionService, IAlumnoApiService alumnoService)
     {
         _actividadService = actividadService;
         _rutinaService = rutinaService;
         _alimentacionService = alimentacionService;
+        _alumnoService = alumnoService;
     }
 
     private int ProfesorId => int.Parse(HttpContext.Session.GetString("UserId")!);
@@ -87,8 +89,36 @@ public class ProfesorPanelController : Controller
     {
         var actividad = await _actividadService.ObtenerPorIdAsync(id);
         if (actividad is null || actividad.ProfesorId != ProfesorId) return Forbid();
+
+        var inscriptos = await _actividadService.ObtenerAlumnosInscriptosAsync(id);
+        var idsInscriptos = inscriptos.Where(i => i.Activa).Select(i => i.AlumnoId).ToHashSet();
+
         ViewBag.Actividad = actividad;
-        return View(await _actividadService.ObtenerAlumnosInscriptosAsync(id));
+        // Clientes activos que todavía no están en la actividad (para el formulario de inscripción)
+        ViewBag.AlumnosDisponibles = (await _alumnoService.ObtenerTodosAsync()).Where(a => !idsInscriptos.Contains(a.Id)).ToList();
+        return View(inscriptos);
+    }
+
+    // El profesor puede inscribir alumnos, pero solo en sus propias actividades
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> InscribirAlumnos(int actividadId, List<int> alumnoIds)
+    {
+        var actividad = await _actividadService.ObtenerPorIdAsync(actividadId);
+        if (actividad is null || actividad.ProfesorId != ProfesorId) return Forbid();
+
+        if (alumnoIds.Count == 0)
+        {
+            TempData["Error"] = "Seleccioná al menos un alumno.";
+            return RedirectToAction(nameof(AlumnosActividad), new { id = actividadId });
+        }
+
+        var (inscriptos, errores) = await _actividadService.InscribirAlumnosAsync(actividadId, alumnoIds);
+        if (errores.Any())
+            TempData["Error"] = $"Se inscribieron {inscriptos} de {alumnoIds.Count} alumnos. {string.Join(" ", errores)}";
+        else
+            TempData["Mensaje"] = inscriptos == 1 ? "Alumno inscripto con éxito" : $"{inscriptos} alumnos inscriptos con éxito";
+        return RedirectToAction(nameof(AlumnosActividad), new { id = actividadId });
     }
 
     [HttpPost]
@@ -98,11 +128,11 @@ public class ProfesorPanelController : Controller
         var actividad = await _actividadService.ObtenerPorIdAsync(actividadId);
         if (actividad is null || actividad.ProfesorId != ProfesorId) return Forbid();
 
-        var ok = await _actividadService.DarDeBajaAlumnoAsync(alumnoId, actividadId);
+        var (ok, error) = await _actividadService.DarDeBajaAlumnoAsync(alumnoId, actividadId);
         if (ok)
             TempData["Mensaje"] = "El alumno fue dado de baja de la actividad.";
         else
-            TempData["Error"] = "No se pudo dar de baja al alumno de la actividad.";
+            TempData["Error"] = error;
         return RedirectToAction(nameof(AlumnosActividad), new { id = actividadId });
     }
 
@@ -112,35 +142,5 @@ public class ProfesorPanelController : Controller
         return View(planes);
     }
 
-    public async Task<IActionResult> CrearAlimentacion(int? alumnoId)
-    {
-        await CargarAlumnosAsignablesAsync();
-        ViewBag.AlumnoPreseleccionado = alumnoId;
-        return View();
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CrearAlimentacion(string tipoAlimentacion, string descripcion, int alumnoId)
-    {
-        var (ok, error) = await _alimentacionService.CrearAsync(new(tipoAlimentacion, descripcion, ProfesorId, alumnoId));
-        if (ok)
-        {
-            TempData["Mensaje"] = "Plan de alimentación asignado con éxito";
-            return RedirectToAction(nameof(Alimentaciones));
-        }
-        ViewBag.Error = error;
-        await CargarAlumnosAsignablesAsync();
-        return View();
-    }
-
-    private async Task CargarAlumnosAsignablesAsync()
-    {
-        var actividades = (await _actividadService.ObtenerTodasAsync()).Where(a => a.ProfesorId == ProfesorId);
-        var alumnos = new Dictionary<int, AlumnoInscriptoDto>();
-        foreach (var actividad in actividades)
-            foreach (var alumno in await _actividadService.ObtenerAlumnosInscriptosAsync(actividad.ActividadId))
-                alumnos[alumno.AlumnoId] = alumno;
-        ViewBag.Alumnos = alumnos.Values.OrderBy(a => a.Apellido).ThenBy(a => a.Nombre).ToList();
-    }
+    // Los planes se crean desde Alimentacion/Create, el mismo formulario que usa el admin
 }

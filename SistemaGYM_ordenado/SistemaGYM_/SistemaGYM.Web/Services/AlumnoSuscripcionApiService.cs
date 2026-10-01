@@ -8,7 +8,7 @@ public interface IAlumnoSuscripcionApiService
 {
     Task<List<AlumnoSuscripcionDto>> ObtenerHistorialAsync(int alumnoId);
     Task<(bool ok, string? error)> AsignarAsync(int alumnoId, int suscripcionId);
-    Task<bool> CancelarAsync(int alumnoId, int alumnoSuscripcionId);
+    Task<(bool ok, string? error)> CancelarAsync(int alumnoId, int alumnoSuscripcionId);
 }
 
 public class AlumnoSuscripcionApiService : IAlumnoSuscripcionApiService
@@ -35,9 +35,10 @@ public class AlumnoSuscripcionApiService : IAlumnoSuscripcionApiService
         return (false, await ApiError.LeerMensajeAsync(response, "No se pudo asignar la suscripción"));
     }
 
-    public async Task<bool> CancelarAsync(int alumnoId, int alumnoSuscripcionId)
+    public async Task<(bool ok, string? error)> CancelarAsync(int alumnoId, int alumnoSuscripcionId)
     {
         var response = await _http.DeleteAsync($"alumnos/{alumnoId}/suscripciones/{alumnoSuscripcionId}");
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo cancelar la suscripción."));
     }
 }

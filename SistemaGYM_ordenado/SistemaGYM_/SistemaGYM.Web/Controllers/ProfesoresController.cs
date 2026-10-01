@@ -105,11 +105,11 @@ public class ProfesoresController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        var eliminado = await _profesorService.EliminarAsync(id);
+        var (eliminado, error) = await _profesorService.EliminarAsync(id);
         if (eliminado)
             TempData["Mensaje"] = "El profesor se ha dado de baja correctamente del sistema";
         else
-            TempData["Error"] = "No se pudo dar de baja al profesor. Revisá que no tenga actividades a cargo.";
+            TempData["Error"] = error;
         return RedirectToAction("Index");
     }
 }

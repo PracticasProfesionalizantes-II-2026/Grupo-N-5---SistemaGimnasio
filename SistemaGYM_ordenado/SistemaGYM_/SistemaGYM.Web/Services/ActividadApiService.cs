@@ -8,12 +8,15 @@ public interface IActividadApiService
 {
     Task<List<ActividadDto>> ObtenerTodasAsync();
     Task<ActividadDto?> ObtenerPorIdAsync(int id);
-    Task<(bool ok, string? error)> CrearAsync(ActividadCreateDto dto);
+    Task<(bool ok, string? error, ActividadDto? creada)> CrearAsync(ActividadCreateDto dto);
     Task<(bool ok, string? error)> ActualizarAsync(int id, ActividadCreateDto dto);
-    Task<bool> EliminarAsync(int id);
+    Task<(bool ok, string? error)> EliminarAsync(int id);
     Task<List<AlumnoInscriptoDto>> ObtenerAlumnosInscriptosAsync(int actividadId);
     Task<(bool ok, string? error)> InscribirAlumnoAsync(int alumnoId, int actividadId);
-    Task<bool> DarDeBajaAlumnoAsync(int alumnoId, int actividadId);
+    Task<(bool ok, string? error)> DarDeBajaAlumnoAsync(int alumnoId, int actividadId);
+
+    // Inscribe a varios alumnos a la vez. Devuelve cuántos se inscribieron y los errores de los que no.
+    Task<(int inscriptos, List<string> errores)> InscribirAlumnosAsync(int actividadId, List<int> alumnoIds);
 
     // No hay endpoint directo "actividades de un alumno": se deriva revisando
     // la lista de inscriptos de cada actividad. Aceptable para el volumen de este sistema.
@@ -45,11 +48,15 @@ public class ActividadApiService : IActividadApiService
         return resultado?.Data;
     }
 
-    public async Task<(bool ok, string? error)> CrearAsync(ActividadCreateDto dto)
+    // Devuelve también la actividad creada, así se le pueden inscribir alumnos con su Id
+    public async Task<(bool ok, string? error, ActividadDto? creada)> CrearAsync(ActividadCreateDto dto)
     {
         var response = await _http.PostAsJsonAsync("actividades", dto);
-        if (response.IsSuccessStatusCode) return (true, null);
-        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar la actividad"));
+        if (!response.IsSuccessStatusCode)
+            return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar la actividad"), null);
+
+        var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<ActividadDto>>(JsonOptionsWeb.Default);
+        return (true, null, resultado?.Data);
     }
 
     public async Task<(bool ok, string? error)> ActualizarAsync(int id, ActividadCreateDto dto)
@@ -59,10 +66,11 @@ public class ActividadApiService : IActividadApiService
         return (false, await ApiError.LeerMensajeAsync(response, "No se pudo modificar la actividad."));
     }
 
-    public async Task<bool> EliminarAsync(int id)
+    public async Task<(bool ok, string? error)> EliminarAsync(int id)
     {
         var response = await _http.DeleteAsync($"actividades/{id}");
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo eliminar la actividad."));
     }
 
     public async Task<List<AlumnoInscriptoDto>> ObtenerAlumnosInscriptosAsync(int actividadId)
@@ -80,10 +88,26 @@ public class ActividadApiService : IActividadApiService
         return (false, await ApiError.LeerMensajeAsync(response, "No se pudo inscribir al alumno"));
     }
 
-    public async Task<bool> DarDeBajaAlumnoAsync(int alumnoId, int actividadId)
+    public async Task<(bool ok, string? error)> DarDeBajaAlumnoAsync(int alumnoId, int actividadId)
     {
         var response = await _http.DeleteAsync($"alumnos/{alumnoId}/actividades/{actividadId}");
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo dar de baja al alumno de la actividad."));
+    }
+
+    public async Task<(int inscriptos, List<string> errores)> InscribirAlumnosAsync(int actividadId, List<int> alumnoIds)
+    {
+        var inscriptos = 0;
+        var errores = new List<string>();
+
+        foreach (var alumnoId in alumnoIds)
+        {
+            var (ok, error) = await InscribirAlumnoAsync(alumnoId, actividadId);
+            if (ok) inscriptos++;
+            else if (error != null && !errores.Contains(error)) errores.Add(error);
+        }
+
+        return (inscriptos, errores);
     }
 
     public async Task<List<ActividadDto>> ObtenerActividadesDeAlumnoAsync(int alumnoId)

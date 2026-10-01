@@ -8,8 +8,8 @@ public interface IAnuncioApiService
 {
     Task<List<AnuncioDto>> ObtenerTodosAsync();
     Task<(bool ok, string? error)> CrearAsync(AnuncioCreateDto dto);
-    Task<bool> ActualizarAsync(int id, AnuncioCreateDto dto);
-    Task<bool> EliminarAsync(int id);
+    Task<(bool ok, string? error)> ActualizarAsync(int id, AnuncioCreateDto dto);
+    Task<(bool ok, string? error)> EliminarAsync(int id);
 }
 
 public class AnuncioApiService : IAnuncioApiService
@@ -36,15 +36,17 @@ public class AnuncioApiService : IAnuncioApiService
         return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar el anuncio"));
     }
 
-    public async Task<bool> ActualizarAsync(int id, AnuncioCreateDto dto)
+    public async Task<(bool ok, string? error)> ActualizarAsync(int id, AnuncioCreateDto dto)
     {
         var response = await _http.PutAsJsonAsync($"anuncios/{id}", dto);
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo modificar el anuncio."));
     }
 
-    public async Task<bool> EliminarAsync(int id)
+    public async Task<(bool ok, string? error)> EliminarAsync(int id)
     {
         var response = await _http.DeleteAsync($"anuncios/{id}");
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo eliminar el anuncio."));
     }
 }

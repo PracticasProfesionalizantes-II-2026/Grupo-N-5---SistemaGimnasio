@@ -9,7 +9,7 @@ public interface IRutinaApiService
     Task<List<RutinaDto>> ObtenerTodasAsync();
     Task<(bool ok, string? error)> CrearAsync(RutinaCreateDto dto);
     Task<(bool ok, string? error)> ActualizarAsync(int id, RutinaCreateDto dto);
-    Task<bool> EliminarAsync(int id);
+    Task<(bool ok, string? error)> EliminarAsync(int id);
     Task<List<RutinaDto>> ObtenerDeAlumnoAsync(int alumnoId);
     Task<List<RutinaDto>> ObtenerDeProfesorAsync(int profesorId);
 }
@@ -45,10 +45,11 @@ public class RutinaApiService : IRutinaApiService
         return (false, await ApiError.LeerMensajeAsync(response, "No se pudo modificar la rutina."));
     }
 
-    public async Task<bool> EliminarAsync(int id)
+    public async Task<(bool ok, string? error)> EliminarAsync(int id)
     {
         var response = await _http.DeleteAsync($"rutinas/{id}");
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo eliminar la rutina."));
     }
 
     public async Task<List<RutinaDto>> ObtenerDeAlumnoAsync(int alumnoId)

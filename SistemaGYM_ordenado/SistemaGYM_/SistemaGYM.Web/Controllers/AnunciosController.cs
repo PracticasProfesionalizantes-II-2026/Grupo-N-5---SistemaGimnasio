@@ -6,7 +6,7 @@ using SistemaGYM.Web.Services;
 namespace SistemaGYM.Web.Controllers;
 
 // Admin: publica y elimina cualquier anuncio.
-// Profesor: publica anuncios a su nombre y elimina solo los suyos.
+// Profesor: ve todos los anuncios, publica a su nombre y elimina solo los suyos.
 // Alumno: solo los lee en Notificaciones.
 [SessionAuthorize("Administrador", "Alumno", "Profesor")]
 public class AnunciosController : Controller
@@ -25,15 +25,13 @@ public class AnunciosController : Controller
     private bool EsProfesor => Rol == "Profesor";
     private int UsuarioId => int.Parse(HttpContext.Session.GetString("UserId") ?? "0");
 
-    // GET /Anuncios -> gestión (Admin: todos, Profesor: los suyos)
+    // GET /Anuncios -> gestión (Admin y Profesor ven todos; el botón Eliminar lo decide la vista)
     public async Task<IActionResult> Index()
     {
         if (!EsAdmin && !EsProfesor) return RedirectToAction("Notificaciones");
 
         var anuncios = await _anuncioService.ObtenerTodosAsync();
-        if (EsProfesor)
-            anuncios = anuncios.Where(a => a.ProfesorId == UsuarioId).ToList();
-
+        ViewBag.Profesores = await _profesorService.ObtenerTodosAsync(); // para mostrar quién publicó cada anuncio
         return View(anuncios.OrderByDescending(a => a.FechaPublicacion).ToList());
     }
 
@@ -84,8 +82,11 @@ public class AnunciosController : Controller
         var puedeEliminar = EsAdmin || (EsProfesor && anuncio.ProfesorId == UsuarioId);
         if (!puedeEliminar) return RedirectToAction("AccesoDenegado", "Auth");
 
-        await _anuncioService.EliminarAsync(id);
-        TempData["Mensaje"] = "El anuncio se ha eliminado con éxito del sistema";
+        var (ok, error) = await _anuncioService.EliminarAsync(id);
+        if (ok)
+            TempData["Mensaje"] = "El anuncio se ha eliminado con éxito del sistema";
+        else
+            TempData["Error"] = error;
         return RedirectToAction("Index");
     }
 }

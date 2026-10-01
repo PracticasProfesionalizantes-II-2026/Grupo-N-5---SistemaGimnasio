@@ -21,23 +21,10 @@ else
     <div class="row g-3">
     @foreach (var a in Model)
     {
-        var porcentaje = a.Cupo == 0 ? 0 : Math.Min(100, (int)Math.Round(a.Inscriptos * 100.0 / a.Cupo));
-        var llena = a.Inscriptos >= a.Cupo;
+        var nombreProfesor = profesores.TryGetValue(a.ProfesorId, out var nombre) ? nombre : "Profesor dado de baja";
         <div class="col-md-6 col-lg-4">
             <div class="gym-ficha gym-ficha-actividad">
-                <div class="d-flex justify-content-between align-items-start gap-2">
-                    <strong class="fs-5">@a.Nombre</strong>
-                    <span class="gym-horario">@a.HoraInicio.ToString("HH:mm") - @a.HoraFin.ToString("HH:mm")</span>
-                </div>
-                <div class="small text-muted mb-2">@(profesores.TryGetValue(a.ProfesorId, out var nombreProfesor) ? nombreProfesor : "Profesor dado de baja")</div>
-                <div class="d-flex flex-wrap gap-1 mb-3">
-                    @foreach (var dia in a.Dias.ToString().Split(", ")) { <span class="gym-chip">@dia</span> }
-                </div>
-                <div class="d-flex justify-content-between small mb-1">
-                    <span>Cupo</span>
-                    <span class="gym-cupo @(llena ? "lleno" : "")">@a.Inscriptos / @a.Cupo</span>
-                </div>
-                <div class="gym-progreso mb-3"><div class="gym-progreso-relleno @(llena ? "lleno" : "")" style="width: @(porcentaje)%"></div></div>
+                <partial name="_ActividadResumen" model="a" view-data='new ViewDataDictionary(ViewData) { ["NombreProfesor"] = nombreProfesor }' />
                 <div class="d-flex flex-wrap gap-2">
                     <a asp-action="Alumnos" asp-route-id="@a.ActividadId" class="btn btn-sm btn-outline-primary">Ver alumnos</a>
                     <a asp-action="Edit" asp-route-id="@a.ActividadId" class="btn btn-sm btn-outline-secondary">Modificar</a>

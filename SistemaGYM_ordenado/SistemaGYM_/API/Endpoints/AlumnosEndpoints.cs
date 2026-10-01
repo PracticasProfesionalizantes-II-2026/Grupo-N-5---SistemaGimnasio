@@ -10,15 +10,16 @@ public static class AlumnoEndpoints
     {
         var group = app.MapGroup("/api/alumnos");
 
-        // GET /api/alumnos
-        group.MapGet("/", async (IAlumnoLogica logica) =>
+        // GET /api/alumnos            -> clientes activos
+        // GET /api/alumnos?activos=false -> clientes dados de baja
+        group.MapGet("/", async (IAlumnoLogica logica, bool activos = true) =>
         {
-            var alumnos = await logica.ObtenerTodosAsync();
+            var alumnos = await logica.ObtenerTodosAsync(activos);
             return Results.Ok(new { status = 200, message = "Alumnos obtenidos correctamente", data = alumnos });
         })
         .WithName("GetAllAlumnos")
         .WithSummary("Obtiene todos los alumnos")
-        .WithDescription("Retorna una lista de todos los alumnos registrados en el sistema con datos abreviados (DTO).")
+        .WithDescription("Retorna la lista de alumnos activos (o los dados de baja con ?activos=false) con datos abreviados (DTO).")
         .WithTags("Alumno")
         .Produces<IEnumerable<AlumnoDto>>(200)
         .Produces(500);

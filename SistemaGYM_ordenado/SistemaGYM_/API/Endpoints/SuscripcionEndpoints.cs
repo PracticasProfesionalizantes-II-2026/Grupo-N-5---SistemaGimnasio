@@ -71,7 +71,10 @@ public static class SuscripcionEndpoints
 
         group.MapDelete("/{id:int}", async (int id, ISuscripcionLogica logica) =>
         {
-            var eliminado = await logica.EliminarAsync(id);
+            var (eliminado, error) = await logica.EliminarAsync(id);
+            if (error is not null)
+                return Results.Json(new { status = 400, message = error }, statusCode: 400);
+
             if (!eliminado)
                 return Results.Json(new { status = 404, message = "Plan de suscripción no encontrado" }, statusCode: 404);
 
@@ -82,6 +85,7 @@ public static class SuscripcionEndpoints
         .WithDescription("Elimina un plan de suscripción del sistema.")
         .WithTags("Suscripcion")
         .Produces(204)
+        .Produces(400)
         .Produces(404)
         .Produces(500);
     }

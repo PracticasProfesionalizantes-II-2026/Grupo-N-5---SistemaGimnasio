@@ -8,7 +8,7 @@ public interface IAlumnoRepository
 {
     Task<Alumno?> ObtenerPorEmailAsync(string email);
     Task<bool> ExisteEmailODniAsync(string email, int dni, int? excluirUsuarioId = null);
-    Task<IEnumerable<Alumno>> ObtenerTodosAsync();
+    Task<IEnumerable<Alumno>> ObtenerTodosAsync(bool activos = true);
     Task<Alumno?> ObtenerPorIdAsync(int id);
     Task<Alumno?> ObtenerDetallePorIdAsync(int id);
     Task AgregarAsync(Alumno alumno);
@@ -32,10 +32,11 @@ public class AlumnoRepository : IAlumnoRepository
             (!excluirUsuarioId.HasValue || u.Id != excluirUsuarioId.Value) &&
             (u.Email.ToLower() == email.Trim().ToLower() || u.Dni == dni));
 
-    // Incluye la suscripción activa para poder mostrarla y filtrar por ella en el listado
-    public async Task<IEnumerable<Alumno>> ObtenerTodosAsync() =>
+    // Incluye la suscripción activa para poder mostrarla y filtrar por ella en el listado.
+    // Por defecto trae los clientes activos; con activos = false trae los dados de baja.
+    public async Task<IEnumerable<Alumno>> ObtenerTodosAsync(bool activos = true) =>
         await _db.Alumnos
-            .Where(a => a.EstaActivo)
+            .Where(a => a.EstaActivo == activos)
             .Include(a => a.AlumnoSuscripciones.Where(s => s.Activa))
                 .ThenInclude(s => s.Suscripcion)
             .ToListAsync();

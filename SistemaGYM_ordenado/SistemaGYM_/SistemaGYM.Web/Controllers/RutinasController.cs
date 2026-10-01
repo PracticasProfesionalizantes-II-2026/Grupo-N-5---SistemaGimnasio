@@ -6,7 +6,8 @@ using SistemaGYM.Web.Services;
 namespace SistemaGYM.Web.Controllers;
 
 // Admin: gestiona todas las rutinas.
-// Profesor: modifica y elimina solo las rutinas que creó él (las crea desde su panel).
+// Profesor: crea rutinas a su nombre (mismo formulario que el admin, o desde una actividad)
+//           y modifica/elimina solo las suyas.
 // Alumno: solo ve sus rutinas.
 [SessionAuthorize("Administrador", "Alumno", "Profesor")]
 public class RutinasController : Controller
@@ -59,7 +60,7 @@ public class RutinasController : Controller
 
     public async Task<IActionResult> Create()
     {
-        if (!EsAdmin) return RedirectToAction("AccesoDenegado", "Auth");
+        if (!EsAdmin && !EsProfesor) return RedirectToAction("AccesoDenegado", "Auth");
         await CargarCombosAsync();
         return View();
     }
@@ -70,7 +71,10 @@ public class RutinasController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(string nombre, string descripcion, int profesorId, List<int> alumnoIds)
     {
-        if (!EsAdmin) return RedirectToAction("AccesoDenegado", "Auth");
+        if (!EsAdmin && !EsProfesor) return RedirectToAction("AccesoDenegado", "Auth");
+
+        // El profesor siempre crea la rutina a su nombre
+        if (EsProfesor) profesorId = UsuarioId;
 
         if (alumnoIds.Count == 0)
         {
@@ -93,7 +97,7 @@ public class RutinasController : Controller
         TempData["Mensaje"] = alumnoIds.Count == 1
             ? "Rutina registrada con éxito en el sistema"
             : $"Rutina asignada con éxito a {alumnoIds.Count} alumnos";
-        return RedirectToAction("Index");
+        return VolverAlListado();
     }
 
     public async Task<IActionResult> Edit(int id)
@@ -137,8 +141,11 @@ public class RutinasController : Controller
         if (rutina == null) return NotFound();
         if (!PuedeGestionar(rutina)) return RedirectToAction("AccesoDenegado", "Auth");
 
-        await _rutinaService.EliminarAsync(id);
-        TempData["Mensaje"] = "La rutina se ha eliminado con éxito del sistema";
+        var (ok, error) = await _rutinaService.EliminarAsync(id);
+        if (ok)
+            TempData["Mensaje"] = "La rutina se ha eliminado con éxito del sistema";
+        else
+            TempData["Error"] = error;
         return VolverAlListado();
     }
 }

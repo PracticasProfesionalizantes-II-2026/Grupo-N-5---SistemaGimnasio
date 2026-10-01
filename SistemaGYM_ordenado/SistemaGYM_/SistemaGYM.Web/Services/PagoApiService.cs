@@ -8,7 +8,7 @@ public interface IPagoApiService
 {
     Task<List<PagoDto>> ObtenerTodosAsync();
     Task<(bool ok, string? error)> CrearAsync(PagoCreateDto dto);
-    Task<bool> EliminarAsync(int id);
+    Task<(bool ok, string? error)> EliminarAsync(int id);
 }
 
 public class PagoApiService : IPagoApiService
@@ -35,9 +35,10 @@ public class PagoApiService : IPagoApiService
         return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar el pago"));
     }
 
-    public async Task<bool> EliminarAsync(int id)
+    public async Task<(bool ok, string? error)> EliminarAsync(int id)
     {
         var response = await _http.DeleteAsync($"pagos/{id}");
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo eliminar el pago."));
     }
 }

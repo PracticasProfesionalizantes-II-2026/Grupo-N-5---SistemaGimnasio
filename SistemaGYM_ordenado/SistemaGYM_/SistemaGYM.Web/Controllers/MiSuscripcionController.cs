@@ -45,8 +45,11 @@ public class MiSuscripcionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Cancelar(int alumnoSuscripcionId)
     {
-        await _alumnoSuscripcionService.CancelarAsync(AlumnoId, alumnoSuscripcionId);
-        TempData["Mensaje"] = "Suscripción cancelada";
+        var (ok, error) = await _alumnoSuscripcionService.CancelarAsync(AlumnoId, alumnoSuscripcionId);
+        if (ok)
+            TempData["Mensaje"] = "Suscripción cancelada";
+        else
+            TempData["Error"] = error;
         return RedirectToAction("Index");
     }
 }

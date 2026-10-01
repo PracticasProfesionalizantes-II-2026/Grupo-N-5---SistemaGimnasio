@@ -81,8 +81,11 @@ public class PagosController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        await _pagoService.EliminarAsync(id);
-        TempData["Mensaje"] = "El pago se ha eliminado con éxito del sistema";
+        var (ok, error) = await _pagoService.EliminarAsync(id);
+        if (ok)
+            TempData["Mensaje"] = "El pago se ha eliminado con éxito del sistema";
+        else
+            TempData["Error"] = error;
         return RedirectToAction("Index");
     }
 }

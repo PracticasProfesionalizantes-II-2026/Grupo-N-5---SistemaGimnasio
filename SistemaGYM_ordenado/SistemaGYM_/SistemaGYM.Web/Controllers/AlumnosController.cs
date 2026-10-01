@@ -24,11 +24,12 @@ public class AlumnosController : Controller
         _alumnoSuscripcionService = alumnoSuscripcionService;
     }
 
-    // GET /Alumnos?buscar=ana&suscripcion=Pase libre&altaDesde=2026-01-01&altaHasta=2026-12-31
-    // Todos los filtros son opcionales y se pueden combinar.
-    public async Task<IActionResult> Index(string? buscar, string? suscripcion, DateTime? altaDesde, DateTime? altaHasta)
+    // GET /Alumnos?buscar=ana&suscripcion=Pase libre&altaDesde=2026-01-01&altaHasta=2026-12-31&estado=inactivos
+    // Todos los filtros son opcionales y se pueden combinar. Sin "estado" se listan los activos.
+    public async Task<IActionResult> Index(string? buscar, string? suscripcion, DateTime? altaDesde, DateTime? altaHasta, string? estado)
     {
-        var alumnos = await _alumnoApiService.ObtenerTodosAsync();
+        var verInactivos = estado == "inactivos";
+        var alumnos = await _alumnoApiService.ObtenerTodosAsync(activos: !verInactivos);
 
         // Texto libre: busca en nombre, apellido, DNI o email
         if (!string.IsNullOrWhiteSpace(buscar))
@@ -54,6 +55,7 @@ public class AlumnosController : Controller
         ViewBag.Suscripcion = suscripcion;
         ViewBag.AltaDesde = altaDesde?.ToString("yyyy-MM-dd");
         ViewBag.AltaHasta = altaHasta?.ToString("yyyy-MM-dd");
+        ViewBag.VerInactivos = verInactivos;
         ViewBag.Planes = await _suscripcionService.ObtenerTodasAsync();
 
         return View(alumnos.OrderBy(a => a.Apellido).ThenBy(a => a.Nombre).ToList());
@@ -139,11 +141,11 @@ public class AlumnosController : Controller
     [SessionAuthorize("Administrador")]
     public async Task<IActionResult> Delete(int id)
     {
-        var eliminado = await _alumnoApiService.EliminarAsync(id);
+        var (eliminado, error) = await _alumnoApiService.EliminarAsync(id);
         if (eliminado)
             TempData["Mensaje"] = "El cliente se ha dado de baja correctamente del sistema";
         else
-            TempData["Error"] = "No se pudo dar de baja al cliente.";
+            TempData["Error"] = error;
         return RedirectToAction("Index");
     }
 
@@ -166,7 +168,10 @@ public class AlumnosController : Controller
         if (activa?.SuscripcionId == suscripcionId) return null;
 
         if (activa != null)
-            await _alumnoSuscripcionService.CancelarAsync(alumnoId, activa.Id);
+        {
+            var (cancelada, errorCancelacion) = await _alumnoSuscripcionService.CancelarAsync(alumnoId, activa.Id);
+            if (!cancelada) return errorCancelacion;
+        }
 
         if (!suscripcionId.HasValue) return null;
 

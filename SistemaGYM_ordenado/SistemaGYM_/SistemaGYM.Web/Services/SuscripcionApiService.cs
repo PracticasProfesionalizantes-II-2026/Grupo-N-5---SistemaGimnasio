@@ -9,8 +9,8 @@ public interface ISuscripcionApiService
     Task<List<SuscripcionDto>> ObtenerTodasAsync();
     Task<SuscripcionDto?> ObtenerPorIdAsync(int id);
     Task<(bool ok, string? error)> CrearAsync(SuscripcionCreateDto dto);
-    Task<bool> ActualizarAsync(int id, SuscripcionCreateDto dto);
-    Task<bool> EliminarAsync(int id);
+    Task<(bool ok, string? error)> ActualizarAsync(int id, SuscripcionCreateDto dto);
+    Task<(bool ok, string? error)> EliminarAsync(int id);
 }
 
 public class SuscripcionApiService : ISuscripcionApiService
@@ -45,15 +45,17 @@ public class SuscripcionApiService : ISuscripcionApiService
         return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar la suscripción"));
     }
 
-    public async Task<bool> ActualizarAsync(int id, SuscripcionCreateDto dto)
+    public async Task<(bool ok, string? error)> ActualizarAsync(int id, SuscripcionCreateDto dto)
     {
         var response = await _http.PutAsJsonAsync($"suscripciones/{id}", dto);
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo modificar la suscripción."));
     }
 
-    public async Task<bool> EliminarAsync(int id)
+    public async Task<(bool ok, string? error)> EliminarAsync(int id)
     {
         var response = await _http.DeleteAsync($"suscripciones/{id}");
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo eliminar la suscripción."));
     }
 }

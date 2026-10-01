@@ -10,7 +10,7 @@ public interface ISuscripcionLogica
     Task<SuscripcionDto?> ObtenerPorIdAsync(int id);
     Task<SuscripcionDto> CrearAsync(SuscripcionCreateDto dto);
     Task<bool> ActualizarAsync(int id, SuscripcionCreateDto dto);
-    Task<bool> EliminarAsync(int id);
+    Task<(bool eliminado, string? error)> EliminarAsync(int id);
 }
 
 public class SuscripcionLogica : ISuscripcionLogica
@@ -83,16 +83,12 @@ public class SuscripcionLogica : ISuscripcionLogica
         return true;
     }
 
-    public async Task<bool> EliminarAsync(int id)
+    public async Task<(bool eliminado, string? error)> EliminarAsync(int id)
     {
         var s = await _repo.ObtenerPorIdAsync(id);
-        if (s == null) return false;
-
-        // Si se borrara, la base eliminaría en cascada el historial de suscripciones y los pagos de esos clientes
-        if (await _repo.TieneClientesAsync(id))
-            throw new ReglaDeNegocioException("No se puede eliminar el plan porque hay clientes que lo tienen o lo tuvieron.");
+        if (s == null) return (false, null);
 
         await _repo.EliminarAsync(s);
-        return true;
+        return (true, null);
     }
 }

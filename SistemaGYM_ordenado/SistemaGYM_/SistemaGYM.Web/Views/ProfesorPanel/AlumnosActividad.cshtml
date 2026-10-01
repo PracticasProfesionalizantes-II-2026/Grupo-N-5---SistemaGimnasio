@@ -1,10 +1,14 @@
 @model List<AlumnoInscriptoDto>
 @{
     var actividad = ViewBag.Actividad as ActividadDto;
+    var disponibles = ViewBag.AlumnosDisponibles as List<AlumnoDto> ?? new();
     ViewData["Title"] = "Alumnos inscriptos";
 }
 <h1 class="mb-2 gym-titulo"><partial name="_Icono" model='"clientes"' />Alumnos inscriptos: @actividad?.Nombre</h1>
 <p class="text-muted mb-4">Cupo ocupado: @actividad?.Inscriptos de @actividad?.Cupo</p>
+
+@* La parcial toma la actividad de ViewBag.Actividad, que ya cargó el controlador *@
+<partial name="_InscribirAlumnos" model="disponibles" />
 
 @if (!Model.Any(a => a.Activa))
 {
@@ -21,7 +25,7 @@ else
                 <td><strong>@a.Nombre @a.Apellido</strong></td>
                 <td>@a.FechaInscripcion.ToString("dd/MM/yyyy")</td>
                 <td class="text-end text-nowrap">
-                    <a asp-action="CrearAlimentacion" asp-route-alumnoId="@a.AlumnoId" class="btn btn-sm btn-outline-primary">Asignar alimentación</a>
+                    <a asp-controller="Alimentacion" asp-action="Create" asp-route-alumnoId="@a.AlumnoId" class="btn btn-sm btn-outline-primary">Asignar alimentación</a>
                     <a asp-action="CrearRutina" asp-route-actividadId="@actividad?.ActividadId" class="btn btn-sm btn-outline-secondary">Asignar rutina</a>
                     <form asp-action="QuitarAlumno" method="post" class="d-inline" data-confirmar="¿Dar de baja a @a.Nombre @a.Apellido de esta actividad?">
                         <input type="hidden" name="actividadId" value="@actividad?.ActividadId" />

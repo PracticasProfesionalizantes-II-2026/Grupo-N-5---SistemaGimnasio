@@ -6,18 +6,20 @@ using SistemaGYM.Web.Services;
 namespace SistemaGYM.Web.Controllers;
 
 // Admin: ABM de todos los planes.
-// Profesor: modifica y elimina solo los planes que creó él (los crea desde su panel).
+// Profesor: crea planes a su nombre (mismo formulario que el admin) y modifica/elimina solo los suyos.
 // Alumno: ve sus planes y los planes generales.
 [SessionAuthorize("Administrador", "Alumno", "Profesor")]
 public class AlimentacionController : Controller
 {
     private readonly IAlimentacionApiService _alimentacionService;
     private readonly IProfesorApiService _profesorService;
+    private readonly IAlumnoApiService _alumnoService;
 
-    public AlimentacionController(IAlimentacionApiService alimentacionService, IProfesorApiService profesorService)
+    public AlimentacionController(IAlimentacionApiService alimentacionService, IProfesorApiService profesorService, IAlumnoApiService alumnoService)
     {
         _alimentacionService = alimentacionService;
         _profesorService = profesorService;
+        _alumnoService = alumnoService;
     }
 
     private string? Rol => HttpContext.Session.GetString("Rol");
@@ -52,29 +54,44 @@ public class AlimentacionController : Controller
         return View(plan);
     }
 
-    public async Task<IActionResult> Create()
+    private async Task CargarCombosAsync()
     {
-        if (!EsAdmin) return RedirectToAction("AccesoDenegado", "Auth");
         ViewBag.Profesores = await _profesorService.ObtenerTodosAsync();
+        ViewBag.Alumnos = await _alumnoService.ObtenerTodosAsync();
+    }
+
+    // GET /Alimentacion/Create?alumnoId=5 -> el alumnoId es opcional y deja ese alumno ya marcado
+    public async Task<IActionResult> Create(int? alumnoId)
+    {
+        if (!EsAdmin && !EsProfesor) return RedirectToAction("AccesoDenegado", "Auth");
+        await CargarCombosAsync();
+        ViewBag.AlumnoPreseleccionado = alumnoId;
         return View();
     }
 
+    // Elegir alumnos es opcional: sin alumnos se crea un plan general,
+    // con alumnos se guarda una copia del plan para cada uno.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(AlimentacionCreateDto dto)
+    public async Task<IActionResult> Create(AlimentacionCreateDto dto, List<int> alumnoIds)
     {
-        if (!EsAdmin) return RedirectToAction("AccesoDenegado", "Auth");
+        if (!EsAdmin && !EsProfesor) return RedirectToAction("AccesoDenegado", "Auth");
 
-        var (ok, error) = await _alimentacionService.CrearAsync(dto);
+        // El profesor siempre crea el plan a su nombre
+        if (EsProfesor) dto = dto with { ProfesorId = UsuarioId };
+
+        var (ok, error) = await _alimentacionService.CrearParaAlumnosAsync(dto, alumnoIds);
         if (!ok)
         {
             ViewBag.Error = error;
-            ViewBag.Profesores = await _profesorService.ObtenerTodosAsync();
+            await CargarCombosAsync();
             return View();
         }
 
-        TempData["Mensaje"] = "Plan de alimentación registrado con éxito en el sistema";
-        return RedirectToAction("Index");
+        TempData["Mensaje"] = alumnoIds.Count > 1
+            ? $"Plan de alimentación asignado con éxito a {alumnoIds.Count} alumnos"
+            : "Plan de alimentación registrado con éxito en el sistema";
+        return VolverAlListado();
     }
 
     public async Task<IActionResult> Edit(int id)
@@ -118,8 +135,11 @@ public class AlimentacionController : Controller
         if (plan == null) return NotFound();
         if (!PuedeGestionar(plan)) return RedirectToAction("AccesoDenegado", "Auth");
 
-        await _alimentacionService.EliminarAsync(id);
-        TempData["Mensaje"] = "El plan de alimentación se eliminó con éxito del sistema";
+        var (ok, error) = await _alimentacionService.EliminarAsync(id);
+        if (ok)
+            TempData["Mensaje"] = "El plan de alimentación se eliminó con éxito del sistema";
+        else
+            TempData["Error"] = error;
         return VolverAlListado();
     }
 }

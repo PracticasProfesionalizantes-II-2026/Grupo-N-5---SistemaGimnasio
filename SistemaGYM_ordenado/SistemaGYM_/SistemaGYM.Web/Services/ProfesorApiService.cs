@@ -10,7 +10,7 @@ public interface IProfesorApiService
     Task<ProfesorDetalleDto?> ObtenerDetalleAsync(int id);
     Task<(bool ok, string? error)> CrearAsync(ProfesorCreateDto dto);
     Task<(bool ok, string? error)> ActualizarAsync(int id, ProfesorCreateDto dto);
-    Task<bool> EliminarAsync(int id);
+    Task<(bool ok, string? error)> EliminarAsync(int id);
 }
 
 public class ProfesorApiService : IProfesorApiService
@@ -52,9 +52,10 @@ public class ProfesorApiService : IProfesorApiService
         return (false, await ApiError.LeerMensajeAsync(response, "No se pudo modificar el profesor."));
     }
 
-    public async Task<bool> EliminarAsync(int id)
+    public async Task<(bool ok, string? error)> EliminarAsync(int id)
     {
         var response = await _http.DeleteAsync($"profesores/{id}");
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo dar de baja al profesor."));
     }
 }

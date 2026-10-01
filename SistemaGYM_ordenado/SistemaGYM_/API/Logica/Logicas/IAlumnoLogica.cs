@@ -6,7 +6,7 @@ namespace SistemaGYM.Logica;
 
 public interface IAlumnoLogica
 {
-    Task<IEnumerable<AlumnoDto>> ObtenerTodosAsync();
+    Task<IEnumerable<AlumnoDto>> ObtenerTodosAsync(bool activos = true);
     Task<AlumnoDto?> ObtenerPorIdAsync(int id);
     Task<AlumnoDetalleDto?> ObtenerDetallePorIdAsync(int id);
     Task<AlumnoDto> CrearAsync(AlumnoCreateDto dto);
@@ -23,9 +23,9 @@ public class AlumnoLogica : IAlumnoLogica
         _repository = repository;
     }
 
-    public async Task<IEnumerable<AlumnoDto>> ObtenerTodosAsync()
+    public async Task<IEnumerable<AlumnoDto>> ObtenerTodosAsync(bool activos = true)
     {
-        var alumnos = await _repository.ObtenerTodosAsync();
+        var alumnos = await _repository.ObtenerTodosAsync(activos);
         return alumnos.Select(a => ADto(a));
     }
 

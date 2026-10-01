@@ -13,9 +13,9 @@ public class AlumnoApiService : IAlumnoApiService
         _http = httpClientFactory.CreateClient("GymApi");
     }
 
-    public async Task<List<AlumnoDto>> ObtenerTodosAsync()
+    public async Task<List<AlumnoDto>> ObtenerTodosAsync(bool activos = true)
     {
-        var response = await _http.GetAsync("alumnos");
+        var response = await _http.GetAsync(activos ? "alumnos" : "alumnos?activos=false");
         if (!response.IsSuccessStatusCode) return new List<AlumnoDto>();
 
         var resultado = await response.Content.ReadFromJsonAsync<ApiResponse<List<AlumnoDto>>>();
@@ -49,9 +49,10 @@ public class AlumnoApiService : IAlumnoApiService
         return (false, await ApiError.LeerMensajeAsync(response, "No se pudo modificar el cliente."));
     }
 
-    public async Task<bool> EliminarAsync(int id)
+    public async Task<(bool ok, string? error)> EliminarAsync(int id)
     {
         var response = await _http.DeleteAsync($"alumnos/{id}");
-        return response.IsSuccessStatusCode;
+        if (response.IsSuccessStatusCode) return (true, null);
+        return (false, await ApiError.LeerMensajeAsync(response, "No se pudo dar de baja al cliente."));
     }
 }
