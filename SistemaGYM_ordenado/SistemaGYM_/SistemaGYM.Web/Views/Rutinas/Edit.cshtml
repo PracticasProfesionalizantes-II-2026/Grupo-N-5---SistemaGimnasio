@@ -5,6 +5,7 @@
     var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
     var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
     var actividades = ViewBag.Actividades as List<ActividadDto> ?? new();
+    var inscriptos = ViewBag.InscriptosPorActividad as Dictionary<int, List<int>> ?? new();
     var profesoresPorId = profesores.ToDictionary(p => p.Id, p => $"{p.Nombre} {p.Apellido}");
 }
 <h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"rutinas"' />Modificar rutina</h1>
@@ -31,9 +32,9 @@
     }
     <div class="mb-3">
         <label class="form-label">Actividad <span class="text-muted small">(opcional; debe ser del profesor de la rutina)</span></label>
-        <select name="ActividadId" class="form-select">
+        <select name="ActividadId" class="form-select" data-filtrar-alumnos="alumnoIds">
             <option value="">Sin actividad</option>
-            @foreach (var a in actividades) { <option value="@a.ActividadId" selected="@(a.ActividadId == Model.ActividadId)">@a.Nombre @(esProfesor ? "" : $"({(profesoresPorId.TryGetValue(a.ProfesorId, out var np) ? np : "sin profesor")})")</option> }
+            @foreach (var a in actividades) { <option value="@a.ActividadId" data-alumnos="@string.Join(",", inscriptos.GetValueOrDefault(a.ActividadId) ?? new())" selected="@(a.ActividadId == Model.ActividadId)">@a.Nombre @(esProfesor ? "" : $"({(profesoresPorId.TryGetValue(a.ProfesorId, out var np) ? np : "sin profesor")})")</option> }
         </select>
     </div>
     <div class="mb-3">

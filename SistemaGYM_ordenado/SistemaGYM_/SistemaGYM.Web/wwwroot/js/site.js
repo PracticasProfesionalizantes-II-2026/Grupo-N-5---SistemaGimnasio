@@ -45,8 +45,26 @@ document.addEventListener('DOMContentLoaded', function () {
         casilla.addEventListener('change', function () {
             const nombre = casilla.dataset.seleccionarTodos;
             document.querySelectorAll('input[name="' + nombre + '"]').forEach(function (c) {
-                c.checked = casilla.checked;
+                if (!c.closest('.form-check').hidden) c.checked = casilla.checked;   // solo los alumnos visibles
             });
         });
+    });
+
+    // 4) Combo de actividad que filtra la lista de alumnos (crear/modificar rutina).
+    //    Uso: <select data-filtrar-alumnos="alumnoIds"> con <option data-alumnos="1,5,7">
+    //    Si la opción elegida no tiene data-alumnos (ej: "Sin actividad") se muestran todos.
+    document.querySelectorAll('[data-filtrar-alumnos]').forEach(function (combo) {
+        function filtrar() {
+            const opcion = combo.options[combo.selectedIndex];
+            const lista = opcion.dataset.alumnos;
+            const permitidos = lista === undefined ? null : lista.split(',');
+            document.querySelectorAll('input[name="' + combo.dataset.filtrarAlumnos + '"]').forEach(function (c) {
+                const mostrar = permitidos === null || permitidos.includes(c.value);
+                c.closest('.form-check').hidden = !mostrar;
+                if (!mostrar) c.checked = false;      // un alumno oculto no queda elegido
+            });
+        }
+        combo.addEventListener('change', filtrar);
+        filtrar();                                    // al abrir la página (ej: modificar una rutina que ya tiene actividad)
     });
 });

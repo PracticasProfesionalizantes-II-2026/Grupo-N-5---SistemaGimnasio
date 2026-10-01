@@ -81,7 +81,17 @@ public class RutinasController : Controller
         ViewBag.Alumnos = await _alumnoService.ObtenerTodosAsync();
         ViewBag.Profesores = await _profesorService.ObtenerTodosAsync();
         var actividades = await _actividadService.ObtenerTodasAsync();
-        ViewBag.Actividades = EsProfesor ? actividades.Where(a => a.ProfesorId == UsuarioId).ToList() : actividades;
+        if (EsProfesor) actividades = actividades.Where(a => a.ProfesorId == UsuarioId).ToList();
+        ViewBag.Actividades = actividades;
+
+        // Alumnos inscriptos en cada actividad: al elegir una actividad, la vista muestra solo esos alumnos
+        var inscriptosPorActividad = new Dictionary<int, List<int>>();
+        foreach (var a in actividades)
+        {
+            var inscriptos = await _actividadService.ObtenerAlumnosInscriptosAsync(a.ActividadId);
+            inscriptosPorActividad[a.ActividadId] = inscriptos.Select(i => i.AlumnoId).ToList();
+        }
+        ViewBag.InscriptosPorActividad = inscriptosPorActividad;
     }
 
     public async Task<IActionResult> Create()
