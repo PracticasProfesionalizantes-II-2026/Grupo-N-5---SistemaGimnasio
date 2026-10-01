@@ -3,7 +3,18 @@
     ViewData["Title"] = Model.TipoAlimentacion;
     var puedeGestionar = ViewBag.PuedeGestionar == true;
 }
-<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"alimentacion"' />@Model.TipoAlimentacion</h1>
+<h1 class="mb-2 gym-titulo"><partial name="_Icono" model='"alimentacion"' />@Model.TipoAlimentacion</h1>
+<div class="d-flex flex-wrap gap-1 mb-4">
+    @if (Model.Alumnos.Count == 0)
+    {
+        <span class="gym-chip">Plan general</span>
+    }
+    else if (Context.Session.GetString("Rol") != "Alumno")
+    {
+        @* El alumno no necesita ver a quiénes más se les asignó el plan *@
+        @foreach (var alumno in Model.Alumnos) { <span class="gym-chip">@alumno.Nombre</span> }
+    }
+</div>
 <div class="gym-tarjeta mb-3" style="max-width: 820px;">
     <p class="mb-0" style="white-space: pre-line;">@Model.Descripcion</p>
 </div>

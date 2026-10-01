@@ -9,10 +9,7 @@ public interface IAlimentacionApiService
     Task<List<AlimentacionDto>> ObtenerTodasAsync();
     Task<AlimentacionDto?> ObtenerPorIdAsync(int id);
     Task<(bool ok, string? error)> CrearAsync(AlimentacionCreateDto dto);
-
-    // Sin alumnos crea un plan general; con alumnos guarda una copia del plan para cada uno.
-    Task<(bool ok, string? error)> CrearParaAlumnosAsync(AlimentacionCreateDto dto, List<int> alumnoIds);
-    Task<(bool ok, string? error)> ActualizarAsync(int id, AlimentacionCreateDto dto);
+Task<(bool ok, string? error)> ActualizarAsync(int id, AlimentacionCreateDto dto);
     Task<(bool ok, string? error)> EliminarAsync(int id);
 }
 
@@ -46,19 +43,6 @@ public class AlimentacionApiService : IAlimentacionApiService
         var response = await _http.PostAsJsonAsync("alimentacion", dto);
         if (response.IsSuccessStatusCode) return (true, null);
         return (false, await ApiError.LeerMensajeAsync(response, "No se pudo registrar el plan"));
-    }
-
-    public async Task<(bool ok, string? error)> CrearParaAlumnosAsync(AlimentacionCreateDto dto, List<int> alumnoIds)
-    {
-        if (alumnoIds.Count == 0)
-            return await CrearAsync(dto with { AlumnoId = null });
-
-        foreach (var alumnoId in alumnoIds)
-        {
-            var (ok, error) = await CrearAsync(dto with { AlumnoId = alumnoId });
-            if (!ok) return (false, error);
-        }
-        return (true, null);
     }
 
     public async Task<(bool ok, string? error)> ActualizarAsync(int id, AlimentacionCreateDto dto)

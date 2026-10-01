@@ -3,12 +3,10 @@
     ViewData["Title"] = "Modificar plan de alimentación";
     var esProfesor = Context.Session.GetString("Rol") == "Profesor";
     var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
+    var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
 }
-<h1 class="mb-2 gym-titulo"><partial name="_Icono" model='"alimentacion"' />Modificar plan de alimentación</h1>
-<p class="text-muted mb-4">Asignado a: <strong>@(Model.AlumnoNombre ?? "Plan general")</strong></p>
+<h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"alimentacion"' />Modificar plan de alimentación</h1>
 <form method="post" asp-action="Edit" asp-route-id="@Model.Id">
-    @* Se conserva el alumno al que está asignado el plan *@
-    <input type="hidden" name="AlumnoId" value="@Model.AlumnoId" />
     <div class="mb-3"><label class="form-label">Tipo de alimentación</label><input type="text" name="TipoAlimentacion" class="form-control" value="@Model.TipoAlimentacion" required /></div>
     <div class="mb-3"><label class="form-label">Descripción</label><textarea name="Descripcion" class="form-control" rows="6" required>@Model.Descripcion</textarea></div>
     @if (esProfesor)
@@ -24,6 +22,10 @@
             </select>
         </div>
     }
+    <div class="mb-3">
+        <label class="form-label">Alumnos <span class="text-muted small">(si no elegís ninguno, es un plan general para todos)</span></label>
+        <partial name="_ListaAlumnos" model="alumnos" />
+    </div>
     <button type="submit" class="btn btn-dark">Guardar cambios</button>
     @if (esProfesor)
     {

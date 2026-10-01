@@ -3,9 +3,9 @@
     Lista de casillas para elegir uno o varios alumnos.
     Los elegidos se envían al controlador en el parámetro "alumnoIds" (List<int>).
     Se usa al crear actividades, inscribir alumnos y crear rutinas o planes de alimentación.
-    Si el controlador deja ViewBag.AlumnoPreseleccionado, ese alumno aparece marcado.
+    Si el controlador deja ViewBag.AlumnosSeleccionados (lista de Ids), esos alumnos aparecen marcados.
 *@
-@{ var preseleccionado = ViewData["AlumnoPreseleccionado"] as int?; }
+@{ var seleccionados = ViewData["AlumnosSeleccionados"] as IEnumerable<int> ?? Enumerable.Empty<int>(); }
 @if (!Model.Any())
 {
     <div class="text-muted small">No hay alumnos disponibles.</div>
@@ -20,7 +20,7 @@ else
         @foreach (var a in Model.OrderBy(a => a.Apellido).ThenBy(a => a.Nombre))
         {
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="alumnoIds" value="@a.Id" id="@($"alumno_{a.Id}")" checked="@(a.Id == preseleccionado)" />
+                <input class="form-check-input" type="checkbox" name="alumnoIds" value="@a.Id" id="@($"alumno_{a.Id}")" checked="@seleccionados.Contains(a.Id)"/>
                 <label class="form-check-label" for="@($"alumno_{a.Id}")">@a.Apellido, @a.Nombre <span class="text-muted small">(DNI @a.Dni)</span></label>
             </div>
         }

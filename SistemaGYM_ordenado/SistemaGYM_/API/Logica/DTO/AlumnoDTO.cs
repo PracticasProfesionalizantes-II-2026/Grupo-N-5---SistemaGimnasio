@@ -12,6 +12,12 @@ public record AlumnoDto(
     DateTime FechaAlta
 );
 
+// Alumno al que está asignada una rutina o un plan de alimentación
+public record AlumnoAsignadoDto(
+    int AlumnoId,
+    string Nombre   // "Nombre Apellido"
+);
+
 public record AlumnoDetalleDto(
     int Id, 
     int Dni, 

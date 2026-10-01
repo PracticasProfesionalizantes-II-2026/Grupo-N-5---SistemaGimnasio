@@ -16,8 +16,6 @@
         public int ProfesorId {get; set;}
         [ForeignKey("ProfesorId")]
         public Profesor Profesor { get; set; } = null!;
-        // Nulo únicamente para conservar planes genéricos ya cargados.
-        public int? AlumnoId { get; set; }
-        [ForeignKey("AlumnoId")]
-        public Alumno? Alumno { get; set; }
+        // Alumnos a los que está asignado. Si no tiene ninguno, es un plan general.
+        public ICollection<AlimentacionAlumno> AlimentacionAlumnos { get; set; } = new List<AlimentacionAlumno>();
     }

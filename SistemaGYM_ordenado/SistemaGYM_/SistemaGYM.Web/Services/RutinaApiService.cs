@@ -52,10 +52,11 @@ public class RutinaApiService : IRutinaApiService
         return (false, await ApiError.LeerMensajeAsync(response, "No se pudo eliminar la rutina."));
     }
 
+    // Rutinas que ve un alumno: las asignadas a él y las generales (sin alumnos)
     public async Task<List<RutinaDto>> ObtenerDeAlumnoAsync(int alumnoId)
     {
         var todas = await ObtenerTodasAsync();
-        return todas.Where(r => r.AlumnoId == alumnoId).ToList();
+        return todas.Where(r => r.Alumnos.Count == 0 || r.Alumnos.Any(a => a.AlumnoId == alumnoId)).ToList();
     }
 
     public async Task<List<RutinaDto>> ObtenerDeProfesorAsync(int profesorId)

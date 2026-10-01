@@ -25,7 +25,7 @@ else
             <a asp-action="Details" asp-route-id="@a.Id" class="gym-plan">
                 <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
                     <strong>@a.TipoAlimentacion</strong>
-                    <span class="badge text-bg-light">@(a.AlumnoNombre ?? "Plan general")</span>
+                    <span class="badge text-bg-light">@(a.Alumnos.Count == 0 ? "Plan general" : a.Alumnos.Count == 1 ? a.Alumnos[0].Nombre : $"{a.Alumnos.Count} alumnos")</span>
                 </div>
                 <p class="gym-plan-texto">@a.Descripcion</p>
                 <span class="gym-plan-ver">Ver plan →</span>

@@ -7,13 +7,12 @@
 }
 else
 {
+    <div class="row g-3">
     @foreach (var r in Model)
     {
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">@r.Nombre</h5>
-                <p class="card-text" style="white-space: pre-line;">@r.Descripcion</p>
-            </div>
+        <div class="col-md-6 col-lg-4">
+            <partial name="_TarjetaRutina" model="r" />
         </div>
     }
+    </div>
 }

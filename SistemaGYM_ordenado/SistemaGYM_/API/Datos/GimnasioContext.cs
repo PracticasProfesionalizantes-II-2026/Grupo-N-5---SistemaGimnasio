@@ -21,6 +21,8 @@ public class GimnasioContext(DbContextOptions<GimnasioContext> options) : DbCont
     public DbSet<Suscripcion> Suscripciones { get; set; }
     public DbSet<AlumnoSuscripcion> AlumnoSuscripciones { get; set; }
     public DbSet<ActividadAlumno> ActividadesAlumno { get; set; }
+    public DbSet<RutinaAlumno> RutinaAlumnos { get; set; }
+    public DbSet<AlimentacionAlumno> AlimentacionAlumnos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,11 +67,23 @@ public class GimnasioContext(DbContextOptions<GimnasioContext> options) : DbCont
             .HasForeignKey(r => r.ProfesorId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Rutina>()
-        .HasOne(r => r.Alumno)
-        .WithMany() 
-        .HasForeignKey(r => r.AlumnoId)
-        .OnDelete(DeleteBehavior.Restrict);
+        // Rutina <-> Alumno (muchos a muchos). La clave es el par (RutinaId, AlumnoId):
+        // un alumno no puede estar dos veces en la misma rutina.
+        // Al borrar una rutina se borran sus asignaciones.
+        modelBuilder.Entity<RutinaAlumno>()
+            .HasKey(x => new { x.RutinaId, x.AlumnoId });
+
+        modelBuilder.Entity<RutinaAlumno>()
+            .HasOne(x => x.Rutina)
+            .WithMany(r => r.RutinaAlumnos)
+            .HasForeignKey(x => x.RutinaId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RutinaAlumno>()
+            .HasOne(x => x.Alumno)
+            .WithMany()
+            .HasForeignKey(x => x.AlumnoId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Rutina>()
             .HasOne(r => r.Actividad)
@@ -95,10 +109,20 @@ public class GimnasioContext(DbContextOptions<GimnasioContext> options) : DbCont
             .HasForeignKey(a => a.ProfesorId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Alimentacion>()
-            .HasOne(a => a.Alumno)
+        // Alimentacion <-> Alumno (muchos a muchos), igual que las rutinas
+        modelBuilder.Entity<AlimentacionAlumno>()
+            .HasKey(x => new { x.AlimentacionId, x.AlumnoId });
+
+        modelBuilder.Entity<AlimentacionAlumno>()
+            .HasOne(x => x.Alimentacion)
+            .WithMany(a => a.AlimentacionAlumnos)
+            .HasForeignKey(x => x.AlimentacionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<AlimentacionAlumno>()
+            .HasOne(x => x.Alumno)
             .WithMany()
-            .HasForeignKey(a => a.AlumnoId)
+            .HasForeignKey(x => x.AlumnoId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Anuncio>()

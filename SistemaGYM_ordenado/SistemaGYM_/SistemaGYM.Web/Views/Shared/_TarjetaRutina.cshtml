@@ -1,0 +1,37 @@
+@model RutinaDto
+@*
+    Tarjeta de una rutina: nombre, actividad y alumnos asignados.
+    Toda la tarjeta es un enlace al detalle, donde está la descripción completa.
+    ViewData["NombreProfesor"] es opcional (se muestra en la vista del admin).
+*@
+@{
+    var nombreProfesor = ViewData["NombreProfesor"] as string;
+    var esAlumno = Context.Session.GetString("Rol") == "Alumno";
+}
+<a asp-controller="Rutinas" asp-action="Details" asp-route-id="@Model.Id" class="gym-plan">
+    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+        <strong class="fs-5">@Model.Nombre</strong>
+        <span class="badge text-bg-light">@(Model.ActividadNombre ?? "Sin actividad")</span>
+    </div>
+    @if (nombreProfesor != null)
+    {
+        <div class="small text-muted mb-2">Profesor: @nombreProfesor</div>
+    }
+    <div class="d-flex flex-wrap gap-1 mb-3 flex-grow-1 align-content-start">
+        @if (Model.Alumnos.Count == 0)
+        {
+            <span class="gym-chip">Rutina general</span>
+        }
+        else if (esAlumno)
+        {
+            @* El alumno no necesita ver a quiénes más se les asignó *@
+            <span class="gym-chip">Asignada a vos</span>
+        }
+        else
+        {
+            @foreach (var alumno in Model.Alumnos.Take(4)) { <span class="gym-chip">@alumno.Nombre</span> }
+            @if (Model.Alumnos.Count > 4) { <span class="gym-chip">+@(Model.Alumnos.Count - 4) más</span> }
+        }
+    </div>
+    <span class="gym-plan-ver">Ver rutina →</span>
+</a>

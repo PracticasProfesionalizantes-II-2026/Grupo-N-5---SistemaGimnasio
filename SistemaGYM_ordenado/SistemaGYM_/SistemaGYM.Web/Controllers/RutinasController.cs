@@ -8,19 +8,22 @@ namespace SistemaGYM.Web.Controllers;
 // Admin: gestiona todas las rutinas.
 // Profesor: crea rutinas a su nombre (mismo formulario que el admin, o desde una actividad)
 //           y modifica/elimina solo las suyas.
-// Alumno: solo ve sus rutinas.
+// Alumno: ve las rutinas asignadas a él y las generales.
+// Cada rutina es un único registro asignado a 0, 1 o varios alumnos (sin alumnos = general).
 [SessionAuthorize("Administrador", "Alumno", "Profesor")]
 public class RutinasController : Controller
 {
     private readonly IRutinaApiService _rutinaService;
     private readonly IAlumnoApiService _alumnoService;
     private readonly IProfesorApiService _profesorService;
+    private readonly IActividadApiService _actividadService;
 
-    public RutinasController(IRutinaApiService rutinaService, IAlumnoApiService alumnoService, IProfesorApiService profesorService)
+    public RutinasController(IRutinaApiService rutinaService, IAlumnoApiService alumnoService, IProfesorApiService profesorService, IActividadApiService actividadService)
     {
         _rutinaService = rutinaService;
         _alumnoService = alumnoService;
         _profesorService = profesorService;
+        _actividadService = actividadService;
     }
 
     private string? Rol => HttpContext.Session.GetString("Rol");
@@ -31,9 +34,12 @@ public class RutinasController : Controller
     // El admin puede tocar cualquier rutina; el profesor solo las suyas
     private bool PuedeGestionar(RutinaDto rutina) => EsAdmin || (EsProfesor && rutina.ProfesorId == UsuarioId);
 
-    // A dónde volver después de modificar o eliminar
+    // A dónde volver después de crear, modificar o eliminar
     private IActionResult VolverAlListado() =>
         EsProfesor ? RedirectToAction("Rutinas", "ProfesorPanel") : RedirectToAction("Index");
+
+    private async Task<RutinaDto?> BuscarAsync(int id) =>
+        (await _rutinaService.ObtenerTodasAsync()).FirstOrDefault(r => r.Id == id);
 
     // GET /Rutinas -> gestión completa (solo Admin)
     public async Task<IActionResult> Index()
@@ -52,10 +58,30 @@ public class RutinasController : Controller
         return View(await _rutinaService.ObtenerDeAlumnoAsync(UsuarioId));
     }
 
+    // GET /Rutinas/Details/5 -> descripción completa (se abre al hacer clic en la tarjeta)
+    public async Task<IActionResult> Details(int id)
+    {
+        var rutina = await BuscarAsync(id);
+        if (rutina == null) return NotFound();
+
+        // El alumno solo puede ver sus rutinas y las generales
+        var esDelAlumno = rutina.Alumnos.Count == 0 || rutina.Alumnos.Any(a => a.AlumnoId == UsuarioId);
+        if (Rol == "Alumno" && !esDelAlumno) return RedirectToAction("AccesoDenegado", "Auth");
+
+        var profesor = (await _profesorService.ObtenerTodosAsync()).FirstOrDefault(p => p.Id == rutina.ProfesorId);
+        ViewBag.NombreProfesor = profesor == null ? "Profesor dado de baja" : $"{profesor.Nombre} {profesor.Apellido}";
+        ViewBag.PuedeGestionar = PuedeGestionar(rutina);
+        return View(rutina);
+    }
+
+    // Alumnos, profesores y actividades para los combos.
+    // El profesor solo puede elegir sus propias actividades.
     private async Task CargarCombosAsync()
     {
         ViewBag.Alumnos = await _alumnoService.ObtenerTodosAsync();
         ViewBag.Profesores = await _profesorService.ObtenerTodosAsync();
+        var actividades = await _actividadService.ObtenerTodasAsync();
+        ViewBag.Actividades = EsProfesor ? actividades.Where(a => a.ProfesorId == UsuarioId).ToList() : actividades;
     }
 
     public async Task<IActionResult> Create()
@@ -65,56 +91,46 @@ public class RutinasController : Controller
         return View();
     }
 
-    // Una misma rutina se puede asignar a varios alumnos a la vez:
-    // se guarda una copia por cada alumno seleccionado.
+    // Se guarda una sola rutina para todos los alumnos elegidos (sin alumnos = rutina general)
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(string nombre, string descripcion, int profesorId, List<int> alumnoIds)
+    public async Task<IActionResult> Create(RutinaCreateDto dto)
     {
         if (!EsAdmin && !EsProfesor) return RedirectToAction("AccesoDenegado", "Auth");
 
         // El profesor siempre crea la rutina a su nombre
-        if (EsProfesor) profesorId = UsuarioId;
+        if (EsProfesor) dto = dto with { ProfesorId = UsuarioId };
 
-        if (alumnoIds.Count == 0)
+        var (ok, error) = await _rutinaService.CrearAsync(dto);
+        if (!ok)
         {
-            ViewBag.Error = "Seleccioná al menos un alumno.";
+            ViewBag.Error = error;
             await CargarCombosAsync();
+            ViewBag.AlumnosSeleccionados = dto.AlumnoIds;
             return View();
         }
 
-        foreach (var alumnoId in alumnoIds)
-        {
-            var (ok, error) = await _rutinaService.CrearAsync(new RutinaCreateDto(nombre, descripcion, profesorId, alumnoId, null));
-            if (!ok)
-            {
-                ViewBag.Error = error;
-                await CargarCombosAsync();
-                return View();
-            }
-        }
-
-        TempData["Mensaje"] = alumnoIds.Count == 1
-            ? "Rutina registrada con éxito en el sistema"
-            : $"Rutina asignada con éxito a {alumnoIds.Count} alumnos";
+        TempData["Mensaje"] = "Rutina registrada con éxito en el sistema";
         return VolverAlListado();
     }
 
     public async Task<IActionResult> Edit(int id)
     {
-        var rutina = (await _rutinaService.ObtenerTodasAsync()).FirstOrDefault(r => r.Id == id);
+        var rutina = await BuscarAsync(id);
         if (rutina == null) return NotFound();
         if (!PuedeGestionar(rutina)) return RedirectToAction("AccesoDenegado", "Auth");
 
         await CargarCombosAsync();
+        ViewBag.AlumnosSeleccionados = rutina.Alumnos.Select(a => a.AlumnoId).ToList();
         return View(rutina);
     }
 
+    // Como es una sola rutina, el cambio lo ven todos los alumnos asignados
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, RutinaCreateDto dto)
     {
-        var rutina = (await _rutinaService.ObtenerTodasAsync()).FirstOrDefault(r => r.Id == id);
+        var rutina = await BuscarAsync(id);
         if (rutina == null) return NotFound();
         if (!PuedeGestionar(rutina)) return RedirectToAction("AccesoDenegado", "Auth");
 
@@ -126,6 +142,7 @@ public class RutinasController : Controller
         {
             ViewBag.Error = error;
             await CargarCombosAsync();
+            ViewBag.AlumnosSeleccionados = dto.AlumnoIds;
             return View(rutina);
         }
 
@@ -137,7 +154,7 @@ public class RutinasController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        var rutina = (await _rutinaService.ObtenerTodasAsync()).FirstOrDefault(r => r.Id == id);
+        var rutina = await BuscarAsync(id);
         if (rutina == null) return NotFound();
         if (!PuedeGestionar(rutina)) return RedirectToAction("AccesoDenegado", "Auth");
 

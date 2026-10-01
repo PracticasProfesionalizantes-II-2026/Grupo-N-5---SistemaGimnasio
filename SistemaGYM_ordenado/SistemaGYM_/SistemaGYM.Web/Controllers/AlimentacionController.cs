@@ -39,9 +39,9 @@ public class AlimentacionController : Controller
 
         var planes = await _alimentacionService.ObtenerTodasAsync();
 
-        // El alumno solo ve los planes asignados a él y los planes generales (sin alumno)
+        // El alumno solo ve los planes asignados a él y los planes generales (sin alumnos)
         if (!EsAdmin)
-            planes = planes.Where(p => p.AlumnoId == null || p.AlumnoId == UsuarioId).ToList();
+            planes = planes.Where(p => p.Alumnos.Count == 0 || p.Alumnos.Any(a => a.AlumnoId == UsuarioId)).ToList();
 
         return View(planes);
     }
@@ -65,32 +65,31 @@ public class AlimentacionController : Controller
     {
         if (!EsAdmin && !EsProfesor) return RedirectToAction("AccesoDenegado", "Auth");
         await CargarCombosAsync();
-        ViewBag.AlumnoPreseleccionado = alumnoId;
+        ViewBag.AlumnosSeleccionados = alumnoId.HasValue ? new List<int> { alumnoId.Value } : new List<int>();
         return View();
     }
 
-    // Elegir alumnos es opcional: sin alumnos se crea un plan general,
-    // con alumnos se guarda una copia del plan para cada uno.
+    // Se guarda un solo plan para todos los alumnos elegidos.
+    // Elegir alumnos es opcional: sin alumnos es un plan general.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(AlimentacionCreateDto dto, List<int> alumnoIds)
+    public async Task<IActionResult> Create(AlimentacionCreateDto dto)
     {
         if (!EsAdmin && !EsProfesor) return RedirectToAction("AccesoDenegado", "Auth");
 
         // El profesor siempre crea el plan a su nombre
         if (EsProfesor) dto = dto with { ProfesorId = UsuarioId };
 
-        var (ok, error) = await _alimentacionService.CrearParaAlumnosAsync(dto, alumnoIds);
+        var (ok, error) = await _alimentacionService.CrearAsync(dto);
         if (!ok)
         {
             ViewBag.Error = error;
             await CargarCombosAsync();
+            ViewBag.AlumnosSeleccionados = dto.AlumnoIds;
             return View();
         }
 
-        TempData["Mensaje"] = alumnoIds.Count > 1
-            ? $"Plan de alimentación asignado con éxito a {alumnoIds.Count} alumnos"
-            : "Plan de alimentación registrado con éxito en el sistema";
+        TempData["Mensaje"] = "Plan de alimentación registrado con éxito en el sistema";
         return VolverAlListado();
     }
 
@@ -100,7 +99,8 @@ public class AlimentacionController : Controller
         if (plan == null) return NotFound();
         if (!PuedeGestionar(plan)) return RedirectToAction("AccesoDenegado", "Auth");
 
-        ViewBag.Profesores = await _profesorService.ObtenerTodosAsync();
+        await CargarCombosAsync();
+        ViewBag.AlumnosSeleccionados = plan.Alumnos.Select(a => a.AlumnoId).ToList();
         return View(plan);
     }
 
@@ -119,7 +119,8 @@ public class AlimentacionController : Controller
         if (!ok)
         {
             ViewBag.Error = error;
-            ViewBag.Profesores = await _profesorService.ObtenerTodosAsync();
+            await CargarCombosAsync();
+            ViewBag.AlumnosSeleccionados = dto.AlumnoIds;
             return View(plan);
         }
 

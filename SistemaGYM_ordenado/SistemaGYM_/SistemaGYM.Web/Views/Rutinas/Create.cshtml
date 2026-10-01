@@ -3,27 +3,40 @@
     var esProfesor = Context.Session.GetString("Rol") == "Profesor";
     var alumnos = ViewBag.Alumnos as List<AlumnoDto> ?? new();
     var profesores = ViewBag.Profesores as List<ProfesorDto> ?? new();
+    var actividades = ViewBag.Actividades as List<ActividadDto> ?? new();
+    var profesoresPorId = profesores.ToDictionary(p => p.Id, p => $"{p.Nombre} {p.Apellido}");
 }
 <h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"rutinas"' />Crear rutina</h1>
 <form method="post" asp-action="Create">
-    <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="nombre" class="form-control" required /></div>
+    <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="Nombre" class="form-control" value="" required /></div>
     <div class="mb-3">
         <label class="form-label">Descripción (ejercicios, series y repeticiones)</label>
-        <textarea name="descripcion" class="form-control" rows="5" placeholder="Ej: Press militar 4 series de 12, 10 y 8 repeticiones" required></textarea>
+        <textarea name="Descripcion" class="form-control" rows="6" placeholder="Ej: Press militar 4 series de 12, 10 y 8 repeticiones" required></textarea>
     </div>
-    @if (!esProfesor)
+    @if (esProfesor)
     {
         @* El profesor no elige profesor: la rutina queda a su nombre (lo fuerza el controlador) *@
+        <input type="hidden" name="ProfesorId" value="0" />
+    }
+    else
+    {
         <div class="mb-3">
             <label class="form-label">Profesor</label>
-            <select name="profesorId" class="form-select" required>
+            <select name="ProfesorId" class="form-select" required>
                 <option value="">-- Seleccionar --</option>
-                @foreach (var p in profesores) { <option value="@p.Id">@p.Nombre @p.Apellido</option> }
+                @foreach (var p in profesores) { <option value="@p.Id" selected="@(p.Id == -1)">@p.Nombre @p.Apellido</option> }
             </select>
         </div>
     }
     <div class="mb-3">
-        <label class="form-label">Alumnos (podés elegir varios)</label>
+        <label class="form-label">Actividad <span class="text-muted small">(opcional; debe ser del profesor de la rutina)</span></label>
+        <select name="ActividadId" class="form-select">
+            <option value="">Sin actividad</option>
+            @foreach (var a in actividades) { <option value="@a.ActividadId" selected="@(a.ActividadId == -1)">@a.Nombre @(esProfesor ? "" : $"({(profesoresPorId.TryGetValue(a.ProfesorId, out var np) ? np : "sin profesor")})")</option> }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Alumnos <span class="text-muted small">(opcional: si no elegís ninguno, es una rutina general para todos)</span></label>
         <partial name="_ListaAlumnos" model="alumnos" />
     </div>
     <button type="submit" class="btn btn-dark">Registrar rutina</button>

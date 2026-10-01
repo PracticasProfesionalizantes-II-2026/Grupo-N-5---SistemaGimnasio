@@ -54,8 +54,7 @@ public class ProfesorPanelController : Controller
         return View();
     }
 
-    // La misma rutina se puede asignar a varios alumnos de la actividad:
-    // se guarda una copia por cada alumno seleccionado.
+    // Se guarda una sola rutina de la actividad, asignada a todos los alumnos elegidos
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CrearRutina(int actividadId, List<int> alumnoIds, string nombre, string descripcion)
@@ -65,18 +64,17 @@ public class ProfesorPanelController : Controller
 
         string? error = alumnoIds.Count == 0 ? "Seleccioná al menos un alumno." : null;
 
-        foreach (var alumnoId in alumnoIds)
-        {
-            var (ok, errorApi) = await _rutinaService.CrearAsync(new(nombre, descripcion, ProfesorId, alumnoId, actividadId));
-            if (!ok) { error = errorApi; break; }
-        }
-
         if (error == null)
         {
-            TempData["Mensaje"] = alumnoIds.Count == 1
-                ? "Rutina asignada con éxito"
-                : $"Rutina asignada con éxito a {alumnoIds.Count} alumnos";
-            return RedirectToAction(nameof(Rutinas));
+            var (ok, errorApi) = await _rutinaService.CrearAsync(new(nombre, descripcion, ProfesorId, alumnoIds, actividadId));
+            if (ok)
+            {
+                TempData["Mensaje"] = alumnoIds.Count == 1
+                    ? "Rutina asignada con éxito"
+                    : $"Rutina asignada con éxito a {alumnoIds.Count} alumnos";
+                return RedirectToAction(nameof(Rutinas));
+            }
+            error = errorApi;
         }
 
         ViewBag.Error = error;
