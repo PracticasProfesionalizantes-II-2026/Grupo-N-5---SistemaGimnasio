@@ -5,8 +5,8 @@
 }
 <h1 class="mb-4 gym-titulo"><partial name="_Icono" model='"actividades"' />Crear actividad</h1>
 <form method="post" asp-action="Create">
-    <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="nombre" class="form-control" required /></div>
-    <div class="mb-3"><label class="form-label">Descripción</label><textarea name="descripcion" class="form-control" required></textarea></div>
+    <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="nombre" class="form-control" maxlength="100" required /></div>
+    <div class="mb-3"><label class="form-label">Descripción</label><textarea name="descripcion" class="form-control" maxlength="500" required></textarea></div>
     <div class="row">
         <div class="col-md-4 mb-3"><label class="form-label">Hora inicio</label><input type="time" name="horaInicio" class="form-control" required /></div>
         <div class="col-md-4 mb-3"><label class="form-label">Hora fin</label><input type="time" name="horaFin" class="form-control" required /></div>

@@ -18,7 +18,8 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHttpClient("GymApi", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5215/api/");
+    // La URL sale de appsettings.json (en Azure se pisa desde la configuración del App Service)
+    client.BaseAddress = new Uri(builder.Configuration["ApiUrl"] ?? "http://localhost:5215/api/");
 });
 
 // Servicios que consumen la API

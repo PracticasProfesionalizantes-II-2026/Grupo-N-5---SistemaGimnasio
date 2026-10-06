@@ -16,11 +16,11 @@ public record ActividadDto(
 
 public record ActividadCreateDto(
     [Required(ErrorMessage = "El nombre es obligatorio")]
-    [MaxLength(100)]
+    [MaxLength(100, ErrorMessage = "El nombre puede tener como máximo 100 caracteres")]
     string Nombre,
 
     [Required(ErrorMessage = "La descripción es obligatoria")]
-    [MaxLength(500)]
+    [MaxLength(500, ErrorMessage = "La descripción puede tener como máximo 500 caracteres")]
     string Descripcion,
 
     TimeOnly HoraInicio,

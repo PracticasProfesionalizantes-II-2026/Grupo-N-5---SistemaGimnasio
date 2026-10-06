@@ -12,7 +12,7 @@ public record SuscripcionDto(
 
 public record SuscripcionCreateDto(
     [Required(ErrorMessage = "El nombre es obligatorio")]
-    [MaxLength(100)]
+    [MaxLength(100, ErrorMessage = "El nombre puede tener como máximo 100 caracteres")]
     string Nombre,
 
     // La columna Precio es decimal(10,2): admite hasta 99.999.999,99

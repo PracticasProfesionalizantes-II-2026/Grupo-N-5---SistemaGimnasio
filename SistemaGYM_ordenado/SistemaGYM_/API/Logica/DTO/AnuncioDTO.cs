@@ -12,11 +12,11 @@ public record AnuncioDto(
 
 public record AnuncioCreateDto(
     [Required(ErrorMessage = "El título es obligatorio")]
-    [MaxLength(70)]
+    [MaxLength(70, ErrorMessage = "El título puede tener como máximo 70 caracteres")]
     string Titulo,
 
     [Required(ErrorMessage = "La descripción es obligatoria")]
-    [MaxLength(500)]
+    [MaxLength(500, ErrorMessage = "La descripción puede tener como máximo 500 caracteres")]
     string Descripcion,
 
     DateTime FechaPublicacion,

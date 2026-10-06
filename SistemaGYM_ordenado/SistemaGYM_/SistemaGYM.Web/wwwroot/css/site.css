@@ -1082,3 +1082,11 @@ dl.row dt {
         font-size: .65rem;
     }
 }
+
+/* Textos largos sin espacios (ej: "aaaaaaaaaa...") se cortan dentro de su tarjeta en vez de salirse */
+.gym-main {
+    overflow-wrap: anywhere;
+}
+.gym-main table {
+    overflow-wrap: break-word;   /* en las tablas se corta solo si hace falta, para no achicar las columnas */
+}
