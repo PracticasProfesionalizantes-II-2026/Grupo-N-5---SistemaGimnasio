@@ -62,44 +62,4 @@ histogram_quantile(0.95, sum by (le, app) (rate(http_request_duration_seconds_bu
    ```
    En la Web, `UseHttpMetrics()` va después de `UseRouting()` para saber qué controlador y acción atendió el pedido.
 
-Con eso cada aplicación publica, por ejemplo:
-```
-http_requests_received_total{code="200",method="GET",endpoint="/api/actividades/"} 42
-http_request_duration_seconds_bucket{code="200",method="GET",endpoint="/api/actividades/",le="0.256"} 40
-```
 
-## Cómo correrlo (Windows, sin Docker)
-
-Desde la carpeta `monitoreo/`:
-
-1. **Una sola vez:** descargar Prometheus y Grafana (unos 400 MB):
-   ```
-   powershell -ExecutionPolicy Bypass -File .\instalar-herramientas.ps1
-   ```
-2. Levantar la API y la Web como siempre (`dotnet run`, perfil `http`: puertos 5215 y 5012).
-3. Iniciar Prometheus y Grafana:
-   ```
-   powershell -ExecutionPolicy Bypass -File .\iniciar-monitoreo.ps1
-   ```
-4. Comprobar en http://localhost:9090/targets que la API y la Web locales estén en **UP**.
-5. Abrir Grafana en http://localhost:3000. El tablero se carga solo, en la carpeta *SistemaGYM*.
-6. Generar tráfico para la demo (o usar el sistema a mano):
-   ```
-   powershell -ExecutionPolicy Bypass -File .\generar-trafico.ps1
-   ```
-
-Para cerrar Prometheus y Grafana, cerrar sus dos ventanas.
-
-## Azure
-
-`prometheus.yml` ya incluye las dos apps de Azure (selector **Entorno = azure** en el tablero). Aparecen como **DOWN** hasta publicar la versión nueva de la API y la Web (con `/metrics`), siguiendo los pasos de siempre (`dotnet publish` + Zip Push Deploy).
-
-En Azure, `/metrics` queda público: muestra cantidades y tiempos por ruta, no datos de clientes. En un sistema real se protegería, por ejemplo con un usuario y contraseña o restringiendo la IP.
-
-## Demo sugerida en clase
-
-1. Mostrar `http://localhost:5215/metrics` en el navegador: los números que publica la API.
-2. Mostrar Prometheus → *Status → Targets* (las apps en UP) y ejecutar una consulta PromQL en *Graph*.
-3. Abrir el tablero de Grafana y ejecutar `generar-trafico.ps1`: suben las peticiones por segundo, aparecen errores 4xx (los 404 y 400 que provoca el script) y se ve el tiempo de respuesta.
-4. Explicar los SLO: los recuadros se ponen en verde o rojo según se cumplan.
-5. Opcional: detener la API (Ctrl+C) y ver cómo la disponibilidad pasa a **Caída**.
