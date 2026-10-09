@@ -1,4 +1,5 @@
 using SistemaGYM.Web.Services;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,10 +47,15 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+// Métricas para Prometheus (va después de UseRouting para saber qué controlador y acción atendió cada pedido)
+app.UseHttpMetrics();
+
 app.UseSession();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.MapMetrics(); // Prometheus lee las métricas en /metrics
 
 app.MapControllerRoute(
     name: "default",

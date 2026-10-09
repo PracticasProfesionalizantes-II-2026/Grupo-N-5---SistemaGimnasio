@@ -1,0 +1,12 @@
+# Grafana carga sola esta fuente de datos al iniciar: le dice dónde está Prometheus.
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    uid: prometheus-gym
+    type: prometheus
+    access: proxy
+    url: http://localhost:9090
+    isDefault: true
+    jsonData:
+      timeInterval: 5s

@@ -1,0 +1,28 @@
+# Configuración de Prometheus para el Sistema de Gestión de Gimnasio.
+# Prometheus "scrapea" (lee) cada cierto tiempo la ruta /metrics de cada aplicación
+# y guarda los valores con fecha y hora para poder graficarlos después en Grafana.
+
+global:
+  scrape_interval: 5s      # cada cuánto lee las métricas (corto para que la demo se vea al instante)
+  evaluation_interval: 5s
+
+scrape_configs:
+  # Sistema corriendo en la PC (dotnet run con el perfil http)
+  - job_name: sistemagym-local
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["localhost:5215"]
+        labels: { app: api, entorno: local }
+      - targets: ["localhost:5012"]
+        labels: { app: web, entorno: local }
+
+  # Sistema publicado en Azure (aparece como DOWN hasta publicar la versión con /metrics)
+  - job_name: sistemagym-azure
+    scheme: https
+    metrics_path: /metrics
+    scrape_interval: 15s
+    static_configs:
+      - targets: ["gym-grupo5-api-ices-dgbffadufhasb3cy.mexicocentral-01.azurewebsites.net"]
+        labels: { app: api, entorno: azure }
+      - targets: ["gym-grupo5-web-fgdabmcja8d2h3aa.mexicocentral-01.azurewebsites.net"]
+        labels: { app: web, entorno: azure }

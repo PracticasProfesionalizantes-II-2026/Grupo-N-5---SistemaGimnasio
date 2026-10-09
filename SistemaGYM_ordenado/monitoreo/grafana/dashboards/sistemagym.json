@@ -1,0 +1,206 @@
+{
+  "uid": "sistemagym",
+  "title": "Sistema de Gestión de Gimnasio · Métricas",
+  "tags": ["sistemagym", "prometheus"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "5s",
+  "time": { "from": "now-15m", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "entorno",
+        "label": "Entorno",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus-gym" },
+        "query": { "query": "label_values(up, entorno)", "refId": "entorno" },
+        "definition": "label_values(up, entorno)",
+        "refresh": 1,
+        "current": { "text": "local", "value": "local" },
+        "includeAll": false,
+        "multi": false
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1, "type": "row", "title": "Métrica 1 · Tráfico: cantidad de peticiones",
+      "collapsed": false, "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 }, "panels": []
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "Peticiones por segundo",
+      "description": "Cuántos pedidos HTTP recibe cada aplicación por segundo (promedio del último minuto).",
+      "datasource": { "type": "prometheus", "uid": "prometheus-gym" },
+      "gridPos": { "x": 0, "y": 1, "w": 16, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "reqps", "custom": { "fillOpacity": 15, "lineWidth": 2 } }, "overrides": [] },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (app) (rate(http_requests_received_total{entorno=\"$entorno\"}[1m]))",
+          "legendFormat": "{{app}}"
+        }
+      ]
+    },
+    {
+      "id": 3, "type": "stat", "title": "Pedidos en el período elegido",
+      "description": "Total de pedidos recibidos por cada aplicación en el rango de tiempo del tablero.",
+      "datasource": { "type": "prometheus", "uid": "prometheus-gym" },
+      "gridPos": { "x": 16, "y": 1, "w": 8, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "blue" } }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none", "textMode": "value_and_name" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (app) (increase(http_requests_received_total{entorno=\"$entorno\"}[$__range]))",
+          "legendFormat": "{{app}}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 4, "type": "row", "title": "Métrica 2 · Tasa de error",
+      "collapsed": false, "gridPos": { "x": 0, "y": 9, "w": 24, "h": 1 }, "panels": []
+    },
+    {
+      "id": 5, "type": "timeseries", "title": "Porcentaje de pedidos con error",
+      "description": "5xx: errores del servidor (fallas nuestras). 4xx: errores del cliente (datos inválidos, no encontrado, etc.).",
+      "datasource": { "type": "prometheus", "uid": "prometheus-gym" },
+      "gridPos": { "x": 0, "y": 10, "w": 16, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "custom": { "fillOpacity": 10, "lineWidth": 2 } }, "overrides": [] },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 * sum by (app) (rate(http_requests_received_total{entorno=\"$entorno\", code=~\"5..\"}[5m])) / sum by (app) (rate(http_requests_received_total{entorno=\"$entorno\"}[5m]))",
+          "legendFormat": "5xx {{app}}"
+        },
+        {
+          "refId": "B",
+          "expr": "100 * sum by (app) (rate(http_requests_received_total{entorno=\"$entorno\", code=~\"4..\"}[5m])) / sum by (app) (rate(http_requests_received_total{entorno=\"$entorno\"}[5m]))",
+          "legendFormat": "4xx {{app}}"
+        }
+      ]
+    },
+    {
+      "id": 6, "type": "stat", "title": "Errores del servidor (5xx) · objetivo < 1 %",
+      "description": "SLI: porcentaje de pedidos que terminan en error 5xx en los últimos 5 minutos. SLO: menos del 1 %.",
+      "datasource": { "type": "prometheus", "uid": "prometheus-gym" },
+      "gridPos": { "x": 16, "y": 10, "w": 8, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "decimals": 2,
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "red", "value": 1 } ] }
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 * (sum(rate(http_requests_received_total{entorno=\"$entorno\", code=~\"5..\"}[5m])) or vector(0)) / sum(rate(http_requests_received_total{entorno=\"$entorno\"}[5m]))"
+        }
+      ]
+    },
+    {
+      "id": 7, "type": "row", "title": "Métrica 3 · Tiempo de respuesta",
+      "collapsed": false, "gridPos": { "x": 0, "y": 18, "w": 24, "h": 1 }, "panels": []
+    },
+    {
+      "id": 8, "type": "timeseries", "title": "Tiempo de respuesta (p50 y p95)",
+      "description": "p50: la mitad de los pedidos tarda menos que esto. p95: el 95 % de los pedidos tarda menos que esto.",
+      "datasource": { "type": "prometheus", "uid": "prometheus-gym" },
+      "gridPos": { "x": 0, "y": 19, "w": 16, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "s", "min": 0, "custom": { "fillOpacity": 10, "lineWidth": 2 } }, "overrides": [] },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le, app) (rate(http_request_duration_seconds_bucket{entorno=\"$entorno\"}[5m])))",
+          "legendFormat": "p95 {{app}}"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.50, sum by (le, app) (rate(http_request_duration_seconds_bucket{entorno=\"$entorno\"}[5m])))",
+          "legendFormat": "p50 {{app}}"
+        }
+      ]
+    },
+    {
+      "id": 9, "type": "stat", "title": "Pedidos en menos de 2 s · objetivo ≥ 99 %",
+      "description": "SLI basado en el requerimiento no funcional de tiempo de respuesta (2 a 3 s). Se usa el bucket de 2,048 s del histograma.",
+      "datasource": { "type": "prometheus", "uid": "prometheus-gym" },
+      "gridPos": { "x": 16, "y": 19, "w": 8, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "decimals": 1, "max": 100,
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "orange", "value": 95 }, { "color": "green", "value": 99 } ] }
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area", "textMode": "value" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 * sum(rate(http_request_duration_seconds_bucket{entorno=\"$entorno\", le=\"2.048\"}[5m])) / sum(rate(http_request_duration_seconds_count{entorno=\"$entorno\"}[5m]))"
+        }
+      ]
+    },
+    {
+      "id": 10, "type": "bargauge", "title": "Endpoints de la API más lentos (p95, últimos 5 min)",
+      "datasource": { "type": "prometheus", "uid": "prometheus-gym" },
+      "gridPos": { "x": 0, "y": 27, "w": 24, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s", "min": 0,
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 2 } ] }
+        },
+        "overrides": []
+      },
+      "options": { "orientation": "horizontal", "displayMode": "gradient", "reduceOptions": { "calcs": ["lastNotNull"] }, "showUnfilled": true },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "topk(5, histogram_quantile(0.95, sum by (le, method, endpoint) (rate(http_request_duration_seconds_bucket{entorno=\"$entorno\", app=\"api\"}[5m]))))",
+          "legendFormat": "{{method}} {{endpoint}}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 11, "type": "row", "title": "Extra · Disponibilidad e infraestructura",
+      "collapsed": false, "gridPos": { "x": 0, "y": 35, "w": 24, "h": 1 }, "panels": []
+    },
+    {
+      "id": 12, "type": "stat", "title": "Disponibilidad",
+      "description": "up = 1 si Prometheus pudo leer /metrics en la última lectura.",
+      "datasource": { "type": "prometheus", "uid": "prometheus-gym" },
+      "gridPos": { "x": 0, "y": 36, "w": 8, "h": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [ { "type": "value", "options": { "0": { "text": "Caída", "color": "red" }, "1": { "text": "Arriba", "color": "green" } } } ],
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "green", "value": 1 } ] }
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none", "textMode": "value_and_name" },
+      "targets": [ { "refId": "A", "expr": "up{entorno=\"$entorno\"}", "legendFormat": "{{app}}", "instant": true } ]
+    },
+    {
+      "id": 13, "type": "timeseries", "title": "Uso de CPU (% de un núcleo)",
+      "datasource": { "type": "prometheus", "uid": "prometheus-gym" },
+      "gridPos": { "x": 8, "y": 36, "w": 8, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "custom": { "fillOpacity": 10 } }, "overrides": [] },
+      "targets": [ { "refId": "A", "expr": "100 * sum by (app) (rate(process_cpu_seconds_total{entorno=\"$entorno\"}[1m]))", "legendFormat": "{{app}}" } ]
+    },
+    {
+      "id": 14, "type": "timeseries", "title": "Memoria en uso",
+      "datasource": { "type": "prometheus", "uid": "prometheus-gym" },
+      "gridPos": { "x": 16, "y": 36, "w": 8, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "bytes", "min": 0, "custom": { "fillOpacity": 10 } }, "overrides": [] },
+      "targets": [ { "refId": "A", "expr": "sum by (app) (process_working_set_bytes{entorno=\"$entorno\"})", "legendFormat": "{{app}}" } ]
+    }
+  ]
+}

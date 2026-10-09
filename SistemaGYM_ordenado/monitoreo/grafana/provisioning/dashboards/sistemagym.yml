@@ -1,0 +1,11 @@
+# Grafana carga solo los tableros (.json) de la carpeta indicada.
+# SISTEMAGYM_DASHBOARDS la define iniciar-monitoreo.ps1 con la ruta de monitoreo/grafana/dashboards.
+apiVersion: 1
+
+providers:
+  - name: SistemaGYM
+    folder: SistemaGYM
+    type: file
+    allowUiUpdates: true
+    options:
+      path: ${SISTEMAGYM_DASHBOARDS}

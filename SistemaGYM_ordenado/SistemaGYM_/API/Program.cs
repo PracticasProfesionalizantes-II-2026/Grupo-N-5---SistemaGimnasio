@@ -6,6 +6,7 @@ using SistemaGYM.Logica;
 using SistemaGYM.Repositorios;
 using SistemaGYM.Middleware; 
 using SistemaGYM.Entidades;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,7 +76,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("FrontendPolicy");
 
-// Endpoints 
+// Métricas para Prometheus: cuenta cada pedido y mide cuánto tarda (cantidad, errores y tiempo de respuesta)
+app.UseHttpMetrics();
+
+// Endpoints
+
+app.MapMetrics(); // Prometheus lee las métricas en /metrics
 
 app.MapAlumnoEndpoints();
 app.MapProfesorEndpoints();
